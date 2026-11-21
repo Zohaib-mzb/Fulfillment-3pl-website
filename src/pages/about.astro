@@ -10,13 +10,13 @@ import { SITE } from '@/config/site';
 const crumbs = [{ name: 'Home', href: '/' }, { name: 'About', href: '/about' }];
 
 const steps = [
-  { icon: 'link', t: 'Connect your store', d: 'Shopify, WooCommerce, BigCommerce, CSV or API. New orders reach us automatically and stock levels sync back.', href: '/integrations' },
+  { icon: 'link', t: 'Connect your store', d: 'Shopify, WooCommerce, BigCommerce or CSV, with an API coming soon. New orders reach us automatically and stock levels sync back.', href: '/integrations' },
   { icon: 'box', t: 'Send stock or print our label', d: 'Send inventory for us to hold, or keep packing yourself and print our label for delivery only.', href: '/how-it-works' },
   { icon: 'scan', t: 'We receive', d: 'Every inbound shipment is counted against your notice, and anything that doesn’t match is flagged to you.', href: '/services/fulfillment' },
   { icon: 'rack', t: 'We store', d: 'Each SKU gets its own bin location, so stock is easy to find, count and keep accurate.', href: '/services/fulfillment' },
   { icon: 'layers', t: 'We pick and pack', d: 'Orders are scan picked and packed to fit, with your inserts, before the daily cutoff.', href: '/services/fulfillment' },
   { icon: 'route', t: 'We sort by postal zone', d: 'Parcels are sorted by postal zone and loaded onto routes planned for the next run.', href: '/services/final-mile-delivery' },
-  { icon: 'van', t: 'We deliver', d: 'Next day or same day across the GTA, with live tracking for your customer and photo proof at the door.', href: '/services/final-mile-delivery' },
+  { icon: 'van', t: 'We deliver', d: 'Same day or next day across the GTA, with live SMS and email tracking and photo proof at the door.', href: '/services/final-mile-delivery' },
   { icon: 'return', t: 'We handle returns', d: 'Returns are collected, inspected and restocked or set aside, and you see what came back.', href: '/services/returns' },
 ] as const;
 
@@ -27,14 +27,14 @@ const values = [
 ] as const;
 ---
 <BaseLayout
-  title="About Kinematics | Toronto Fulfillment & Final Mile Delivery"
-  description="Kinematics is a Toronto fulfillment and final mile delivery company for growing brands: how we work from store to door, our EV first approach and values."
+  title="About Kinematics | Fulfillment and Delivery in Toronto"
+  description="Kinematics is a Toronto fulfillment and delivery company: 3PL, fulfillment and same day final mile delivery across the GTA, with no minimums."
   crumbs={crumbs}
 >
   <PageHero
     eyebrow="About"
     title="One team from shelf to doorstep"
-    answer={`${SITE.legalName} is a Toronto fulfillment and final mile delivery company for growing brands. We store stock, pick and pack orders and deliver them next day or same day across the GTA in an EV first fleet, so one team is responsible for every order from our shelves to your customer’s door.`}
+    answer={`${SITE.legalName} provides 3PL, fulfillment and same day final mile delivery across the GTA for growing brands. We store stock, pick and pack orders and deliver them the same day or next day in an EV first fleet, with no minimum volume, so one Toronto team is responsible for every order from shelf to door.`}
     crumbs={crumbs}
   >
     <Art slot="art" scene="hero" alt="Illustration of a parcel's route from box to electric van to a customer's house." />

@@ -31,7 +31,7 @@ export const CITIES: City[] = [
       'Same day and next day delivery in Toronto for online brands, from the downtown core to Scarborough and Etobicoke. EV first, photo proof, live tracking.',
     h1: 'Ecommerce delivery in Toronto, same day and next day',
     answer:
-      'Kinematics delivers online orders to customers across the City of Toronto (downtown, midtown, North York, Scarborough, Etobicoke and East York), next day as standard and same day for orders placed by late morning. It is built for ecommerce brands that want fast local delivery with photo proof and live tracking.',
+      'Kinematics delivers online orders to customers across the City of Toronto (downtown, midtown, North York, Scarborough, Etobicoke and East York), same day for orders placed by late morning and next day as standard. It is built for ecommerce brands that want fast local delivery with photo proof and live tracking.',
     intro: [
       'Toronto is our home city. It is also where final mile delivery is hardest to get right: towers with parcel rooms and concierge desks, laneway homes, tight street parking and traffic that changes by the hour.',
       'We plan Toronto routes around those realities. Condo deliveries follow building rules, houses get a photo at the door, and electric vans handle the dense stop heavy routes they are best suited to.',
@@ -66,7 +66,7 @@ export const CITIES: City[] = [
       'Next day and same day parcel delivery in Mississauga, from Port Credit to Meadowvale, for online brands. EV first fleet, live tracking and photo proof.',
     h1: 'Next day delivery in Mississauga',
     answer:
-      'Kinematics provides next day parcel delivery in Mississauga for online brands, covering neighbourhoods from Port Credit and Clarkson to Meadowvale, Erin Mills and Malton, with same day delivery for orders placed by late morning. Every delivery comes with live tracking for your customer and photo proof of where the parcel was left.',
+      'Kinematics provides next day parcel delivery in Mississauga for online brands, with same day delivery for orders placed by late morning, covering neighbourhoods from Port Credit and Clarkson to Meadowvale, Erin Mills and Malton. Every delivery comes with live tracking for your customer and photo proof of where the parcel was left.',
     intro: [
       'Mississauga mixes high rise living around City Centre with long residential streets in Erin Mills, Churchill Meadows and Meadowvale, and older lakeside neighbourhoods in Port Credit and Lorne Park. A route here can go from a concierge desk to a side street in a few minutes.',
       'We route Mississauga deliveries by neighbourhood, so vans stay in one area instead of crisscrossing the city, which keeps arrival times predictable and suits our electric vans well.',
@@ -75,7 +75,7 @@ export const CITIES: City[] = [
     sections: [
       {
         h2: 'How fast is delivery in Mississauga?',
-        body: 'Next day is the standard for Mississauga: parcels that reach us by the daily cutoff are out for delivery the following day. For time sensitive orders, [same day delivery](/services/same-day-delivery) covers eligible Mississauga postal codes when the order is placed by late morning.',
+        body: 'For time sensitive orders, [same day delivery](/services/same-day-delivery) covers eligible Mississauga postal codes: order by late morning, delivered the same day. Next day is the standard option: parcels that reach us by the daily cutoff are out for delivery the following day.',
       },
       {
         h2: 'Can you collect from my Mississauga warehouse?',
@@ -102,7 +102,7 @@ export const CITIES: City[] = [
       'Parcel delivery in Brampton for online brands: next day across Bramalea, Springdale, Mount Pleasant and more, plus same day. Live tracking and photo proof.',
     h1: 'Same day and next day delivery in Brampton',
     answer:
-      'Kinematics delivers ecommerce orders to customers across Brampton, from Downtown Brampton and Bramalea to Springdale, Mount Pleasant and Castlemore, next day as standard and same day for orders placed by late morning. Online brands get live tracking for customers and a photo at every door.',
+      'Kinematics delivers ecommerce orders to customers across Brampton, from Downtown Brampton and Bramalea to Springdale, Mount Pleasant and Castlemore, same day for orders placed by late morning and next day as standard. Online brands get live tracking for customers and a photo at every door.',
     intro: [
       'Brampton has some of the GTA’s newest neighbourhoods. New streets and new addresses appear faster than many mapping tools catch up, which is a common source of late or misdelivered parcels.',
       'Routes are planned by area so drivers get to know the streets they cover, and every delivery is photographed, so new build addresses get delivered properly and there is a record if a customer asks where their parcel went.',
@@ -115,7 +115,7 @@ export const CITIES: City[] = [
       },
       {
         h2: 'Is same day delivery available in Brampton?',
-        body: 'Yes, for eligible postal codes. Orders that reach us by late morning can be delivered the same day. Most Brampton orders go next day, which is our standard across the GTA. Learn how [final mile delivery](/services/final-mile-delivery) works.',
+        body: 'Yes, for eligible postal codes. Order by late morning, delivered the same day. Everything else goes next day, our standard option across the GTA. Learn how [same day delivery](/services/same-day-delivery) works.',
       },
       {
         h2: 'Do you deliver multi box orders in Brampton?',
@@ -138,7 +138,7 @@ export const CITIES: City[] = [
       'Last mile delivery in Vaughan for online brands: Woodbridge, Maple, Thornhill, Kleinburg and the VMC. Next day standard, same day available, photo proof.',
     h1: 'Last mile delivery in Vaughan',
     answer:
-      'Kinematics provides last mile delivery in Vaughan for online brands, reaching customers in Woodbridge, Maple, Concord, Thornhill, Kleinburg and the Vaughan Metropolitan Centre. Delivery is next day as standard, same day for orders placed by late morning, and every parcel comes with live tracking and photo proof at the door.',
+      'Kinematics provides last mile delivery in Vaughan for online brands, reaching customers in Woodbridge, Maple, Concord, Thornhill, Kleinburg and the Vaughan Metropolitan Centre. Delivery is same day for orders placed by late morning and next day as standard, and every parcel comes with live tracking and photo proof at the door.',
     intro: [
       'Vaughan stretches from new towers around the Vaughan Metropolitan Centre to spread out streets in Kleinburg and Vellore Village. That range makes route planning matter: dense stops in one part of the city, longer drives between homes in another.',
       'We plan Vaughan routes to keep each van in a tight area and to stay well within its range, so electric vans can cover the city reliably.',
@@ -147,7 +147,7 @@ export const CITIES: City[] = [
     sections: [
       {
         h2: 'How fast is delivery in Vaughan?',
-        body: 'Most Vaughan orders are delivered next day. When an order can’t wait, [same day delivery](/services/same-day-delivery) covers eligible Vaughan postal codes for orders placed by late morning.',
+        body: 'When an order can’t wait, [same day delivery](/services/same-day-delivery) covers eligible Vaughan postal codes: order by late morning, delivered the same day. Everything else goes next day.',
       },
       {
         h2: 'Can you deliver wholesale orders to Vaughan retailers?',
@@ -174,7 +174,7 @@ export const CITIES: City[] = [
       'Ecommerce delivery in Markham: next day across Unionville, Cornell, Markham Village and Milliken, with same day available. EV first, photo proof.',
     h1: 'Ecommerce delivery in Markham',
     answer:
-      'Kinematics delivers ecommerce orders to customers in Markham (Unionville, Markham Village, Cornell, Cathedraltown, Milliken and more), next day as standard, with same day for orders placed by late morning. It suits online brands that want reliable local delivery with live tracking and a photo at every door.',
+      'Kinematics delivers ecommerce orders to customers in Markham (Unionville, Markham Village, Cornell, Cathedraltown, Milliken and more), same day for orders placed by late morning and next day as standard. It suits online brands that want reliable local delivery with live tracking and a photo at every door.',
     intro: [
       'Markham combines heritage main streets in Unionville and Markham Village with newer communities like Cornell and Cathedraltown, plus busy office and business parks. Customers here order to their homes and their workplaces.',
       'We handle both: residential deliveries photographed at the door, and business addresses delivered during working hours, routed so vans don’t double back.',

@@ -6,7 +6,7 @@ Work through this list top to bottom before pointing `kinematicstech.ca` at the 
 
 All business details live in **`src/config/site.ts`**. Search the repo for `[` to find any remaining placeholders.
 
-- [ ] `SITE.phone`: set the number once decided (it is empty now, so the phone is hidden everywhere). It then appears automatically in the footer, on contact and legal pages, as a `tel:` link and in Organization/LocalBusiness schema.
+- [x] `SITE.phone`: (437) 665 9457 (with `phoneE164` +14376659457). It then appears automatically in the footer, on contact and legal pages, as a `tel:` link and in Organization/LocalBusiness schema.
 - [x] `SITE.hours`: Monday to Friday 9am to 6pm, Saturday 9am to 2pm, Sunday closed (Toronto time). Shown on `/contact`, in the footer and as `openingHoursSpecification`.
 - [ ] `SITE.address.streetAddress` and `postalCode`: add them if the address is public (needed for strong LocalBusiness / Google Business Profile consistency). Otherwise leave them `null`.
 - [ ] `SITE.social`: add the LinkedIn URL (the only social profile). While empty, the link and icon stay hidden and schema `sameAs` is omitted.

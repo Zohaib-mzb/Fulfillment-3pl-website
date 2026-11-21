@@ -24,6 +24,7 @@ const isDriver = d.department === 'Delivery';
 const plainBody = (role.body ?? '')
   .replace(/^import .*$/gm, '')
   .replace(/<a [^>]*>\{SITE\.email\}<\/a>/g, SITE.email)
+  .replace(/<a [^>]*>\{SITE\.phone\}<\/a>/g, SITE.phone)
   .replace(/<[^>]+>/g, '')
   .replace(/[#*_`>]/g, ' ')
   .replace(/^\s*-\s+/gm, '')

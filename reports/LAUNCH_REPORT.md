@@ -6,6 +6,68 @@ Every measurement in this report comes from the **production server itself** (`n
 
 ---
 
+## 0. Update: positioning, services and phone (2026-11-21)
+
+A copy and content update. Design, animations and page structure are unchanged, apart from the two grid tweaks and one bug fix noted below.
+
+**Phone:** (437) 665 9457, set once in `src/config/site.ts` (`phone` for display, `phoneE164` `+14376659457` for links and schema). It is a `tel:` link in:
+- the mobile menu ("Call (437) 665 9457"); the desktop header has no room, as screenshots at 1280 and 1536 px showed the nav wrapping;
+- the footer and the Contact page;
+- the privacy, terms and accessibility pages and every city page;
+- the Final Mile Delivery Drivers job ("or call us").
+
+It is also in the Organization and LocalBusiness schema (`telephone`, E.164) and in llms.txt.
+
+**Positioning:** "3PL, fulfillment and same day final mile delivery across the GTA." (`SITE.mainLine`); the tagline is still "Commerce in motion.".
+- **Updated:** hero eyebrow, subline and highlights (same day first); home title and meta; the services overview; Why Kinematics; the footer descriptor; the About intro and meta; Organization and LocalBusiness descriptions; the OG image kicker and footer line; the web manifest; llms.txt; the FAQ intro; How it works.
+- **City pages** now mention same day before next day.
+
+**Services:**
+- **Order:** Same day delivery (lead), Next day delivery, Rush and scheduled delivery, B2B and retail delivery, Warehousing and fulfillment, Returns. It is the same in the Services menu, footer, homepage cards, sidebars, Related blocks and the 404 page.
+- **New pages:** `/services/rush-scheduled-delivery` and `/services/b2b-retail-delivery`. Each has a 40 to 60 word answer, question headings, an FAQ, Service and FAQPage schema, and breadcrumbs, and is in the sitemap (50 indexable pages).
+- **`/services/same-day-delivery`:** rewritten as the lead service, with the cutoff "order by late morning, delivered the same day" (no exact times), a new "same day courier for businesses" section, and no minimum volume.
+- **`/services/fulfillment`** (now "Warehousing and fulfillment"): pallet and shelf storage, inventory counts, overflow and Q4 peak storage, and an Amazon FBA prep and labelling section (no new page).
+- **Everywhere:** live SMS and email tracking, photo proof and signature on request. Our shipping labels and the daily manifest are on Integrations and in the FAQ.
+- **API:** now shows "coming soon" everywhere. WooCommerce and BigCommerce stay as supported, as you confirmed.
+- **No minimum volume:** on the homepage, every service FAQ, the footer and llms.txt, worded positively.
+- **FAQ:** new questions on the same day cutoff, minimum volume, rush delivery, scheduled windows, FBA prep and how labels work. The homepage FAQ now features the cutoff and minimum volume questions.
+
+**Layout tweaks:** the homepage service cards (6) and Why Kinematics cards (6) now use 3 columns on desktop instead of 4 and 5, so there are no orphan cards. Spacing, styles and motion are unchanged.
+
+**Bug fix (existing):** the mobile menu panel opened at 1 px tall, so the menu was effectively invisible on phones. The header's blur effect made the header the containing block for the fixed panel. The fix sets the panel's height from the viewport; the menu looks exactly as designed. This bug was also in the version already on GitHub.
+
+**Research and SEO:**
+- `reports/COMPETITOR_GAPS.md`: a gap table covering GoBolt, Apple Express, Intelcom, UniUni, Stallion Express, Purolator and ShipHype, for structure and features only. No competitor is named on the site.
+- `reports/KEYWORDS.md`: a new positioning section. Home's primary is "3PL and same day delivery Toronto". Same day delivery Toronto/GTA, same day courier for businesses, rush, scheduled, B2B delivery GTA, Amazon FBA prep Toronto and fulfillment and delivery Toronto (About) are assigned, with one unique primary per page.
+
+**Checks** (production server, `npm start`):
+
+| Check | Result |
+| --- | --- |
+| `astro check` | 0 errors |
+| `npm run audit` | 52 pages, 0 errors (titles, descriptions, H1s, 40 to 60 word answers) |
+| `npm run validate:schema` | 0 errors (22 Service nodes, 115 Q&A, telephone valid) |
+| `npm run crawl` | 50 pages reachable, 0 broken links, 0 orphans, sitemap 50 indexable pages, redirects and headers OK |
+| axe (WCAG 2.1 AA) | 0 violations, 104 page loads (desktop + mobile) |
+| Content scan | no dashes or hyphens in visible copy (only URLs and code), no prices or pay, no competitor names, no invented stats |
+
+| Page | Device | Perf | A11y | BP | SEO | LCP | CLS | TBT |
+|---|---|---|---|---|---|---|---|---|
+| `/` | mobile | 100 | 100 | 100 | 100 | 1.81 s | 0 | 51 ms |
+| `/` | desktop | 100 | 100 | 100 | 100 | 0.42 s | 0 | 47 ms |
+| `/services/same-day-delivery` | mobile | 100 | 100 | 100 | 100 | 0.78 s | 0 | 70 ms |
+| `/services/same-day-delivery` | desktop | 100 | 100 | 100 | 100 | 0.25 s | 0 | 0 ms |
+| `/services/fulfillment` | mobile | 100 | 100 | 100 | 100 | 0.78 s | 0 | 87 ms |
+| `/services/fulfillment` | desktop | 100 | 100 | 100 | 100 | 0.21 s | 0 | 0 ms |
+| `/contact` | mobile | 100 | 100 | 100 | 100 | 0.78 s | 0 | 0 ms |
+| `/contact` | desktop | 100 | 100 | 100 | 100 | 0.21 s | 0 | 0 ms |
+
+**About home mobile transfer:** Lighthouse counted 2.6 MB this run because the hero video (about 2.4 MB) finished loading inside the trace. By design the video starts only after LCP and the page is idle. Earlier runs stopped before it finished (20 KB, then 306 KB). Video loading didn't change this round; LCP and scores are unaffected. Raw data: `reports/positioning.json` and `reports/positioning-desktop.json`.
+
+**Remaining checklist update:** the phone number is now done. Add it to the Google Business Profile so the NAP matches the site.
+
+---
+
 ## 1. Changelog (launch round)
 
 ### About page
@@ -201,7 +263,7 @@ Full detail, sources and estimates are in `reports/KEYWORDS.md`. Volumes are est
 
 **Still open after launch:**
 - [ ] **LinkedIn link:** add the URL to `SITE.social` in `src/config/site.ts` and push. The link and icon appear in the footer, and in schema `sameAs`, automatically.
-- [ ] **Phone number:** add it to `SITE.phone` and push. It appears automatically in the footer, on the Contact and legal pages, and in schema. Add the same number to the Google Business Profile.
+- [x] **Phone number:** (437) 665 9457 is live in config, pages and schema. Use the same number on the Google Business Profile.
 - [ ] **Analytics:** choose Plausible or GA4. Set `PUBLIC_ANALYTICS_PROVIDER` and its ID in hPanel, then **redeploy**. Confirm nothing loads before consent, and register `quote_submit`, `contact_submit` and `apply_submit` as goals or key events.
 - [ ] **Manual Firefox and Safari check:** Firefox on desktop and Android, and real Safari on macOS and iOS. Check the hero video or 3D, page transitions and every form.
 - [ ] **Google Business Profile:** a service area business (Toronto, Mississauga, Brampton, Vaughan, Markham). Use the same name, hours and website as the site. Steps are in `DEPLOY_HOSTINGER.md` §4.6.

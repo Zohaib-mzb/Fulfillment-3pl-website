@@ -1,5 +1,5 @@
 import type { APIRoute } from 'astro';
-import { SITE } from '@/config/site';
+import { SITE, hasPhone } from '@/config/site';
 import { SERVICES } from '@/data/services';
 import { INDUSTRIES } from '@/data/industries';
 import { CITIES } from '@/data/cities';
@@ -14,23 +14,26 @@ export const GET: APIRoute = async () => {
   const lines = [
     `# ${SITE.brand}`,
     '',
-    `> ${SITE.legalName} ("${SITE.brand}") is a Toronto, Ontario company providing third party logistics (3PL) fulfillment: receiving, storage, pick and pack, kitting, B2B orders and returns, plus next day and same day final mile parcel delivery across the Greater Toronto Area with an EV first fleet. Tagline: "${SITE.tagline}"`,
+    `> ${SITE.legalName} ("${SITE.brand}") is a Toronto, Ontario company providing 3PL, fulfillment and same day final mile delivery across the Greater Toronto Area: pallet and shelf storage, pick and pack, kitting, B2B orders and Amazon FBA prep, same day delivery (lead service), next day delivery, rush and scheduled delivery, B2B and retail deliveries and returns, with an EV first fleet and no minimum volume. Tagline: "${SITE.tagline}"`,
     '',
     'Key facts:',
     `- Headquarters: ${SITE.address.locality}, ${SITE.address.regionName}, Canada`,
     `- Areas served by our own delivery fleet: ${CITIES.map((c) => c.name).join(', ')}`,
-    '- Delivery speeds: next day across the GTA as standard; same day for orders placed by late morning (exact cutoffs set per customer)',
+    '- Delivery speeds: same day across the GTA (order by late morning, delivered the same day; exact cutoffs set per customer); next day as standard; rush on demand pickups and scheduled delivery windows within the GTA',
+    '- Minimum volume: none; built for growing brands',
+    '- Support: a named account contact and real people, not a ticket queue',
     '- Fleet: EV first (electric vans are assigned routes first)',
-    '- Every delivery: live tracking link for the recipient and photo proof of delivery',
-    '- Integrations: Shopify (primary; App Store app coming soon), WooCommerce, BigCommerce, CSV upload, API',
+    '- Every delivery: live SMS and email tracking for the recipient, photo proof of delivery, signature on request',
+    '- Labels and integrations: Kinematics shipping labels and a daily manifest; Shopify (primary; App Store app coming soon), WooCommerce, BigCommerce, CSV upload; API coming soon',
     '- Pricing: custom quotes only; no published rates',
-    `- Contact: ${SITE.email}`,
+    `- Contact: ${SITE.email}${hasPhone() ? `, ${SITE.phone} (${SITE.phoneE164})` : ''}`,
+    `- Hours: ${SITE.hours.map((h) => `${h.label} ${h.time}`).join('; ')} (${SITE.hoursNote})`,
     '',
     '## Services',
     ...SERVICES.map((s) => `- [${s.name}](${u(s.href)}): ${s.answer}`),
     `- [EV delivery and sustainability](${u('/ev-delivery')}): How the EV first fleet and route planning work; emissions reporting coming soon.`,
     `- [How it works](${u('/how-it-works')}): Connect store → send stock → we pack → we deliver → you see everything.`,
-    `- [Integrations](${u('/integrations')}): Shopify, WooCommerce, BigCommerce, CSV and API.`,
+    `- [Integrations](${u('/integrations')}): Shopify, WooCommerce, BigCommerce, CSV, our labels and daily manifest; API coming soon.`,
     '',
     '## Service areas',
     ...CITIES.map((c) => `- [${c.name}](${u(`/service-areas/${c.slug}`)}): ${c.answer}`),

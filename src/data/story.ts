@@ -18,7 +18,7 @@ export const CHAPTERS: Chapter[] = [
     title: '3PL storage with live stock counts',
     text: 'Your inventory arrives at our Toronto area warehouse, gets checked against what you sent, and goes onto racks with a home for every SKU. Counts update as units move, so the number on your storefront matches the number on our shelf.',
     points: ['Receiving checked against your shipment notice', 'Bin locations for every SKU', 'Stock levels you can see any time'],
-    link: { href: '/services/fulfillment', label: 'Fulfillment (3PL) services' },
+    link: { href: '/services/fulfillment', label: 'Warehousing and fulfillment' },
     alt: 'Illustration: a warehouse rack stocked with parcels while a new box drops onto a shelf, with a live stock count badge.',
   },
   {

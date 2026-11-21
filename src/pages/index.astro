@@ -19,14 +19,15 @@ import { CITIES } from '@/data/cities';
 import { HOME_FAQS } from '@/data/faqs';
 import { faqPage, service } from '@/lib/schema';
 
-const serviceIcons = { fulfillment: 'rack', 'final-mile-delivery': 'van', 'same-day-delivery': 'clock', returns: 'return' } as const;
+const serviceIcons = { 'same-day-delivery': 'clock', 'final-mile-delivery': 'van', 'rush-scheduled-delivery': 'route', 'b2b-retail-delivery': 'store', fulfillment: 'rack', returns: 'return' } as const;
 
 const why = [
-  { icon: 'layers', title: 'One partner, shelf to doorstep', text: 'Storage, packing, delivery and returns run by one team, so there is one place to ask and nobody to blame shift to.' },
-  { icon: 'route', title: 'Next day across the GTA', text: 'Next day delivery to Toronto, Mississauga, Brampton, Vaughan and Markham, with same day when it counts.' },
+  { icon: 'clock', title: 'Same day across the GTA', text: 'Order by late morning, delivered the same day to Toronto, Mississauga, Brampton, Vaughan and Markham, with next day as standard.' },
+  { icon: 'check', title: 'No minimum volume', text: 'We work with growing brands. Start with the orders you have today and get big carrier service as you grow.' },
+  { icon: 'layers', title: 'One partner for storage, packing and delivery', text: 'Warehousing, pick and pack, delivery and returns run by one team, so there is one place to ask.' },
   { icon: 'plug', title: 'EV first fleet', text: 'Electric vans go on routes first. Dense city routes are exactly where they work best.' },
-  { icon: 'camera', title: 'Photo proof on every delivery', text: 'A photo of every parcel at the door, shared with you and your customer.' },
-  { icon: 'person', title: 'Real humans on support', text: 'Talk to people who know your account and can see your orders, not a ticket queue.' },
+  { icon: 'camera', title: 'Photo proof on every delivery', text: 'Live SMS and email tracking, a photo of every parcel at the door and a signature on request.' },
+  { icon: 'person', title: 'Real humans on support', text: 'A named account contact who knows your orders and replies fast, not a ticket queue.' },
 ] as const;
 
 const poster = await heroPoster();
@@ -35,13 +36,13 @@ const integrations = [
   { name: 'Shopify', note: 'Primary integration', soon: false },
   { name: 'WooCommerce', note: 'Store connection', soon: false },
   { name: 'BigCommerce', note: 'Store connection', soon: false },
-  { name: 'CSV and API', note: 'For custom setups', soon: false },
-  { name: 'Shopify App Store app', note: 'One click install', soon: true },
+  { name: 'CSV and labels', note: 'Our labels and a daily manifest', soon: false },
+  { name: 'API and Shopify app', note: 'For custom setups and one click install', soon: true },
 ];
 ---
 <BaseLayout
-  title="3PL and Next Day Delivery Across the GTA | Kinematics"
-  description="Kinematics stores, packs and delivers your orders: Toronto 3PL fulfillment plus next day and same day EV delivery across the GTA. Get a custom quote."
+  title="3PL and Same Day Delivery in Toronto & GTA | Kinematics"
+  description="3PL, fulfillment and same day final mile delivery across Toronto and the GTA. Storage, pick and pack, same day and next day delivery, no minimums."
   schema={[
     faqPage(HOME_FAQS, '/'),
     ...SERVICES.map((s) => service({ name: s.name, description: s.answer, url: s.href, serviceType: s.serviceType })),
@@ -58,8 +59,8 @@ const integrations = [
   <section class="relative overflow-hidden bg-white pb-20" aria-labelledby="services-title">
     <Decor preset="section" />
     <div class="container-site relative z-10">
-      <SectionHeading id="services-title" eyebrow="Services" title="What can Kinematics do for your brand?" text="Use one service or all of them. They are built to work together, and to work with the tools you already use." />
-      <ul class="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+      <SectionHeading id="services-title" eyebrow="Services" title="What can Kinematics do for your brand?" text="Same day delivery leads, with next day, rush, B2B, warehousing and returns alongside. Use one service or all of them; they are built to work together." />
+      <ul class="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
         {SERVICES.map((s) => (
           <li class="card group relative flex flex-col card-motion">
             <span class="grid size-12 place-items-center rounded-2xl bg-teal-50 text-teal-ink"><Icon name={serviceIcons[s.slug as keyof typeof serviceIcons]} /></span>
@@ -69,7 +70,7 @@ const integrations = [
           </li>
         ))}
       </ul>
-      <p class="mt-8 text-slate">Looking for low emission delivery? Read about our <a href="/ev-delivery" class="link">EV first delivery fleet</a>.</p>
+      <p class="mt-8 text-slate">Every service includes our shipping labels and daily manifest, <a href="/integrations" class="link">Shopify and CSV integrations</a> (API coming soon), live SMS and email tracking, photo proof with signature on request, our <a href="/ev-delivery" class="link">EV first delivery fleet</a> and a named account contact. No minimum volume.</p>
     </div>
   </section>
 
@@ -80,9 +81,9 @@ const integrations = [
       <div class="max-w-3xl">
         <p class="eyebrow mb-3">Why Kinematics</p>
         <h2 id="why-title" class="text-3xl text-white sm:text-[2.6rem]">Why do growing brands choose Kinematics?</h2>
-        <p class="lede mt-4">Because the handoffs are where orders go wrong, and we removed them.</p>
+        <p class="lede mt-4">Because they get same day delivery, one partner from shelf to doorstep and people who answer, with no minimum volume.</p>
       </div>
-      <ul class="mt-12 grid gap-px overflow-hidden rounded-card bg-white/10 sm:grid-cols-2 lg:grid-cols-5">
+      <ul class="mt-12 grid gap-px overflow-hidden rounded-card bg-white/10 sm:grid-cols-2 lg:grid-cols-3">
         {why.map((w, i) => (
           <li class="bg-navy p-6 sm:p-7 icon-hover">
             <span class:list={['grid size-11 place-items-center rounded-xl', i === 3 ? 'bg-orange text-navy' : 'bg-white/10 text-teal']}><Icon name={w.icon} /></span>
@@ -141,7 +142,7 @@ const integrations = [
       <div>
         <p class="eyebrow mb-3">Service area</p>
         <h2 id="areas-title" class="text-3xl sm:text-[2.6rem]">Where does Kinematics deliver?</h2>
-        <p class="lede mt-4">Our own EV first fleet covers five GTA cities, next day as standard and same day when you need it.</p>
+        <p class="lede mt-4">Our own EV first fleet covers five GTA cities, with same day delivery for orders placed by late morning and next day as standard.</p>
         <ul class="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-3">
           {CITIES.map((c) => (
             <li><a href={`/service-areas/${c.slug}`} class="flex items-center gap-2 rounded-xl border border-slate-line bg-white px-4 py-3 font-semibold text-navy no-underline hover:border-teal"><Icon name="pin" size={18} class="text-teal-ink" />{c.name}</a></li>

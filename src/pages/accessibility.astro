@@ -1,6 +1,6 @@
 ---
 import LegalLayout from '@/layouts/LegalLayout.astro';
-import { SITE, hasPhone } from '@/config/site';
+import { SITE, hasPhone, phoneHref } from '@/config/site';
 ---
 <LegalLayout
   title="Accessibility Statement | Kinematics"
@@ -32,7 +32,7 @@ import { SITE, hasPhone } from '@/config/site';
   <p>We welcome feedback on the accessibility of our website and services. You can also ask for any information on this site, or any document we provide, in an accessible format or with communication supports, at no extra cost.</p>
   <ul>
     <li>Email: <a href={`mailto:${SITE.email}?subject=Accessibility%20feedback`}>{SITE.email}</a> (subject: “Accessibility feedback”)</li>
-    {hasPhone() && <li>Phone: {SITE.phone}</li>}
+    {hasPhone() && <li>Phone: <a href={phoneHref()!}>{SITE.phone}</a></li>}
     <li>Contact form: <a href="/contact">kinematicstech.ca/contact</a></li>
   </ul>
   <p>Tell us what you need and how you would like us to reply. <strong>We will respond within 5 business days</strong>, explaining what we will do. If we need more time to provide a format, we will tell you when to expect it.</p>

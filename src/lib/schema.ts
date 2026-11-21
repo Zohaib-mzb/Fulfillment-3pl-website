@@ -15,7 +15,7 @@ const LB_ID = `${SITE.url}/#localbusiness`;
 
 const sameAs = () => SITE.social.map((s) => s.href).filter(Boolean);
 
-const telephone = () => (isPlaceholder(SITE.phone) ? undefined : SITE.phone);
+const telephone = () => (isPlaceholder(SITE.phone) ? undefined : SITE.phoneE164);
 
 export const postalAddress = () => ({
   '@type': 'PostalAddress',

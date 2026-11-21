@@ -11,7 +11,7 @@ const tel = phoneHref();
       <div>
         <a href="/" class="inline-block rounded-lg no-underline" aria-label="Kinematics home"><Logo variant="reversed" size={40} /></a>
         <p class="mt-5 font-heading text-2xl font-semibold">{SITE.tagline}</p>
-        <p class="mt-3 max-w-sm text-[#C9D2DC]">3PL fulfillment and final mile delivery for growing brands, from one Toronto team.</p>
+        <p class="mt-3 max-w-sm text-[#C9D2DC]">{SITE.mainLine} One Toronto team for growing brands, with no minimum volume.</p>
         <address class="mt-6 grid gap-1.5 not-italic text-[#C9D2DC]">
           <span class="font-semibold text-white">{SITE.legalName}</span>
           <span>{SITE.address.streetAddress && <>{SITE.address.streetAddress}, </>}{SITE.address.locality}, {SITE.address.regionName}{SITE.address.postalCode && <> {SITE.address.postalCode}</>}</span>

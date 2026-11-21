@@ -90,7 +90,7 @@ async function ogCard({ title, kicker, fonts, art }) {
               ].filter(Boolean) } },
               { type: 'div', props: { style: { display: 'flex', alignItems: 'center', gap: 14, fontSize: 24, color: '#C9D2DC' }, children: [
                 { type: 'div', props: { style: { width: 14, height: 14, borderRadius: 7, background: ORANGE } } },
-                'kinematicstech.ca · 3PL + EV final mile across the GTA',
+                'kinematicstech.ca · 3PL, fulfillment and same day delivery across the GTA',
               ] } },
             ],
           },
@@ -133,7 +133,7 @@ async function main() {
   await writeFile(
     pub('site.webmanifest'),
     JSON.stringify({
-      name: 'Kinematics', short_name: 'Kinematics', description: 'Commerce in motion. 3PL fulfillment and EV first final mile delivery across the GTA.',
+      name: 'Kinematics', short_name: 'Kinematics', description: 'Commerce in motion. 3PL, fulfillment and same day final mile delivery across the GTA.',
       start_url: '/', display: 'standalone', background_color: CLOUD, theme_color: NAVY, lang: 'en-CA',
       icons: [
         { src: '/icon-192.png', sizes: '192x192', type: 'image/png' },
@@ -143,7 +143,7 @@ async function main() {
     }, null, 2),
   );
 
-  await writeFile(pub('og', 'default.png'), await ogCard({ title: 'Commerce in motion.', kicker: 'Toronto 3PL + final mile', fonts, art: routeSvg }));
+  await writeFile(pub('og', 'default.png'), await ogCard({ title: 'Commerce in motion.', kicker: '3PL + same day delivery', fonts, art: routeSvg }));
 
   const blogDir = path.join(root, 'src', 'content', 'blog');
   await mkdir(path.join(blogDir, 'covers'), { recursive: true });

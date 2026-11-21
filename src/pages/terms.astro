@@ -1,6 +1,6 @@
 ---
 import LegalLayout from '@/layouts/LegalLayout.astro';
-import { SITE, hasPhone } from '@/config/site';
+import { SITE, hasPhone, phoneHref } from '@/config/site';
 ---
 <LegalLayout
   title="Website Terms of Use | Kinematics"
@@ -48,5 +48,5 @@ import { SITE, hasPhone } from '@/config/site';
   <p>We may update these terms from time to time. The effective date at the top shows when they last changed. Continuing to use the site after a change means you accept the updated terms.</p>
 
   <h2>Contact</h2>
-  <p>Questions about these terms can be sent to {SITE.legalName}, {SITE.address.locality}, {SITE.address.regionName}, at <a href={`mailto:${SITE.email}`}>{SITE.email}</a>{hasPhone() && <> or {SITE.phone}</>}, or through our <a href="/contact">contact page</a>.</p>
+  <p>Questions about these terms can be sent to {SITE.legalName}, {SITE.address.locality}, {SITE.address.regionName}, at <a href={`mailto:${SITE.email}`}>{SITE.email}</a>{hasPhone() && <> or <a href={phoneHref()!}>{SITE.phone}</a></>}, or through our <a href="/contact">contact page</a>.</p>
 </LegalLayout>

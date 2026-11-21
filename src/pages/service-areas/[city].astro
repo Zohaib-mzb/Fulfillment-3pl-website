@@ -7,7 +7,7 @@ import CtaBand from '@/components/ui/CtaBand.astro';
 import Related from '@/components/ui/Related.astro';
 import Icon from '@/components/ui/Icon.astro';
 import { CITIES, type City } from '@/data/cities';
-import { SITE, hasPhone } from '@/config/site';
+import { SITE, hasPhone, phoneHref } from '@/config/site';
 import { marked } from '@/lib/inline-md';
 import { faqPage, localBusiness, service } from '@/lib/schema';
 
@@ -69,11 +69,11 @@ const nearby = CITIES.filter((x) => c.nearby.includes(x.slug));
     <FAQ items={c.faqs} title={`What do brands ask about delivery in ${c.name}?`} />
     <div class="mt-12 rounded-card border border-slate-line p-6 sm:p-8">
       <h2 class="text-xl">How do I contact Kinematics about {c.name} deliveries?</h2>
-      <p class="mt-2 text-slate">{SITE.legalName} · {SITE.address.locality}, {SITE.address.regionName} · <a href={`mailto:${SITE.email}`} class="link">{SITE.email}</a>{hasPhone() && <> · {SITE.phone}</>}</p>
+      <p class="mt-2 text-slate">{SITE.legalName} · {SITE.address.locality}, {SITE.address.regionName} · <a href={`mailto:${SITE.email}`} class="link">{SITE.email}</a>{hasPhone() && <> · <a href={phoneHref()!} class="link">{SITE.phone}</a></>}</p>
       <p class="mt-1 text-slate">Also delivering in {nearby.map((n, i) => <>{i > 0 && ', '}<a href={`/service-areas/${n.slug}`} class="link">{n.name}</a></>)}.</p>
     </div>
   </section>
 
-  <Related title={`Services in ${c.name}`} services={['final-mile-delivery', 'same-day-delivery', 'fulfillment', 'returns']} industries={['apparel-footwear', 'beauty-wellness', 'home-goods', 'subscription-boxes']} posts={['next-day-delivery-in-the-gta']} />
+  <Related title={`Services in ${c.name}`} services={['same-day-delivery', 'final-mile-delivery', 'rush-scheduled-delivery', 'b2b-retail-delivery', 'fulfillment', 'returns']} industries={['apparel-footwear', 'beauty-wellness', 'home-goods', 'subscription-boxes']} posts={['next-day-delivery-in-the-gta']} />
   <CtaBand title={`Delivering to customers in ${c.name}?`} />
 </BaseLayout>

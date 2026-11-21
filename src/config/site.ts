@@ -13,11 +13,15 @@ export const SITE = {
   legalName: 'Kinematics Technologies Inc.',
   brand: 'Kinematics',
   tagline: 'Commerce in motion.',
+  /** Main positioning line (hero, OG, footer, schema). */
+  mainLine: '3PL, fulfillment and same day final mile delivery across the GTA.',
   valueProp:
-    'Storage, pick and pack, and EV first next day and same day delivery across the GTA, run by one Toronto team.',
+    '3PL, fulfillment and same day final mile delivery across the GTA. Storage, pick and pack, same day and next day delivery, rush and scheduled runs, B2B drops and returns, from one Toronto team with no minimum volume.',
   email: 'info@kinematicstech.ca',
-  /** Leave empty until decided: the phone is hidden everywhere (pages + schema) while empty or a [placeholder]. */
-  phone: '',
+  /** Readable phone, shown on pages. Leave empty to hide the phone everywhere (pages + schema). */
+  phone: '(437) 665 9457',
+  /** Same number in E.164, used for tel: links and schema. */
+  phoneE164: '+14376659457',
   /** Opening hours (Toronto time). Shown on Contact and in the footer; emitted as openingHoursSpecification. */
   hours: [
     { label: 'Monday to Friday', time: '9am to 6pm', days: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'], opens: '09:00', closes: '18:00' },
@@ -47,7 +51,7 @@ export const SITE = {
 export const isPlaceholder = (v: string | null | undefined) => !v || /^\[.*\]$/.test(v.trim());
 
 export const hasPhone = () => !isPlaceholder(SITE.phone);
-export const phoneHref = () => (hasPhone() ? `tel:${SITE.phone.replace(/[^\d+]/g, '')}` : null);
+export const phoneHref = () => (hasPhone() ? `tel:${SITE.phoneE164}` : null);
 
 /**
  * Feature flags. Proof components (stats, logos, testimonials) are built but hidden
@@ -79,10 +83,12 @@ export type NavItem = { label: string; href: string; description?: string };
 export type NavGroup = { label: string; href?: string; items: NavItem[] };
 
 export const SERVICES_NAV: NavItem[] = [
-  { label: 'Fulfillment (3PL)', href: '/services/fulfillment', description: 'Receiving, storage, pick and pack' },
-  { label: 'Final mile delivery', href: '/services/final-mile-delivery', description: 'Next day across the GTA' },
-  { label: 'Same day delivery', href: '/services/same-day-delivery', description: 'Order by late morning, delivered today' },
-  { label: 'Returns', href: '/services/returns', description: 'Pickup, inspection, restock' },
+  { label: 'Same day delivery', href: '/services/same-day-delivery', description: 'Order by late morning, delivered the same day' },
+  { label: 'Next day delivery', href: '/services/final-mile-delivery', description: 'Across the GTA, as standard' },
+  { label: 'Rush and scheduled delivery', href: '/services/rush-scheduled-delivery', description: 'On demand pickups and delivery windows' },
+  { label: 'B2B and retail delivery', href: '/services/b2b-retail-delivery', description: 'Store replenishment and business drops' },
+  { label: 'Warehousing and fulfillment', href: '/services/fulfillment', description: 'Storage, pick and pack, kitting, FBA prep' },
+  { label: 'Returns', href: '/services/returns', description: 'Pickup, inspection, restock or dispose' },
 ];
 
 export const INDUSTRIES_NAV: NavItem[] = [

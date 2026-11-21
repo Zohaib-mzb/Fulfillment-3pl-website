@@ -13,7 +13,7 @@ const crumbs = [{ name: 'Home', href: '/' }, { name: 'How it works', href: '/how
 const steps = [
   {
     icon: 'link', title: 'Connect your store',
-    text: 'We connect Shopify, WooCommerce or BigCommerce, or set up CSV or API ordering, so new orders reach us automatically and stock levels sync back to your store.',
+    text: 'We connect Shopify, WooCommerce or BigCommerce, or set up CSV ordering (API coming soon), so new orders reach us automatically and stock levels sync back to your store.',
     link: { href: '/integrations', label: 'See integrations' },
   },
   {
@@ -28,7 +28,7 @@ const steps = [
   },
   {
     icon: 'van', title: 'We deliver',
-    text: 'Our EV first fleet delivers across the GTA next day, or same day for orders placed by late morning. Customers get a live tracking link and photo proof.',
+    text: 'Our EV first fleet delivers across the GTA the same day for orders placed by late morning, or next day as standard. Customers get live SMS and email tracking and photo proof.',
     link: { href: '/services/final-mile-delivery', label: 'Final mile delivery' },
   },
   {
@@ -90,6 +90,6 @@ const howTo = {
     <div class="container-site"><FAQ items={faqs} title="Getting started: common questions" /></div>
   </section>
 
-  <Related title="Go deeper" services={['fulfillment', 'final-mile-delivery', 'same-day-delivery', 'returns']} posts={['how-to-choose-a-3pl-in-toronto', 'shopify-fulfillment-in-canada']} />
+  <Related title="Go deeper" services={['same-day-delivery', 'final-mile-delivery', 'rush-scheduled-delivery', 'b2b-retail-delivery', 'fulfillment', 'returns']} posts={['how-to-choose-a-3pl-in-toronto', 'shopify-fulfillment-in-canada']} />
   <CtaBand />
 </BaseLayout>

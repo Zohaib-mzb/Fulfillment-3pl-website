@@ -45,7 +45,7 @@ Kinematics never claims to be "best". "Best" queries are answered with neutral c
 | third party logistics Toronto | Commercial | Low | High | AC: yes | /services/fulfillment | Secondary |
 | ecommerce fulfillment Toronto | Commercial | Low | High | AC: yes; SERP: 3PL location pages | /services/fulfillment | Secondary |
 | small business 3PL Toronto | Commercial | Very low | Medium | AC: none; SERP: generic 3PL pages | /services/fulfillment (FAQ) + /blog/small-business-warehousing-toronto | Secondary |
-| 3PL GTA / 3PL companies in GTA | Commercial | Low | Medium | AC: yes ("3pl companies in gta") | / (home) | Primary |
+| 3PL GTA / 3PL companies in GTA | Commercial | Low | Medium | AC: yes ("3pl companies in gta") | / (home) | Secondary (was primary; see positioning update) |
 | order fulfillment GTA | Commercial | Very low | Medium | AC: none | / (home) | Secondary |
 | 3PL Mississauga / 3PL warehouse Mississauga | Commercial | Low | Medium | AC: yes; SERP: directories + 3PLs (one serves the area from elsewhere) | /service-areas/mississauga (FAQ: "Can Mississauga brands use Kinematics as their 3PL?") | Secondary, worded honestly (stock held at our Toronto area warehouse) |
 | fulfillment centre Mississauga | Navigational / commercial | Medium | High | AC: dominated by large retailers' fulfillment centres (job seekers) | none | Not targeted: wrong intent, and we cannot claim a Mississauga facility |
@@ -80,8 +80,8 @@ Kinematics never claims to be "best". "Best" queries are answered with neutral c
 | next day delivery Toronto | Commercial | Low–medium | High | AC: yes; SERP: carriers + delivery startups | /services/final-mile-delivery | Secondary |
 | local courier for ecommerce Toronto | Commercial | Very low | Medium | AC: none | /services/final-mile-delivery | Secondary |
 | next day delivery GTA | Commercial / informational | Low | Medium | SERP: carriers | /blog/next-day-delivery-in-the-gta | Primary |
-| same day delivery Toronto | Commercial | Medium | High | AC: yes (mostly consumer: flowers, gifts, clothing); SERP: delivery apps, couriers | /services/same-day-delivery | Primary |
-| same day delivery Toronto for businesses | Commercial | Very low | Medium | AC: none; SERP: courier pages | /services/same-day-delivery (title, meta, intro) | Secondary |
+| same day delivery Toronto | Commercial | Medium | High | AC: yes (mostly consumer: flowers, gifts, clothing); SERP: delivery apps, couriers | /services/same-day-delivery (now the lead service) | Primary |
+| same day delivery Toronto for businesses | Commercial | Very low | Medium | AC: none; SERP: courier pages | /services/same-day-delivery (meta, intro) | Secondary |
 | ecommerce delivery Toronto | Commercial | Low | Medium | AC: weak | /service-areas/toronto | Primary |
 | next day delivery Mississauga | Commercial | Low | Medium | City + service long tail | /service-areas/mississauga | Primary |
 | same day delivery Brampton | Commercial | Low | Medium | City + service long tail | /service-areas/brampton | Primary |
@@ -119,7 +119,54 @@ Kinematics never claims to be "best". "Best" queries are answered with neutral c
 | home goods fulfillment GTA | Commercial | Very low | Low | /industries/home-goods | Primary |
 | subscription box fulfillment Toronto | Commercial | Very low | Medium | /industries/subscription-boxes | Primary |
 
-## On-page changes made (this round)
+## Positioning update (same day lead)
+
+The site now positions Kinematics as **3PL, fulfillment and same day final mile delivery across the GTA**. Same day is the lead delivery promise and next day the standard option. As before, volumes are **estimates**: no Keyword Planner or paid tool was available. Several of these terms are new, and their autocomplete evidence is thin ("AC: weak" or none). They were assigned because they describe real services and match how businesses search, not because of measured volume.
+
+| Keyword | Intent | Est. volume | Difficulty | Target page | Role |
+|---|---|---|---|---|---|
+| 3PL and same day delivery Toronto | Commercial | Very low (combined phrase) | Medium | / (home) | **Primary** |
+| fulfillment and delivery Toronto | Commercial | Very low | Medium | /about | **Primary** |
+| same day delivery Toronto | Commercial | Medium | High | /services/same-day-delivery | **Primary** (unchanged) |
+| same day delivery GTA | Commercial | Low | Medium | /services/same-day-delivery | Secondary |
+| same day courier for businesses Toronto | Commercial | Low | Medium | /services/same-day-delivery (H2 "Is there a same day courier for businesses in Toronto?") | Secondary |
+| rush delivery Toronto | Commercial | Low | Medium | /services/rush-scheduled-delivery | **Primary** (new page) |
+| scheduled delivery Toronto | Commercial | Very low | Low | /services/rush-scheduled-delivery | Secondary |
+| B2B delivery GTA | Commercial | Very low | Low | /services/b2b-retail-delivery | **Primary** (new page) |
+| store replenishment delivery Toronto | Commercial | Very low | Low | /services/b2b-retail-delivery | Secondary |
+| Amazon FBA prep Toronto | Commercial | Low | Medium | /services/fulfillment (section + FAQ) | Secondary (the page keeps primary "3PL Toronto") |
+| pallet storage Toronto | Commercial | Low | Medium | /services/fulfillment ("What storage do you offer?") | Secondary. Toronto, not Mississauga: the stock is at our Toronto area warehouse |
+| 3PL GTA | Commercial | Low | Medium | / (home) | Secondary |
+
+**Every primary is unique:**
+- `/` 3PL and same day delivery Toronto
+- `/about` fulfillment and delivery Toronto
+- `/services/same-day-delivery` same day delivery Toronto
+- `/services/final-mile-delivery` last mile delivery Toronto
+- `/services/rush-scheduled-delivery` rush delivery Toronto
+- `/services/b2b-retail-delivery` B2B delivery GTA
+- `/services/fulfillment` 3PL Toronto
+- `/services/returns` ecommerce returns management Canada
+- `/service-areas/toronto` ecommerce delivery Toronto
+- City, EV, integrations, how it works, careers and blog primaries are unchanged (tables above).
+
+**Titles and H1s this update:**
+
+| Page | Title (≤ 60) | H1 |
+|---|---|---|
+| / | 3PL and Same Day Delivery in Toronto & GTA \| Kinematics | "Commerce in motion." (tagline, unchanged); subline opens with the main line |
+| /about | About Kinematics \| Fulfillment and Delivery in Toronto | One team from shelf to doorstep |
+| /services/same-day-delivery | Same Day Delivery in Toronto and the GTA \| Kinematics | Same day delivery across Toronto and the GTA |
+| /services/rush-scheduled-delivery | Rush and Scheduled Delivery in Toronto \| Kinematics | Rush and scheduled delivery in Toronto and the GTA |
+| /services/b2b-retail-delivery | B2B and Retail Delivery Across the GTA \| Kinematics | B2B and retail delivery across the GTA |
+| /services/fulfillment | 3PL in Toronto for Ecommerce Brands \| Kinematics (unchanged) | unchanged; meta now names pallet and shelf storage and FBA prep |
+
+**Rules kept:**
+- No "best" claims on our own pages (only blog titles about choosing a provider use the word).
+- No stuffing: each keyword appears in the title or H1, the intro answer and one heading at most.
+- City pages still lead with their own city keyword. Their answers now mention same day before next day.
+
+## On-page changes made (previous round)
 
 | Page | Title (≤ 60) | H1 / key change |
 |---|---|---|
