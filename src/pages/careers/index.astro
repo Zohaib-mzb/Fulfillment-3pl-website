@@ -1,0 +1,90 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import PageHero from '@/components/ui/PageHero.astro';
+import Icon from '@/components/ui/Icon.astro';
+import { Picture } from 'astro:assets';
+import warehouse from '@/assets/careers/warehouse.png';
+import { SITE } from '@/config/site';
+import { abs } from '@/lib/schema';
+
+const roles = (await getCollection('careers', (r) => r.data.open)).sort((a, b) => a.data.title.localeCompare(b.data.title));
+const crumbs = [{ name: 'Home', href: '/' }, { name: 'Careers', href: '/careers' }];
+const types: Record<string, string> = { FULL_TIME: 'Full time', PART_TIME: 'Part time', CONTRACTOR: 'Contract', TEMPORARY: 'Temporary' };
+const values = [
+  { icon: 'route', t: 'Planned, not chaotic', d: 'Good planning means calmer shifts. We invest in routes, processes and tools so days run smoothly.' },
+  { icon: 'person', t: 'People first', d: 'Drivers, packers and dispatchers are the service. We treat every role as skilled work.' },
+  { icon: 'plug', t: 'Electric where it counts', d: 'Our EV first fleet means quieter, cleaner routes through the neighbourhoods we serve.' },
+  { icon: 'chart', t: 'Room to grow', d: 'We are building something new in Toronto, and there is space to take on more as we grow.' },
+] as const;
+const itemList = { '@type': 'ItemList', itemListElement: roles.map((r, i) => ({ '@type': 'ListItem', position: i + 1, url: abs(`/careers/${r.id}`), name: r.data.title })) };
+---
+<BaseLayout
+  title="Logistics Jobs in Toronto and the GTA | Kinematics"
+  description="Join Kinematics in Toronto: delivery driver, warehouse associate and dispatcher roles with an EV first 3PL and final mile delivery team. See open roles."
+  crumbs={crumbs}
+  image="/og/careers.png"
+  imageAlt="Kinematics warehouse in the GTA with an electric delivery van at the dock"
+  schema={[itemList]}
+>
+  <PageHero
+    eyebrow="Careers"
+    title="Build the way the GTA gets its orders"
+    answer="Kinematics hires delivery drivers, warehouse associates and dispatchers in Toronto and across the GTA. We run an EV first final mile fleet and a fulfillment warehouse for growing online brands, and we look for people who care about getting the details right."
+    crumbs={crumbs}
+    primaryCta={{ label: 'See open roles', href: '#roles' }}
+    secondaryCta={{ label: 'Drive as a partner', href: '/drive-with-us' }}
+  >
+    <Picture
+      slot="art"
+      src={warehouse}
+      alt="Kinematics warehouse in the GTA with an electric delivery van at the dock"
+      formats={['avif', 'webp']}
+      widths={[640, 960, 1280, 1600]}
+      sizes="(min-width: 1024px) 46vw, 100vw"
+      width={1600}
+      height={900}
+      loading="eager"
+      fetchpriority="high"
+      class="h-auto w-full rounded-card shadow-card"
+    />
+  </PageHero>
+
+  <section class="container-site py-16 sm:py-20" aria-labelledby="why-title">
+    <h2 id="why-title" class="text-2xl sm:text-[2rem]">Why work at Kinematics?</h2>
+    <ul class="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+      {values.map((v) => (
+        <li class="rounded-card border border-slate-line bg-white p-6 card-motion">
+          <span class="grid size-11 place-items-center rounded-xl bg-teal-50 text-teal-ink"><Icon name={v.icon} /></span>
+          <h3 class="mt-4 text-lg">{v.t}</h3>
+          <p class="mt-2 text-slate">{v.d}</p>
+        </li>
+      ))}
+    </ul>
+  </section>
+
+  <section id="roles" class="bg-cloud py-16 sm:py-20" aria-labelledby="roles-title">
+    <div class="container-site">
+      <h2 id="roles-title" class="text-2xl sm:text-[2rem]">Open roles</h2>
+      {roles.length === 0 ? (
+        <p class="mt-6 text-slate">No open roles right now. Send your CV to <a href={`mailto:${SITE.email}`} class="link">{SITE.email}</a> and we will keep it on file.</p>
+      ) : (
+        <ul class="mt-8 grid gap-4">
+          {roles.map((r) => (
+            <li class="group relative flex flex-col gap-3 rounded-card border border-slate-line bg-white p-6 transition-colors hover:border-teal sm:flex-row sm:items-center sm:justify-between card-motion">
+              <div>
+                <h3 class="text-xl"><a href={`/careers/${r.id}`} class="no-underline after:absolute after:inset-0">{r.data.title}</a></h3>
+                <p class="mt-1 text-slate">{r.data.summary}</p>
+              </div>
+              <p class="flex shrink-0 flex-wrap gap-2 text-sm">
+                <span class="rounded-full bg-cloud px-3 py-1 font-semibold">{r.data.location}</span>
+                <span class="rounded-full bg-teal-50 px-3 py-1 font-semibold text-teal-ink">{r.data.employmentType.map((t) => types[t]).join(' / ')}</span>
+              </p>
+            </li>
+          ))}
+        </ul>
+      )}
+      <p class="mt-8 text-slate">Apply online from each role, or email your CV to <a href={`mailto:${SITE.email}?subject=Job%20application`} class="link">{SITE.email}</a>. We welcome applications from people of all backgrounds and provide accommodations throughout hiring on request, in line with the AODA.</p>
+    </div>
+  </section>
+</BaseLayout>

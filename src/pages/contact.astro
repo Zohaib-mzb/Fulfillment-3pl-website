@@ -1,0 +1,82 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Breadcrumbs from '@/components/ui/Breadcrumbs.astro';
+import FormShell from '@/components/forms/FormShell.astro';
+import Field from '@/components/forms/Field.astro';
+import TextArea from '@/components/forms/TextArea.astro';
+import Select from '@/components/forms/Select.astro';
+import Consent from '@/components/forms/Consent.astro';
+import Icon from '@/components/ui/Icon.astro';
+import { CONTACT_TOPICS } from '@/lib/forms';
+import { SITE, phoneHref } from '@/config/site';
+import { CITIES } from '@/data/cities';
+import { localBusiness } from '@/lib/schema';
+
+const crumbs = [{ name: 'Home', href: '/' }, { name: 'Contact', href: '/contact' }];
+const tel = phoneHref();
+---
+<BaseLayout
+  title="Contact Kinematics | Toronto 3PL & GTA Delivery"
+  description="Talk to a real person at Kinematics about fulfillment, delivery, returns or an existing order. Email, phone and contact form for our Toronto team."
+  crumbs={crumbs}
+  schema={[localBusiness({ url: '/contact' })]}
+>
+  <section class="bg-cloud">
+    <div class="container-site grid gap-12 py-10 sm:py-14 lg:grid-cols-[1fr_1.35fr] lg:gap-16">
+      <div>
+        <Breadcrumbs crumbs={crumbs} class="mb-8" />
+        <p class="eyebrow mb-4">Contact</p>
+        <h1 class="text-[2.4rem] sm:text-5xl">How can we help?</h1>
+        <p class="lede mt-5">{SITE.brand} is a Toronto 3PL and final mile delivery company. Questions about fulfillment, delivery, returns or a parcel? A real person on our team will get back to you.</p>
+
+        <dl class="mt-10 grid gap-6">
+          <div class="flex gap-4">
+            <dt><span class="grid size-11 place-items-center rounded-xl bg-white text-teal-ink"><Icon name="mail" label="Email" /></span></dt>
+            <dd><span class="block font-semibold">Email</span><a href={`mailto:${SITE.email}`} class="link">{SITE.email}</a></dd>
+          </div>
+          {tel && (
+          <div class="flex gap-4">
+            <dt><span class="grid size-11 place-items-center rounded-xl bg-white text-teal-ink"><Icon name="phone" label="Phone" /></span></dt>
+            <dd><span class="block font-semibold">Phone</span><a href={tel} class="link">{SITE.phone}</a></dd>
+          </div>
+          )}
+          <div class="flex gap-4">
+            <dt><span class="grid size-11 place-items-center rounded-xl bg-white text-teal-ink"><Icon name="clock" label="Hours" /></span></dt>
+            <dd>
+              <span class="block font-semibold">Hours</span>
+              <ul class="grid gap-0.5">
+                {SITE.hours.map((h) => <li>{h.label}: {h.time === 'Closed' ? 'closed' : h.time}</li>)}
+              </ul>
+              <span class="mt-1 block text-slate">{SITE.hoursNote}</span>
+            </dd>
+          </div>
+          <div class="flex gap-4">
+            <dt><span class="grid size-11 place-items-center rounded-xl bg-white text-teal-ink"><Icon name="pin" label="Area served" /></span></dt>
+            <dd>
+              <span class="block font-semibold">Area served</span>
+              {CITIES.map((c, i) => <>{i > 0 && ', '}<a href={`/service-areas/${c.slug}`} class="link">{c.name}</a></>)}
+              <span class="mt-1 block text-slate">Based in {SITE.address.locality}, {SITE.address.regionName}</span>
+            </dd>
+          </div>
+        </dl>
+        <p class="mt-10 rounded-2xl border border-slate-line bg-white p-5 text-[0.97rem]">Looking for a parcel? Try <a href="/track" class="link">Track a parcel</a>. Want pricing? <a href="/get-a-quote" class="link">Get a custom quote</a>.</p>
+      </div>
+
+      <div class="card">
+        <h2 class="text-2xl">Send us a message</h2>
+        <FormShell form="contact" submitLabel="Send message" class="mt-6" successTitle="Thanks, message received." successText="A real person on our team will reply within one business day.">
+          <div class="grid gap-5">
+            <div class="grid gap-5 sm:grid-cols-2">
+              <Field name="name" label="Your name" required autocomplete="name" />
+              <Field name="email" label="Email" type="email" required autocomplete="email" />
+            </div>
+            <Field name="company" label="Company" autocomplete="organization" />
+            <Select name="topic" label="What is it about?" options={CONTACT_TOPICS} required />
+            <TextArea name="message" label="Message" required rows={6} />
+            <Consent />
+          </div>
+        </FormShell>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

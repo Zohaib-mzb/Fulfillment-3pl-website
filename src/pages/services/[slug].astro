@@ -1,0 +1,86 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import PageHero from '@/components/ui/PageHero.astro';
+import Art from '@/components/illustrations/Art.astro';
+import FAQ from '@/components/ui/FAQ.astro';
+import CtaBand from '@/components/ui/CtaBand.astro';
+import Related from '@/components/ui/Related.astro';
+import RouteDivider from '@/components/ui/RouteDivider.astro';
+import { SERVICES, type Service } from '@/data/services';
+import { inline, marked } from '@/lib/inline-md';
+import { service as serviceLd, faqPage } from '@/lib/schema';
+
+export function getStaticPaths() {
+  return SERVICES.map((s) => ({ params: { slug: s.slug }, props: { s } }));
+}
+const { s } = Astro.props as { s: Service };
+const crumbs = [
+  { name: 'Home', href: '/' },
+  { name: s.name, href: s.href },
+];
+const others = SERVICES.filter((o) => o.slug !== s.slug);
+---
+<BaseLayout
+  title={s.metaTitle}
+  description={s.metaDescription}
+  crumbs={crumbs}
+  schema={[serviceLd({ name: s.name, description: s.answer, url: s.href, serviceType: s.serviceType }), faqPage(s.faqs, s.href)]}
+>
+  <PageHero eyebrow={s.eyebrow} title={s.h1} answer={s.answer} crumbs={crumbs} secondaryCta={{ label: 'Talk to a person', href: '/contact' }}>
+    <Art slot="art" scene={s.art} alt={s.artAlt} />
+  </PageHero>
+
+  <div class="container-site grid gap-14 py-16 sm:py-20 lg:grid-cols-[1fr_18rem]">
+    <div class="grid gap-14">
+      {s.sections.map((sec) => (
+        <section>
+          <h2 class="text-2xl sm:text-[2rem]">{sec.h2}</h2>
+          <div class="mt-4 max-w-prose text-lg text-navy/85" set:html={marked(sec.body)} />
+          {sec.bullets && (
+            <ul class="mt-5 grid max-w-prose gap-2.5">
+              {sec.bullets.map((b) => (
+                <li class="flex items-start gap-3"><span class="mt-2.5 size-2 shrink-0 rounded-full bg-teal" aria-hidden="true"></span><span set:html={inline(b)} /></li>
+              ))}
+            </ul>
+          )}
+        </section>
+      ))}
+    </div>
+    <aside class="lg:sticky lg:top-24 lg:self-start" aria-label="Other services">
+      <div class="rounded-card bg-cloud p-6">
+        <p class="font-heading text-lg font-semibold">Other services</p>
+        <ul class="mt-3 grid gap-2">
+          {others.map((o) => <li><a href={o.href} class="link">{o.name}</a></li>)}
+          <li><a href="/ev-delivery" class="link">EV delivery</a></li>
+        </ul>
+        <a href="/get-a-quote" class="btn btn-primary mt-6 w-full">Get a custom quote</a>
+      </div>
+    </aside>
+  </div>
+
+  {s.steps && (
+    <section class="bg-cloud py-16 sm:py-20" aria-labelledby="steps-title">
+      <div class="container-site">
+        <h2 id="steps-title" class="text-2xl sm:text-[2rem]">{s.stepsTitle}</h2>
+        <ol class="relative mt-10 grid gap-6 md:grid-cols-5">
+          <span class="route-line-h absolute left-6 right-6 top-6 hidden h-3 md:block" aria-hidden="true"></span>
+          {s.steps.map((st, i) => (
+            <li class="relative">
+              <span class:list={['relative grid size-12 place-items-center rounded-full font-heading font-bold', i === s.steps!.length - 1 ? 'bg-orange text-navy' : 'bg-navy text-white']}>{i + 1}</span>
+              <h3 class="mt-4 text-lg">{st.title}</h3>
+              <p class="mt-1.5 text-slate">{st.text}</p>
+            </li>
+          ))}
+        </ol>
+      </div>
+    </section>
+  )}
+
+  <section class="container-site py-16 sm:py-20">
+    <FAQ items={s.faqs} title={`What do brands ask about ${s.name.charAt(0).toLowerCase() + s.name.slice(1)}?`} />
+  </section>
+
+  <RouteDivider compact />
+  <Related title="Keep exploring" services={others.map((o) => o.slug)} industries={s.relatedIndustries} cities="all" posts={s.relatedPosts} />
+  <CtaBand />
+</BaseLayout>

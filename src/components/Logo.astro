@@ -1,0 +1,70 @@
+---
+/**
+ * "Motion K" logo.
+ *  - color:    navy tile, teal motion lines, white K (default, for light backgrounds)
+ *  - reversed: white tile, teal lines, navy K (for navy/dark backgrounds)
+ *  - mono:     single colour (currentColor) with the K and lines knocked out
+ */
+interface Props {
+  variant?: 'color' | 'reversed' | 'mono';
+  wordmark?: boolean;
+  size?: number;
+  class?: string;
+  /** Set when the logo is the only content of a link, e.g. "Kinematics home". */
+  label?: string;
+}
+const { variant = 'color', wordmark = true, size = 36, class: className = '', label = 'Kinematics' } = Astro.props;
+
+const tile = variant === 'reversed' ? '#FFFFFF' : '#0E1B2C';
+const glyph = variant === 'reversed' ? '#0E1B2C' : '#FFFFFF';
+const lines = '#12B5A6';
+const maskId = `k-mask-${Math.random().toString(36).slice(2, 8)}`;
+const wordColour = variant === 'reversed' ? 'text-white' : variant === 'mono' ? '' : 'text-navy';
+---
+<span class:list={['inline-flex items-center gap-2.5', className]}>
+  <svg
+    viewBox="0 0 64 64"
+    width={size}
+    height={size}
+    xmlns="http://www.w3.org/2000/svg"
+    role="img"
+    aria-label={wordmark ? undefined : label}
+    aria-hidden={wordmark ? 'true' : undefined}
+    focusable="false"
+    class="shrink-0"
+  >
+    {variant === 'mono' ? (
+      <>
+        <defs>
+          <mask id={maskId}>
+            <rect width="64" height="64" rx="14" fill="#fff" />
+            <g stroke="#000" stroke-width="3" stroke-linecap="round">
+              <line x1="6" y1="24" x2="15" y2="24" />
+              <line x1="3" y1="32" x2="15" y2="32" />
+              <line x1="8" y1="40" x2="15" y2="40" />
+            </g>
+            <rect x="20" y="13" width="8" height="38" rx="2" fill="#000" />
+            <path d="M24 38 L44 18" stroke="#000" stroke-width="8" />
+            <path d="M37 14 L50 12 L48 25 Z" fill="#000" />
+            <path d="M31 27 L49 51" stroke="#000" stroke-width="8" />
+          </mask>
+        </defs>
+        <rect width="64" height="64" rx="14" fill="currentColor" mask={`url(#${maskId})`} />
+      </>
+    ) : (
+      <>
+        <rect width="64" height="64" rx="14" fill={tile} />
+        <line x1="6" y1="24" x2="15" y2="24" stroke={lines} stroke-width="3" stroke-linecap="round" />
+        <line x1="3" y1="32" x2="15" y2="32" stroke={lines} stroke-width="3" stroke-linecap="round" />
+        <line x1="8" y1="40" x2="15" y2="40" stroke={lines} stroke-width="3" stroke-linecap="round" />
+        <rect x="20" y="13" width="8" height="38" rx="2" fill={glyph} />
+        <path d="M24 38 L44 18" stroke={glyph} stroke-width="8" />
+        <path d="M37 14 L50 12 L48 25 Z" fill={glyph} />
+        <path d="M31 27 L49 51" stroke={glyph} stroke-width="8" />
+      </>
+    )}
+  </svg>
+  {wordmark && (
+    <span class:list={['font-heading text-[1.4rem] font-bold leading-none tracking-brand', wordColour]}>Kinematics</span>
+  )}
+</span>

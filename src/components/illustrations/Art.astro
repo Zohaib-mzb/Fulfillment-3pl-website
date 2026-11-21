@@ -1,0 +1,32 @@
+---
+import { SCENES, VIEWBOX, mapBase, cityRoute, type SceneName } from './art';
+interface Props {
+  scene: SceneName | 'map';
+  /** Accessible description. Omit (and set decorative) for purely decorative use. */
+  alt?: string;
+  decorative?: boolean;
+  highlight?: string;
+  class?: string;
+  /** Hint for eager rendering of the LCP illustration. */
+  eager?: boolean;
+  /** City pages: draw the animated route through the highlighted city. */
+  route?: boolean;
+  routeNames?: string[];
+  /** Clip-path reveal on scroll (default on). */
+  unmask?: boolean;
+}
+const { scene, alt, decorative = false, highlight, class: cls = '', route = false, routeNames = [], unmask = true } = Astro.props;
+const inner = scene === 'map' ? mapBase({ highlight, tone: 'cloud' }) + (route && highlight ? cityRoute(highlight, routeNames) : '') : SCENES[scene]();
+---
+<svg
+  viewBox={VIEWBOX}
+  xmlns="http://www.w3.org/2000/svg"
+  class:list={['block h-auto w-full', cls]}
+  role={decorative ? undefined : 'img'}
+  aria-label={decorative ? undefined : alt}
+  aria-hidden={decorative ? 'true' : undefined}
+  focusable="false"
+  data-unmask={unmask ? '' : undefined}
+  preserveAspectRatio="xMidYMid meet"
+  set:html={inner}
+/>

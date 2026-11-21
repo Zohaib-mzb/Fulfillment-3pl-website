@@ -1,0 +1,71 @@
+{
+  "generated": "2026-11-20T16:54:20.221Z",
+  "base": "http://localhost:4321",
+  "throttling": "simulated slow 4G, 4x CPU",
+  "results": [
+    {
+      "page": "/",
+      "preset": "mobile",
+      "performance": 99,
+      "accessibility": 100,
+      "bestPractices": 100,
+      "seo": 100,
+      "LCP_ms": 1961,
+      "CLS": 0,
+      "TBT_ms": 49,
+      "FCP_ms": 1055,
+      "jsKB": 63.5,
+      "cssKB": 16,
+      "mediaKB": 20.3,
+      "totalKB": 204.4
+    },
+    {
+      "page": "/services/fulfillment",
+      "preset": "mobile",
+      "performance": 100,
+      "accessibility": 100,
+      "bestPractices": 100,
+      "seo": 100,
+      "LCP_ms": 754,
+      "CLS": 0,
+      "TBT_ms": 36,
+      "FCP_ms": 754,
+      "jsKB": 61.4,
+      "cssKB": 13.6,
+      "mediaKB": 0,
+      "totalKB": 167.1
+    },
+    {
+      "page": "/service-areas/mississauga",
+      "preset": "mobile",
+      "performance": 100,
+      "accessibility": 100,
+      "bestPractices": 100,
+      "seo": 100,
+      "LCP_ms": 931,
+      "CLS": 0,
+      "TBT_ms": 37,
+      "FCP_ms": 931,
+      "jsKB": 61.4,
+      "cssKB": 13.6,
+      "mediaKB": 0,
+      "totalKB": 164.7
+    },
+    {
+      "page": "/blog/next-day-delivery-in-the-gta",
+      "preset": "mobile",
+      "performance": 100,
+      "accessibility": 100,
+      "bestPractices": 100,
+      "seo": 100,
+      "LCP_ms": 754,
+      "CLS": 0,
+      "TBT_ms": 47,
+      "FCP_ms": 754,
+      "jsKB": 61.4,
+      "cssKB": 13.6,
+      "mediaKB": 1.1,
+      "totalKB": 168.1
+    }
+  ]
+}

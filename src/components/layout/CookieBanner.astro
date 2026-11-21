@@ -1,0 +1,52 @@
+---
+/**
+ * Lightweight consent banner. Analytics stays blocked until "Accept" is chosen.
+ * The choice is stored in localStorage under `kin-consent` ("granted" | "denied").
+ * Any element with [data-cookie-settings] reopens the banner.
+ */
+---
+<div
+  id="cookie-banner"
+  role="region"
+  aria-label="Cookie preferences"
+  hidden
+  class="fixed inset-x-3 bottom-3 z-[60] mx-auto max-w-xl rounded-2xl border border-slate-line bg-white p-5 shadow-card sm:inset-x-6 sm:bottom-6"
+>
+  <p class="font-heading text-lg font-semibold">Cookies, briefly</p>
+  <p class="mt-1 text-[0.95rem] text-slate">
+    We use essential storage to run this site. With your OK, we also use privacy friendly analytics to see which pages help people.
+    <a href="/cookies" class="link">Read the cookie notice</a>.
+  </p>
+  <div class="mt-4 flex flex-wrap gap-3">
+    <button type="button" class="btn btn-primary min-h-11 px-5 py-2" data-consent="granted">Accept analytics</button>
+    <button type="button" class="btn btn-secondary min-h-11 px-5 py-2" data-consent="denied">Essential only</button>
+  </div>
+</div>
+
+<script>
+  import { onPage } from '@/scripts/lifecycle';
+  const KEY = 'kin-consent';
+  const read = () => { try { return localStorage.getItem(KEY); } catch { return null; } };
+  onPage(() => {
+    const banner = document.getElementById('cookie-banner');
+    if (!banner) return;
+    const show = () => { banner.hidden = false; };
+    if (!read()) {
+      // Wait for idle so the banner never competes with the LCP element.
+      ('requestIdleCallback' in window ? requestIdleCallback : setTimeout)(show as any, { timeout: 2500 } as any);
+    }
+    banner.addEventListener('click', (e) => {
+      const btn = (e.target as HTMLElement).closest<HTMLButtonElement>('[data-consent]');
+      if (!btn) return;
+      const value = btn.dataset.consent!;
+      try { localStorage.setItem(KEY, value); } catch {}
+      banner.hidden = true;
+      window.dispatchEvent(new CustomEvent('kin:consent', { detail: value }));
+    });
+    const onSettings = (e: MouseEvent) => {
+      if ((e.target as HTMLElement).closest('[data-cookie-settings]')) { show(); banner.querySelector('button')?.focus(); }
+    };
+    document.addEventListener('click', onSettings);
+    return () => document.removeEventListener('click', onSettings);
+  });
+</script>

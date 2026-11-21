@@ -1,0 +1,171 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Art from '@/components/illustrations/Art.astro';
+import HeroFilm from '@/components/hero/HeroFilm.astro';
+import { heroPoster } from '@/lib/hero-poster';
+import ScrollStory from '@/components/story/ScrollStory.astro';
+import SectionHeading from '@/components/ui/SectionHeading.astro';
+import Icon from '@/components/ui/Icon.astro';
+import FAQ from '@/components/ui/FAQ.astro';
+import CtaBand from '@/components/ui/CtaBand.astro';
+import RouteDivider from '@/components/ui/RouteDivider.astro';
+import Proof from '@/components/ui/Proof.astro';
+import Decor from '@/components/ui/Decor.astro';
+import ComingSoon from '@/components/ui/ComingSoon.astro';
+import { SITE } from '@/config/site';
+import { SERVICES } from '@/data/services';
+import { INDUSTRIES } from '@/data/industries';
+import { CITIES } from '@/data/cities';
+import { HOME_FAQS } from '@/data/faqs';
+import { faqPage, service } from '@/lib/schema';
+
+const serviceIcons = { fulfillment: 'rack', 'final-mile-delivery': 'van', 'same-day-delivery': 'clock', returns: 'return' } as const;
+
+const why = [
+  { icon: 'layers', title: 'One partner, shelf to doorstep', text: 'Storage, packing, delivery and returns run by one team, so there is one place to ask and nobody to blame shift to.' },
+  { icon: 'route', title: 'Next day across the GTA', text: 'Next day delivery to Toronto, Mississauga, Brampton, Vaughan and Markham, with same day when it counts.' },
+  { icon: 'plug', title: 'EV first fleet', text: 'Electric vans go on routes first. Dense city routes are exactly where they work best.' },
+  { icon: 'camera', title: 'Photo proof on every delivery', text: 'A photo of every parcel at the door, shared with you and your customer.' },
+  { icon: 'person', title: 'Real humans on support', text: 'Talk to people who know your account and can see your orders, not a ticket queue.' },
+] as const;
+
+const poster = await heroPoster();
+
+const integrations = [
+  { name: 'Shopify', note: 'Primary integration', soon: false },
+  { name: 'WooCommerce', note: 'Store connection', soon: false },
+  { name: 'BigCommerce', note: 'Store connection', soon: false },
+  { name: 'CSV and API', note: 'For custom setups', soon: false },
+  { name: 'Shopify App Store app', note: 'One click install', soon: true },
+];
+---
+<BaseLayout
+  title="3PL and Next Day Delivery Across the GTA | Kinematics"
+  description="Kinematics stores, packs and delivers your orders: Toronto 3PL fulfillment plus next day and same day EV delivery across the GTA. Get a custom quote."
+  schema={[
+    faqPage(HOME_FAQS, '/'),
+    ...SERVICES.map((s) => service({ name: s.name, description: s.answer, url: s.href, serviceType: s.serviceType })),
+  ]}
+>
+  <link slot="head" rel="preload" as="image" type="image/avif" imagesrcset={poster.avifSet} imagesizes={poster.sizes} fetchpriority="high" />
+  <HeroFilm />
+
+  <ScrollStory />
+
+  <RouteDivider />
+
+  <!-- SERVICES -->
+  <section class="relative overflow-hidden bg-white pb-20" aria-labelledby="services-title">
+    <Decor preset="section" />
+    <div class="container-site relative z-10">
+      <SectionHeading id="services-title" eyebrow="Services" title="What can Kinematics do for your brand?" text="Use one service or all of them. They are built to work together, and to work with the tools you already use." />
+      <ul class="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+        {SERVICES.map((s) => (
+          <li class="card group relative flex flex-col card-motion">
+            <span class="grid size-12 place-items-center rounded-2xl bg-teal-50 text-teal-ink"><Icon name={serviceIcons[s.slug as keyof typeof serviceIcons]} /></span>
+            <h3 class="mt-5 text-xl"><a href={s.href} class="no-underline after:absolute after:inset-0 after:rounded-card">{s.name}</a></h3>
+            <p class="mt-2 flex-1 text-slate">{s.short}</p>
+            <span class="mt-5 inline-flex items-center gap-1.5 font-semibold text-navy" aria-hidden="true">Learn more <Icon name="arrow" size={18} class="transition-transform group-hover:translate-x-1" /></span>
+          </li>
+        ))}
+      </ul>
+      <p class="mt-8 text-slate">Looking for low emission delivery? Read about our <a href="/ev-delivery" class="link">EV first delivery fleet</a>.</p>
+    </div>
+  </section>
+
+  <!-- WHY -->
+  <section class="on-dark relative overflow-hidden bg-navy py-20 text-white sm:py-24" aria-labelledby="why-title">
+    <Decor preset="dark" />
+    <div class="container-site relative z-10">
+      <div class="max-w-3xl">
+        <p class="eyebrow mb-3">Why Kinematics</p>
+        <h2 id="why-title" class="text-3xl text-white sm:text-[2.6rem]">Why do growing brands choose Kinematics?</h2>
+        <p class="lede mt-4">Because the handoffs are where orders go wrong, and we removed them.</p>
+      </div>
+      <ul class="mt-12 grid gap-px overflow-hidden rounded-card bg-white/10 sm:grid-cols-2 lg:grid-cols-5">
+        {why.map((w, i) => (
+          <li class="bg-navy p-6 sm:p-7 icon-hover">
+            <span class:list={['grid size-11 place-items-center rounded-xl', i === 3 ? 'bg-orange text-navy' : 'bg-white/10 text-teal']}><Icon name={w.icon} /></span>
+            <h3 class="mt-5 text-lg text-white">{w.title}</h3>
+            <p class="mt-2 text-[0.97rem] text-[#C9D2DC]">{w.text}</p>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <!-- INTEGRATIONS -->
+  <section class="bg-cloud py-16" aria-labelledby="integrations-title">
+    <div class="container-site grid items-center gap-8 lg:grid-cols-[1fr_2fr]">
+      <div>
+        <h2 id="integrations-title" class="text-2xl sm:text-3xl">Does it work with my store?</h2>
+        <p class="mt-3 text-slate">Orders flow in automatically and stock levels sync back. <a href="/integrations" class="link">See integrations</a>.</p>
+      </div>
+      <ul class="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
+        {integrations.map((i) => (
+          <li class="flex min-h-24 flex-col justify-center rounded-2xl border border-slate-line bg-white px-4 py-4 card-motion">
+            <span class="font-heading text-lg font-semibold leading-tight">{i.name}</span>
+            <span class="mt-1 text-sm text-slate">{i.note}</span>
+            {i.soon && <ComingSoon class="mt-2 self-start" />}
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <!-- INDUSTRIES -->
+  <section class="bg-white py-20 sm:py-24" aria-labelledby="industries-title">
+    <div class="container-site">
+      <div class="flex flex-wrap items-end justify-between gap-6">
+        <SectionHeading id="industries-title" eyebrow="Industries" title="Who do we work with?" text="Direct to consumer and wholesale brands whose products need care, speed and accuracy." />
+        <a href="/industries" class="link">All industries</a>
+      </div>
+      <ul class="mt-12 grid gap-5 md:grid-cols-2">
+        {INDUSTRIES.map((ind) => (
+          <li class="group relative grid grid-cols-[96px_1fr] items-center gap-5 rounded-card border border-slate-line p-5 transition-colors hover:border-teal sm:grid-cols-[140px_1fr] card-motion">
+            <Art scene={ind.art} decorative class="rounded-2xl" />
+            <div>
+              <h3 class="text-xl"><a href={`/industries/${ind.slug}`} class="no-underline after:absolute after:inset-0 after:rounded-card">{ind.name}</a></h3>
+              <p class="mt-1.5 text-slate">{ind.short}</p>
+            </div>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <!-- SERVICE AREA -->
+  <section class="relative overflow-hidden bg-cloud py-20 sm:py-24" aria-labelledby="areas-title">
+    <Decor preset="band" />
+    <div class="relative z-10 container-site grid items-center gap-12 lg:grid-cols-2">
+      <div>
+        <p class="eyebrow mb-3">Service area</p>
+        <h2 id="areas-title" class="text-3xl sm:text-[2.6rem]">Where does Kinematics deliver?</h2>
+        <p class="lede mt-4">Our own EV first fleet covers five GTA cities, next day as standard and same day when you need it.</p>
+        <ul class="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-3">
+          {CITIES.map((c) => (
+            <li><a href={`/service-areas/${c.slug}`} class="flex items-center gap-2 rounded-xl border border-slate-line bg-white px-4 py-3 font-semibold text-navy no-underline hover:border-teal"><Icon name="pin" size={18} class="text-teal-ink" />{c.name}</a></li>
+          ))}
+        </ul>
+        <a href="/service-areas" class="link mt-6 inline-block">All service areas</a>
+      </div>
+      <Art scene="map" alt="Stylized map of the GTA showing Brampton, Vaughan, Markham, Mississauga and Toronto along Lake Ontario." />
+    </div>
+  </section>
+
+  <Proof />
+
+  <!-- FAQ TEASER -->
+  <section class="bg-white py-20 sm:py-24">
+    <div class="container-site grid gap-12 lg:grid-cols-[1fr_1.6fr]">
+      <div>
+        <p class="eyebrow mb-3">FAQ</p>
+        <p class="font-heading text-3xl font-bold sm:text-4xl">Quick answers</p>
+        <p class="mt-4 text-slate">More in the <a href="/faq" class="link">full FAQ</a>, or <a href="/contact" class="link">ask a person</a>.</p>
+      </div>
+      <FAQ items={HOME_FAQS} title="Common questions about Kinematics" id="home-faq" />
+    </div>
+  </section>
+
+  <CtaBand />
+</BaseLayout>

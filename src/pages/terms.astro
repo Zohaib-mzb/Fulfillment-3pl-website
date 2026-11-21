@@ -1,0 +1,52 @@
+---
+import LegalLayout from '@/layouts/LegalLayout.astro';
+import { SITE, hasPhone } from '@/config/site';
+---
+<LegalLayout
+  title="Website Terms of Use | Kinematics"
+  h1="Terms of use"
+  description="The terms that apply when you use kinematicstech.ca, the website of Kinematics Technologies Inc., including quotes, parcel tracking, content and liability."
+  path="/terms"
+  intro={`These terms apply to your use of ${SITE.domain} (the “site”), operated by ${SITE.legalName} (“${SITE.brand}”, “we”, “us”). By using the site, you agree to these terms. If you do not agree, please do not use the site.`}
+>
+  <h2>Using the site</h2>
+  <p>The site explains our fulfillment and delivery services and lets you contact us, request a quote, apply for roles and check the status of a parcel. You may use it for lawful purposes only. You agree not to:</p>
+  <ul>
+    <li>try to gain unauthorized access to the site, our systems or other people’s information;</li>
+    <li>interfere with how the site works, or overload it, including with automated tools;</li>
+    <li>send false, misleading, harmful or unlawful information through our forms;</li>
+    <li>use the tracking tool to look up parcels that are not yours or that you are not authorized to follow;</li>
+    <li>copy or scrape the site’s content for commercial use without our permission.</li>
+  </ul>
+  <p>We may suspend or restrict access to the site, or any part of it, at any time.</p>
+
+  <h2>Is a quote a binding offer?</h2>
+  <p>No. Information on the site, and any response to the quote form, is not a binding offer and does not create a contract. A quote is an estimate based on the information you provide and may change if that information changes. Our services are provided only under a written agreement signed with each business customer, and that agreement takes priority over anything on the site.</p>
+
+  <h2>Parcel tracking information</h2>
+  <p>Tracking information is provided “as is” and “as available” for convenience. It comes from scans and systems that can be delayed or incomplete, and estimated delivery times are estimates, not guarantees. If a delivery matters to you for a particular reason, contact the merchant you ordered from or contact us.</p>
+
+  <h2>Accuracy of information</h2>
+  <p>We work to keep the site accurate and up to date, but we do not guarantee that it is complete, current or free of errors, or that it will be available without interruption. Service descriptions, delivery areas and delivery times on the site are general and are confirmed for each customer in their agreement. We may change the site at any time without notice.</p>
+
+  <h2>Intellectual property</h2>
+  <p>The site and its content, including text, illustrations, 3D graphics, video, the {SITE.brand} name, logo and design, belong to {SITE.legalName} or are used with permission, and are protected by Canadian and international copyright and trademark laws. You may view the site and share links to it. You may print or save pages for your own personal or internal business reference. Any other use, including copying, modifying or republishing our content or using our name or logo, requires our written permission.</p>
+
+  <h2>Links to other websites</h2>
+  <p>The site may link to websites run by others, such as online store platforms or government resources. We provide these links for convenience only. We do not control those websites and are not responsible for their content, availability or privacy practices.</p>
+
+  <h2>Limitation of liability</h2>
+  <p>To the fullest extent permitted by law, the site is provided without warranties of any kind, whether express or implied. {SITE.legalName}, its directors, employees and service providers are not liable for any indirect, incidental, special or consequential loss or damage, or for loss of profits, data or business, arising from your use of the site, your inability to use it or your reliance on its content, including tracking information. Liability for our services is governed by the written agreement with each customer, not by these terms. Nothing in these terms limits any liability that cannot be limited under applicable law.</p>
+
+  <h2>Privacy</h2>
+  <p>Our <a href="/privacy">privacy policy</a> explains how we handle personal information, and our <a href="/cookies">cookie notice</a> explains how we use cookies and similar technologies.</p>
+
+  <h2>Governing law</h2>
+  <p>These terms are governed by the laws of the Province of Ontario and the federal laws of Canada that apply there. You agree that the courts of Ontario have exclusive jurisdiction over any dispute about these terms or the site.</p>
+
+  <h2>Changes to these terms</h2>
+  <p>We may update these terms from time to time. The effective date at the top shows when they last changed. Continuing to use the site after a change means you accept the updated terms.</p>
+
+  <h2>Contact</h2>
+  <p>Questions about these terms can be sent to {SITE.legalName}, {SITE.address.locality}, {SITE.address.regionName}, at <a href={`mailto:${SITE.email}`}>{SITE.email}</a>{hasPhone() && <> or {SITE.phone}</>}, or through our <a href="/contact">contact page</a>.</p>
+</LegalLayout>

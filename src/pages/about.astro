@@ -1,0 +1,116 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import PageHero from '@/components/ui/PageHero.astro';
+import PhotoPlaceholder from '@/components/ui/PhotoPlaceholder.astro';
+import Icon from '@/components/ui/Icon.astro';
+import CtaBand from '@/components/ui/CtaBand.astro';
+import Art from '@/components/illustrations/Art.astro';
+import { SITE } from '@/config/site';
+
+const crumbs = [{ name: 'Home', href: '/' }, { name: 'About', href: '/about' }];
+
+const steps = [
+  { icon: 'link', t: 'Connect your store', d: 'Shopify, WooCommerce, BigCommerce, CSV or API. New orders reach us automatically and stock levels sync back.', href: '/integrations' },
+  { icon: 'box', t: 'Send stock or print our label', d: 'Send inventory for us to hold, or keep packing yourself and print our label for delivery only.', href: '/how-it-works' },
+  { icon: 'scan', t: 'We receive', d: 'Every inbound shipment is counted against your notice, and anything that doesn’t match is flagged to you.', href: '/services/fulfillment' },
+  { icon: 'rack', t: 'We store', d: 'Each SKU gets its own bin location, so stock is easy to find, count and keep accurate.', href: '/services/fulfillment' },
+  { icon: 'layers', t: 'We pick and pack', d: 'Orders are scan picked and packed to fit, with your inserts, before the daily cutoff.', href: '/services/fulfillment' },
+  { icon: 'route', t: 'We sort by postal zone', d: 'Parcels are sorted by postal zone and loaded onto routes planned for the next run.', href: '/services/final-mile-delivery' },
+  { icon: 'van', t: 'We deliver', d: 'Next day or same day across the GTA, with live tracking for your customer and photo proof at the door.', href: '/services/final-mile-delivery' },
+  { icon: 'return', t: 'We handle returns', d: 'Returns are collected, inspected and restocked or set aside, and you see what came back.', href: '/services/returns' },
+] as const;
+
+const values = [
+  { icon: 'check', t: 'Reliability', d: 'We would rather make a promise we can keep every day than a bigger one we keep some days. Scan verified picks and photo proof deliveries are how we hold ourselves to it.' },
+  { icon: 'mail', t: 'Clear communication', d: 'You talk to people who can see your orders. When something changes or goes wrong, we tell you early and plainly, with what we are doing about it.' },
+  { icon: 'chart', t: 'Visibility from shelf to doorstep', d: 'Stock levels, order status, delivery photos and returns are visible to you at every step, so you never have to guess where an order is.' },
+] as const;
+---
+<BaseLayout
+  title="About Kinematics | Toronto Fulfillment & Final Mile Delivery"
+  description="Kinematics is a Toronto fulfillment and final mile delivery company for growing brands: how we work from store to door, our EV first approach and values."
+  crumbs={crumbs}
+>
+  <PageHero
+    eyebrow="About"
+    title="One team from shelf to doorstep"
+    answer={`${SITE.legalName} is a Toronto fulfillment and final mile delivery company for growing brands. We store stock, pick and pack orders and deliver them next day or same day across the GTA in an EV first fleet, so one team is responsible for every order from our shelves to your customer’s door.`}
+    crumbs={crumbs}
+  >
+    <Art slot="art" scene="hero" alt="Illustration of a parcel's route from box to electric van to a customer's house." />
+  </PageHero>
+
+  <section class="container-site grid gap-12 py-16 sm:py-20 lg:grid-cols-2">
+    <div>
+      <h2 class="text-2xl sm:text-[2rem]">Who is Kinematics?</h2>
+      <p class="mt-4 text-lg text-navy/85">{SITE.brand} is a logistics company based in {SITE.address.locality}. We work with online brands that have outgrown packing orders themselves but are not shipping enough to get attention from a large carrier. We run the warehouse and the delivery fleet ourselves, across Toronto, Mississauga, Brampton, Vaughan and Markham.</p>
+      <p class="mt-4 text-lg text-navy/85">Brands can use fulfillment on its own, delivery on its own, or both together. They are designed to work best together, because that is where removing handoffs makes the biggest difference.</p>
+    </div>
+    <div class="grid content-start gap-6">
+      <div class="rounded-card bg-navy p-8 text-white on-dark">
+        <p class="eyebrow">Our mission</p>
+        <p class="mt-3 font-heading text-2xl font-semibold leading-snug text-white">Make fast, careful, low emission delivery the normal way local commerce moves.</p>
+      </div>
+      <div class="rounded-card bg-cloud p-8">
+        <p class="eyebrow">Toronto roots</p>
+        <p class="mt-3 text-navy/85">Toronto is the city we know best. Knowing its condo towers, new subdivisions, lakeside neighbourhoods and rush hours is part of the service.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="bg-cloud py-16 sm:py-20" aria-labelledby="work-title">
+    <div class="container-site">
+      <h2 id="work-title" class="text-2xl sm:text-[2rem]">How do we work, from store to doorstep?</h2>
+      <p class="mt-3 max-w-2xl text-slate">Every step below is run by our own team, under one set of standards. For more detail, see <a href="/how-it-works" class="link">how it works</a>.</p>
+      <ol class="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+        {steps.map((s, i) => (
+          <li class="card card-motion">
+            <div class="flex items-center gap-3">
+              <span class="grid size-11 place-items-center rounded-xl bg-teal-50 text-teal-ink"><Icon name={s.icon} /></span>
+              <span class="font-heading text-sm font-semibold text-slate" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+            </div>
+            <h3 class="mt-4 text-lg"><a href={s.href} class="no-underline hover:underline">{s.t}</a></h3>
+            <p class="mt-2 text-slate">{s.d}</p>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <section class="container-site grid gap-12 py-16 sm:py-20 lg:grid-cols-2" aria-labelledby="ev-title">
+    <div>
+      <h2 id="ev-title" class="text-2xl sm:text-[2rem]">Why are we EV first?</h2>
+      <p class="mt-4 text-lg text-navy/85">City delivery is short trips, frequent stops and a lot of time in traffic, which is the kind of driving electric vans suit well. Electric vans are assigned routes first, and each route is planned around range and charging. When volume or range calls for it, some routes may run on other vehicles, and we will tell you straight how your deliveries are made.</p>
+      <p class="mt-4 text-lg text-navy/85">We describe our impact honestly. We don’t publish emissions figures until we can report them with a published method you can check. Read more about our <a href="/ev-delivery" class="link">EV delivery</a>.</p>
+    </div>
+    <div>
+      <h2 class="text-2xl sm:text-[2rem]">Why did we start Kinematics?</h2>
+      <p class="mt-4 text-lg text-navy/85">Large carriers offer fast delivery, tracking and account support, but usually to shippers with large volumes. Growing brands often end up with slower service, little visibility and no one to call, and they juggle separate companies for storage, packing, delivery and returns.</p>
+      <p class="mt-4 text-lg text-navy/85">We started {SITE.brand} to give growing brands big carrier service without big carrier minimums: next day delivery as standard in the GTA, proof at every door, and a team that knows your account.</p>
+    </div>
+  </section>
+
+  <section class="bg-cloud py-16 sm:py-20" aria-labelledby="values-title">
+    <div class="container-site">
+      <h2 id="values-title" class="text-2xl sm:text-[2rem]">What do we value?</h2>
+      <ul class="mt-8 grid gap-5 md:grid-cols-3">
+        {values.map((v) => (
+          <li class="card card-motion">
+            <span class="grid size-11 place-items-center rounded-xl bg-teal-50 text-teal-ink"><Icon name={v.icon} /></span>
+            <h3 class="mt-4 text-lg">{v.t}</h3>
+            <p class="mt-2 text-slate">{v.d}</p>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <section class="bg-white py-16 sm:py-20">
+    <div class="container-site grid gap-6 md:grid-cols-2">
+      <PhotoPlaceholder shot="WH-01" label="Warehouse aisle with stocked racks, wide shot" ratio="16 / 9" />
+      <PhotoPlaceholder shot="FLEET-01" label="Electric van with teal stripe at the loading dock" ratio="16 / 9" />
+    </div>
+  </section>
+
+  <CtaBand title="Want to see how we would handle your orders?" />
+</BaseLayout>

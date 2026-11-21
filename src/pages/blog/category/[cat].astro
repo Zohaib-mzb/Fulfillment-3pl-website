@@ -1,0 +1,32 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import PageHero from '@/components/ui/PageHero.astro';
+import PostCard from '@/components/ui/PostCard.astro';
+import CtaBand from '@/components/ui/CtaBand.astro';
+import { getPosts, type Post } from '@/lib/blog';
+import { BLOG_CATEGORIES, type BlogCategory } from '@/content.config';
+
+export async function getStaticPaths() {
+  const posts = await getPosts();
+  return (Object.keys(BLOG_CATEGORIES) as BlogCategory[])
+    .filter((cat) => posts.some((p) => p.data.category === cat))
+    .map((cat) => ({ params: { cat }, props: { cat, posts: posts.filter((p) => p.data.category === cat) } }));
+}
+const { cat, posts } = Astro.props as { cat: BlogCategory; posts: Post[] };
+const name = BLOG_CATEGORIES[cat];
+const crumbs = [{ name: 'Home', href: '/' }, { name: 'Blog', href: '/blog' }, { name, href: `/blog/category/${cat}` }];
+---
+<BaseLayout
+  title={`${name} Guides | Kinematics Blog`}
+  description={`Kinematics guides about ${name.toLowerCase()} for growing ecommerce brands in Toronto, the GTA and across Canada.`}
+  crumbs={crumbs}
+>
+  <PageHero eyebrow="Blog category" title={`${name} guides`} crumbs={crumbs} primaryCta={false} />
+  <section class="container-site py-14 sm:py-16">
+    <ul class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      {posts.map((p) => <li class="flex"><PostCard post={p} /></li>)}
+    </ul>
+    <p class="mt-10"><a href="/blog" class="link">All blog posts</a></p>
+  </section>
+  <CtaBand />
+</BaseLayout>

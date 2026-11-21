@@ -1,0 +1,45 @@
+---
+import { ANALYTICS } from '@/config/site';
+const cfg = JSON.stringify(ANALYTICS);
+---
+<script is:inline define:vars={{ cfg }}>
+  (function () {
+    if (window.__kinAnalytics) return; // runs once, even across View Transitions
+    window.__kinAnalytics = true;
+    var c = JSON.parse(cfg);
+    var q = [];
+    var loaded = false;
+    // Public helper used by forms for conversion events. Events are dropped unless consent is granted.
+    window.kinTrack = function (name, props) {
+      if (loaded) return send(name, props);
+      q.push([name, props]);
+    };
+    function send(name, props) {
+      if (c.provider === 'plausible' && window.plausible) window.plausible(name, { props: props || {} });
+      if (c.provider === 'ga4' && window.gtag) window.gtag('event', name, props || {});
+    }
+    function load() {
+      if (loaded || c.provider === 'none') return;
+      loaded = true;
+      var s = document.createElement('script');
+      s.defer = true;
+      if (c.provider === 'plausible') {
+        window.plausible = window.plausible || function () { (window.plausible.q = window.plausible.q || []).push(arguments); };
+        s.src = c.plausibleSrc;
+        s.setAttribute('data-domain', c.plausibleDomain);
+      } else if (c.provider === 'ga4' && c.ga4Id) {
+        window.dataLayer = window.dataLayer || [];
+        window.gtag = function () { window.dataLayer.push(arguments); };
+        window.gtag('js', new Date());
+        window.gtag('config', c.ga4Id, { anonymize_ip: true });
+        s.src = 'https://www.googletagmanager.com/gtag/js?id=' + encodeURIComponent(c.ga4Id);
+      } else { return; }
+      document.head.appendChild(s);
+      q.splice(0).forEach(function (e) { send(e[0], e[1]); });
+    }
+    var consent = null;
+    try { consent = localStorage.getItem('kin-consent'); } catch (e) {}
+    if (consent === 'granted') load();
+    window.addEventListener('kin:consent', function (e) { if (e.detail === 'granted') load(); });
+  })();
+</script>

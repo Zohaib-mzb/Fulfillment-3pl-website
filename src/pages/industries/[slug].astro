@@ -1,0 +1,70 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import PageHero from '@/components/ui/PageHero.astro';
+import Art from '@/components/illustrations/Art.astro';
+import FAQ from '@/components/ui/FAQ.astro';
+import CtaBand from '@/components/ui/CtaBand.astro';
+import Related from '@/components/ui/Related.astro';
+import Icon from '@/components/ui/Icon.astro';
+import { INDUSTRIES, type Industry } from '@/data/industries';
+import { faqPage, service } from '@/lib/schema';
+
+export function getStaticPaths() {
+  return INDUSTRIES.map((i) => ({ params: { slug: i.slug }, props: { ind: i } }));
+}
+const { ind } = Astro.props as { ind: Industry };
+const url = `/industries/${ind.slug}`;
+const crumbs = [
+  { name: 'Home', href: '/' },
+  { name: 'Industries', href: '/industries' },
+  { name: ind.name, href: url },
+];
+---
+<BaseLayout
+  title={ind.metaTitle}
+  description={ind.metaDescription}
+  crumbs={crumbs}
+  schema={[
+    service({ name: `Fulfillment and delivery for ${ind.name.toLowerCase()} brands`, description: ind.answer, url, serviceType: 'Ecommerce fulfillment and final mile delivery' }),
+    faqPage(ind.faqs, url),
+  ]}
+>
+  <PageHero eyebrow={`Industries · ${ind.name}`} title={ind.h1} answer={ind.answer} crumbs={crumbs} secondaryCta={{ label: 'See how it works', href: '/how-it-works' }}>
+    <Art slot="art" scene={ind.art} alt={ind.artAlt} />
+  </PageHero>
+
+  <section class="container-site py-16 sm:py-20" aria-labelledby="pains-title">
+    <h2 id="pains-title" class="text-2xl sm:text-[2rem]">What makes {ind.name.toLowerCase()} logistics hard?</h2>
+    <ul class="mt-8 grid gap-5 md:grid-cols-3">
+      {ind.pains.map((p) => (
+        <li class="rounded-card border border-slate-line bg-white p-6 card-motion">
+          <h3 class="text-lg">{p.title}</h3>
+          <p class="mt-2 text-slate">{p.text}</p>
+        </li>
+      ))}
+    </ul>
+  </section>
+
+  <section class="bg-cloud py-16 sm:py-20" aria-labelledby="solutions-title">
+    <div class="container-site">
+      <h2 id="solutions-title" class="text-2xl sm:text-[2rem]">How does Kinematics solve it?</h2>
+      <ul class="mt-8 grid gap-5 md:grid-cols-2">
+        {ind.solutions.map((s) => (
+          <li class="card card-motion">
+            <span class="grid size-10 place-items-center rounded-xl bg-teal-50 text-teal-ink"><Icon name="check" /></span>
+            <h3 class="mt-4 text-lg">{s.title}</h3>
+            <p class="mt-2 text-slate">{s.text}</p>
+            {s.href && <a href={s.href} class="link mt-3 inline-block">Learn more<span class="sr-only"> about {s.title.toLowerCase()}</span></a>}
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <section class="container-site py-16 sm:py-20">
+    <FAQ items={ind.faqs} title={`What do ${ind.name.toLowerCase()} brands ask?`} />
+  </section>
+
+  <Related title="Related services and areas" services={ind.relatedServices} industries={INDUSTRIES.filter((i) => i.slug !== ind.slug).map((i) => i.slug)} cities="all" posts={ind.relatedPosts} />
+  <CtaBand title={`Selling ${ind.name.toLowerCase()} in the GTA?`} />
+</BaseLayout>

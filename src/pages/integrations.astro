@@ -1,0 +1,80 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import PageHero from '@/components/ui/PageHero.astro';
+import FAQ from '@/components/ui/FAQ.astro';
+import CtaBand from '@/components/ui/CtaBand.astro';
+import Related from '@/components/ui/Related.astro';
+import ComingSoon from '@/components/ui/ComingSoon.astro';
+import Icon from '@/components/ui/Icon.astro';
+import { FLAGS } from '@/config/site';
+import { faqPage } from '@/lib/schema';
+
+const crumbs = [{ name: 'Home', href: '/' }, { name: 'Integrations', href: '/integrations' }];
+const platforms = [
+  { name: 'Shopify', icon: 'store', badge: 'Primary integration', text: 'Orders flow to us as they are placed, and stock levels, fulfillment status and tracking numbers sync back to your Shopify admin.', soon: false },
+  { name: 'WooCommerce', icon: 'store', badge: 'Supported', text: 'Connect your WooCommerce store so new orders reach our warehouse automatically and inventory stays in step.', soon: false },
+  { name: 'BigCommerce', icon: 'store', badge: 'Supported', text: 'Orders and inventory sync between your BigCommerce store and our warehouse.', soon: false },
+  { name: 'CSV upload', icon: 'file', badge: 'Any platform', text: 'Export orders from any system and upload a CSV. Useful for marketplaces, wholesale orders and one off batches.', soon: false },
+  { name: 'API', icon: 'code', badge: 'Custom setups', text: 'Send orders and pull stock levels, statuses and tracking from your own systems.', soon: false },
+] as const;
+
+const faqs = [
+  { q: 'Is there a Kinematics app in the Shopify App Store?', a: 'Not yet. A one click Shopify app is coming soon. Today we connect your Shopify store for you during onboarding.' },
+  { q: 'What syncs back to my store?', a: 'Stock levels, order fulfillment status and tracking numbers, so your customers get shipping updates from your store as usual.' },
+  { q: 'My platform isn’t listed. Can I still work with you?', a: 'Yes. CSV upload works with any system that can export orders, and our API suits custom builds. [Tell us what you use](/contact).' },
+];
+---
+<BaseLayout
+  title="3PL for Shopify in Canada: Store Integrations | Kinematics"
+  description="Kinematics connects with Shopify, WooCommerce and BigCommerce, or takes orders by CSV or API. Orders flow in automatically and stock syncs back."
+  crumbs={crumbs}
+  schema={[faqPage(faqs, '/integrations')]}
+>
+  <PageHero
+    eyebrow="Integrations"
+    title="Which platforms does Kinematics integrate with?"
+    answer="Kinematics connects to the store you already sell on. Shopify is our primary integration, and we also work with WooCommerce and BigCommerce, or take orders by CSV upload or API. Orders reach our Toronto area warehouse automatically and stock levels sync back, so your storefront shows what is actually on the shelf."
+    crumbs={crumbs}
+  />
+
+  <section class="container-site py-16 sm:py-20" aria-labelledby="platforms-title">
+    <h2 id="platforms-title" class="text-2xl sm:text-[2rem]">Platforms and connection options</h2>
+    <ul class="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+      {platforms.map((p, i) => (
+        <li class:list={['card card-motion', i === 0 && 'border-teal sm:col-span-2 lg:col-span-1']}>
+          <div class="flex items-center justify-between gap-3">
+            <span class="grid size-11 place-items-center rounded-xl bg-teal-50 text-teal-ink"><Icon name={p.icon} /></span>
+            <span class="text-sm font-semibold text-slate">{p.badge}</span>
+          </div>
+          <h3 class="mt-4 text-xl">{p.name}</h3>
+          <p class="mt-2 text-slate">{p.text}</p>
+        </li>
+      ))}
+      <li class="card border-dashed card-motion">
+        <div class="flex items-center justify-between gap-3">
+          <span class="grid size-11 place-items-center rounded-xl bg-cloud text-slate"><Icon name="store" /></span>
+          {!FLAGS.shopifyAppLive && <ComingSoon />}
+        </div>
+        <h3 class="mt-4 text-xl">Shopify app</h3>
+        <p class="mt-2 text-slate">A one click Kinematics app in the Shopify App Store. Shopify app coming soon. Until then, we connect your store for you.</p>
+      </li>
+    </ul>
+  </section>
+
+  <section class="bg-cloud py-16 sm:py-20">
+    <div class="container-site grid gap-12 lg:grid-cols-2">
+      <div>
+        <h2 class="text-2xl sm:text-[2rem]">How does a Shopify 3PL in Canada get my orders?</h2>
+        <p class="mt-4 text-lg text-navy/85">When a customer checks out, the order is sent to our warehouse system automatically. It joins the next picking wave, and once it is packed and labelled, the tracking number goes back to your store, which notifies your customer in the usual way.</p>
+      </div>
+      <div>
+        <h2 class="text-2xl sm:text-[2rem]">What keeps stock levels accurate?</h2>
+        <p class="mt-4 text-lg text-navy/85">Every movement in our warehouse (receiving, picking, returns, adjustments) updates the stock count for that SKU, and those counts sync back to your store. Selling something you don’t have becomes much less likely. For a step by step setup guide, read <a href="/blog/shopify-fulfillment-in-canada" class="link">Shopify fulfillment in Canada</a>.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="container-site py-16 sm:py-20"><FAQ items={faqs} title="Integrations: common questions" /></section>
+  <Related title="Related" services={['fulfillment', 'final-mile-delivery']} posts={['shopify-fulfillment-in-canada', 'best-shopify-fulfillment-company-canada', 'canada-post-alternatives-for-shopify-brands']} />
+  <CtaBand />
+</BaseLayout>

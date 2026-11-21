@@ -1,0 +1,9 @@
+<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Kinematics">
+  <rect width="64" height="64" rx="14" fill="#0E1B2C"/>
+  <line x1="6" y1="24" x2="15" y2="24" stroke="#12B5A6" stroke-width="3" stroke-linecap="round"/>
+  <line x1="3" y1="32" x2="15" y2="32" stroke="#12B5A6" stroke-width="3" stroke-linecap="round"/>
+  <line x1="8" y1="40" x2="15" y2="40" stroke="#12B5A6" stroke-width="3" stroke-linecap="round"/>
+  <rect x="20" y="13" width="8" height="38" rx="2" fill="#FFFFFF"/>
+  <path d="M24 38 L44 18" stroke="#FFFFFF" stroke-width="8"/>
+  <path d="M37 14 L50 12 L48 25 Z" fill="#FFFFFF"/>
+  <path d="M31 27 L49 51" stroke="#FFFFFF" stroke-width="8"/></svg>

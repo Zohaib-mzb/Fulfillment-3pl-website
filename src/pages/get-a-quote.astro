@@ -1,0 +1,78 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Breadcrumbs from '@/components/ui/Breadcrumbs.astro';
+import FormShell from '@/components/forms/FormShell.astro';
+import Field from '@/components/forms/Field.astro';
+import TextArea from '@/components/forms/TextArea.astro';
+import Select from '@/components/forms/Select.astro';
+import Choices from '@/components/forms/Choices.astro';
+import Consent from '@/components/forms/Consent.astro';
+import Icon from '@/components/ui/Icon.astro';
+import { MONTHLY_ORDERS, SERVICES_NEEDED, CURRENT_CARRIERS } from '@/lib/forms';
+import { SITE } from '@/config/site';
+
+const crumbs = [{ name: 'Home', href: '/' }, { name: 'Get a quote', href: '/get-a-quote' }];
+const steps = ['Your company', 'Volume and services', 'Current setup'];
+---
+<BaseLayout
+  title="Get a Custom Quote | Kinematics 3PL & GTA Delivery"
+  description="Tell us about your products and order volume to get a custom quote for fulfillment plus next day or same day delivery across the GTA. Fast reply."
+  crumbs={crumbs}
+>
+  <section class="bg-cloud">
+    <div class="container-site grid gap-12 py-10 sm:py-14 lg:grid-cols-[1fr_1.35fr] lg:gap-16">
+      <div>
+        <Breadcrumbs crumbs={crumbs} class="mb-8" />
+        <p class="eyebrow mb-4">Get a quote</p>
+        <h1 class="text-[2.4rem] sm:text-5xl">Get a custom quote</h1>
+        <p class="lede mt-5">We don’t publish rate cards, because no two brands ship the same way. Tell us a little about yours and we will come back with a plan and pricing, usually within one business day.</p>
+        <ul class="mt-8 grid gap-4">
+          {[
+            { i: 'clock', t: 'Takes about two minutes', d: 'Three short steps. Only a few fields are required.' },
+            { i: 'person', t: 'A person replies', d: 'Someone who can answer questions about your products and volumes.' },
+            { i: 'check', t: 'No obligation', d: 'Use the quote to compare options, even if you don’t choose us.' },
+          ].map((x) => (
+            <li class="flex gap-4"><span class="grid size-10 shrink-0 place-items-center rounded-xl bg-white text-teal-ink"><Icon name={x.i as any} /></span><span><span class="block font-semibold">{x.t}</span><span class="text-slate">{x.d}</span></span></li>
+          ))}
+        </ul>
+        <p class="mt-8 text-slate">Prefer email? Write to <a href={`mailto:${SITE.email}`} class="link">{SITE.email}</a>.</p>
+      </div>
+
+      <div class="card">
+        <FormShell form="quote" submitLabel="Get my custom quote" steps successTitle="Thanks, your quote request is in." successText="We will review your details and reply with a plan and custom quote, usually within one business day.">
+          <div class="mb-6" aria-hidden="true">
+            <div class="flex items-center gap-2">
+              {steps.map((_, i) => <span data-step-dot class="h-1.5 flex-1 rounded-full bg-slate-line data-[active]:bg-teal" data-active={i === 0 ? '' : undefined}></span>)}
+            </div>
+          </div>
+          <p class="mb-2 text-sm font-semibold text-slate" data-step-progress aria-live="polite">Step 1 of 3</p>
+
+          <fieldset data-step class="grid gap-5">
+            <legend class="contents"><span data-step-title tabindex="-1" class="mb-1 block font-heading text-2xl font-semibold outline-none">1. {steps[0]}</span></legend>
+            <Field name="company" label="Company name" required autocomplete="organization" />
+            <Field name="website" label="Website" type="url" autocomplete="url" placeholder="https://" inputmode="url" />
+            <div class="grid gap-5 sm:grid-cols-2">
+              <Field name="name" label="Your name" required autocomplete="name" />
+              <Field name="email" label="Work email" type="email" required autocomplete="email" />
+            </div>
+            <Field name="phone" label="Phone" type="tel" autocomplete="tel" />
+          </fieldset>
+
+          <fieldset data-step class="mt-10 grid gap-6">
+            <legend class="contents"><span data-step-title tabindex="-1" class="mb-1 block font-heading text-2xl font-semibold outline-none">2. {steps[1]}</span></legend>
+            <Choices name="monthly_orders" legend="Roughly how many orders do you ship a month?" options={MONTHLY_ORDERS} required columns={3} />
+            <Choices name="services" legend="Which services do you need?" options={SERVICES_NEEDED} type="checkbox" hint="Choose all that apply." />
+          </fieldset>
+
+          <fieldset data-step class="mt-10 grid gap-6">
+            <legend class="contents"><span data-step-title tabindex="-1" class="mb-1 block font-heading text-2xl font-semibold outline-none">3. {steps[2]}</span></legend>
+            <Select name="current_carrier" label="How do you ship today?" options={CURRENT_CARRIERS} />
+            <TextArea name="notes" label="Anything else we should know?" hint="Products, packaging, peak seasons, delivery areas, timelines." rows={5} />
+            <Consent />
+            <p class="text-sm text-slate">By submitting, you agree that we may use these details to reply to your request, as described in our <a href="/privacy" class="link">privacy policy</a>.</p>
+          </fieldset>
+        </FormShell>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

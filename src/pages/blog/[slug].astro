@@ -1,0 +1,124 @@
+---
+import { Image } from 'astro:assets';
+import { render } from 'astro:content';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import ReadProgress from '@/components/ui/ReadProgress.astro';
+import Breadcrumbs from '@/components/ui/Breadcrumbs.astro';
+import FAQ from '@/components/ui/FAQ.astro';
+import PostCard from '@/components/ui/PostCard.astro';
+import CtaBand from '@/components/ui/CtaBand.astro';
+import Logo from '@/components/Logo.astro';
+import { getPosts, related, minutes, words, fmtDate, type Post } from '@/lib/blog';
+import { BLOG_CATEGORIES } from '@/content.config';
+import { SERVICES } from '@/data/services';
+import { blogPosting, faqPage } from '@/lib/schema';
+
+export async function getStaticPaths() {
+  const posts = await getPosts();
+  return posts.map((post) => ({ params: { slug: post.id }, props: { post, all: posts } }));
+}
+const { post, all } = Astro.props as { post: Post; all: Post[] };
+const { Content, headings } = await render(post);
+const d = post.data;
+const url = `/blog/${post.id}`;
+const ogImage = `/og/blog/${post.id}.png`;
+const catName = BLOG_CATEGORIES[d.category];
+const crumbs = [
+  { name: 'Home', href: '/' },
+  { name: 'Blog', href: '/blog' },
+  { name: catName, href: `/blog/category/${d.category}` },
+  { name: d.title, href: url },
+];
+const toc = headings.filter((h) => h.depth === 2);
+const services = SERVICES.filter((s) => d.relatedServices.includes(s.slug));
+const seoTitle = d.seoTitle ?? (`${d.title} | Kinematics`.length <= 60 ? `${d.title} | Kinematics` : d.title.slice(0, 60));
+---
+<BaseLayout
+  title={seoTitle}
+  description={d.description}
+  type="article"
+  image={ogImage}
+  imageAlt={d.title}
+  publishedTime={d.published}
+  modifiedTime={d.updated ?? d.published}
+  crumbs={crumbs}
+  schema={[
+    blogPosting({ title: d.title, description: d.description, url, image: ogImage, published: d.published, updated: d.updated, author: d.author, section: catName, wordCount: words(post) }),
+    faqPage(d.faqs, url),
+  ]}
+>
+  <ReadProgress target="article" />
+  <article>
+    <header class="bg-cloud">
+      <div class="container-site pb-12 pt-8 sm:pt-10">
+        <Breadcrumbs crumbs={crumbs} class="mb-8" />
+        <div class="mx-auto max-w-3xl">
+          <a href={`/blog/category/${d.category}`} class="eyebrow no-underline">{catName}</a>
+          <h1 class="mt-4 text-[2.2rem] sm:text-5xl">{d.title}</h1>
+          <p class="mt-5 flex flex-wrap items-center gap-x-3 gap-y-1 text-slate">
+            <span>By <a href="#author" class="link">{d.author}</a></span>
+            <span aria-hidden="true">·</span>
+            <time datetime={d.published.toISOString().slice(0, 10)}>{fmtDate(d.published)}</time>
+            {d.updated && <><span aria-hidden="true">·</span><span>Updated <time datetime={d.updated.toISOString().slice(0, 10)}>{fmtDate(d.updated)}</time></span></>}
+            <span aria-hidden="true">·</span>
+            <span>{minutes(post)} min read</span>
+          </p>
+          <div class="mt-8 rounded-card border-l-4 border-teal bg-white p-6 shadow-card" role="note" aria-labelledby="short-answer">
+            <p id="short-answer" class="font-heading text-sm font-semibold uppercase tracking-[0.14em] text-teal-ink">The short answer</p>
+            <p class="mt-2 text-lg text-navy" data-answer>{d.answer}</p>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <div class="container-site py-12 sm:py-16">
+      <div class="mx-auto max-w-3xl">
+        <Image src={d.cover} alt={d.coverAlt} width={960} height={720} widths={[480, 720, 960]} sizes="(min-width: 800px) 768px, 100vw" loading="eager" fetchpriority="high" class="w-full rounded-card" />
+
+        {toc.length > 2 && (
+          <nav aria-labelledby="toc-title" class="mt-10 rounded-card bg-cloud p-6">
+            <p id="toc-title" class="font-heading font-semibold">In this guide</p>
+            <ol class="mt-3 grid list-decimal gap-1.5 pl-5 text-[0.97rem] marker:text-teal-ink">
+              {toc.map((h) => <li><a href={`#${h.slug}`} class="text-navy underline decoration-slate-line hover:decoration-teal">{h.text}</a></li>)}
+            </ol>
+          </nav>
+        )}
+
+        <div class="prose-kin mt-10">
+          <Content />
+        </div>
+
+        <section class="mt-14">
+          <FAQ items={d.faqs} title="Frequently asked questions" id="post-faq" />
+        </section>
+
+        {services.length > 0 && (
+          <aside class="mt-12 rounded-card border border-slate-line p-6" aria-label="Related services">
+            <p class="font-heading text-lg font-semibold">Related services</p>
+            <ul class="mt-3 flex flex-wrap gap-x-6 gap-y-2">
+              {services.map((s) => <li><a href={s.href} class="link">{s.name}</a></li>)}
+            </ul>
+          </aside>
+        )}
+
+        <aside id="author" class="mt-12 flex gap-5 rounded-card bg-cloud p-6" aria-label="About the author">
+          <Logo wordmark={false} size={56} />
+          <div>
+            <p class="font-heading text-lg font-semibold">{d.author}</p>
+            <p class="mt-1 text-slate">Written by the people who run storage, packing and delivery at Kinematics, a Toronto 3PL and final mile delivery company. <a href="/about" class="link">About us</a>.</p>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </article>
+
+  <section class="bg-cloud py-16" aria-labelledby="more-title">
+    <div class="container-site">
+      <h2 id="more-title" class="text-2xl sm:text-3xl">Keep reading</h2>
+      <ul class="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        {related(all, post).map((p) => <li class="flex"><PostCard post={p} headingLevel={3} /></li>)}
+      </ul>
+    </div>
+  </section>
+  <CtaBand />
+</BaseLayout>

@@ -1,0 +1,99 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import PageHero from '@/components/ui/PageHero.astro';
+import FormShell from '@/components/forms/FormShell.astro';
+import Field from '@/components/forms/Field.astro';
+import TextArea from '@/components/forms/TextArea.astro';
+import Choices from '@/components/forms/Choices.astro';
+import FAQ from '@/components/ui/FAQ.astro';
+import Icon from '@/components/ui/Icon.astro';
+import { DRIVER_TYPES, VEHICLE_TYPES } from '@/lib/forms';
+import { faqPage } from '@/lib/schema';
+import { VIEWBOX, van, route, stop, C } from '@/components/illustrations/art';
+
+const crumbs = [{ name: 'Home', href: '/' }, { name: 'Drive with us', href: '/drive-with-us' }];
+const faqs = [
+  { q: 'Do I need my own vehicle?', a: 'Independent drivers use their own suitable vehicle. If you don’t have one, look at our [employed driver roles](/careers).' },
+  { q: 'Do you prefer electric vehicles?', a: 'Our fleet is EV first, so electric vans are a plus, but they are not required to apply.' },
+  { q: 'How are partners paid?', a: 'Terms are discussed directly with each partner during onboarding. We don’t publish rates.' },
+];
+const art = [`<rect width="480" height="360" rx="28" fill="${C.teal50}"/>`, route('M40 270 C 160 270, 200 210, 300 230 S 420 260, 450 240', { width: 5, gap: 13 }), stop(450, 240, true), van(110, 160, 1.3)].join('');
+---
+<BaseLayout
+  title="Independent Delivery Driver Work in the GTA | Kinematics"
+  description="Independent drivers and fleet operators: deliver parcels across the GTA with Kinematics. Planned routes, real support and an EV first approach. Apply here."
+  crumbs={crumbs}
+  schema={[faqPage(faqs, '/drive-with-us')]}
+>
+  <PageHero
+    eyebrow="Fleet partners"
+    title="Drive with Kinematics"
+    answer="Kinematics works with independent delivery drivers and small fleet operators across the Greater Toronto Area. Partners run planned final mile routes in Toronto, Mississauga, Brampton, Vaughan and Markham, with dispatch support from our team and priority for electric vehicles."
+    crumbs={crumbs}
+    primaryCta={{ label: 'Apply now', href: '#apply' }}
+  >
+    <svg slot="art" viewBox={VIEWBOX} class="h-auto w-full" role="img" aria-label="Illustration of an electric delivery van on a dotted route." set:html={art} />
+  </PageHero>
+
+  <section class="container-site grid gap-12 py-16 sm:py-20 lg:grid-cols-2">
+    <div>
+      <h2 class="text-2xl sm:text-[2rem]">Who can apply?</h2>
+      <ul class="mt-6 grid gap-3">
+        {[
+          'Independent drivers with a suitable vehicle',
+          'Fleet operators running two or more vehicles',
+          'A valid Ontario driver’s licence for the vehicle class you drive',
+          'Appropriate commercial insurance for delivery work',
+          'A smartphone for routes, scanning and photo proof',
+          'Comfort lifting and carrying parcels',
+        ].map((r) => <li class="flex items-start gap-3"><Icon name="check" size={20} class="mt-0.5 shrink-0 text-teal-ink" />{r}</li>)}
+      </ul>
+    </div>
+    <div>
+      <h2 class="text-2xl sm:text-[2rem]">How does it work?</h2>
+      <ol class="mt-6 grid gap-5">
+        {[
+          ['Apply', 'Tell us about you or your fleet using the form below.'],
+          ['Meet the team', 'A short call to talk through areas, schedules and vehicles.'],
+          ['Onboard', 'Document checks, app setup and a walkthrough before your first route.'],
+          ['Drive', 'Pick up planned routes from our sort centre, with dispatch a call away.'],
+        ].map(([t, d], i) => (
+          <li class="grid grid-cols-[2.5rem_1fr] gap-4">
+            <span class:list={['grid size-10 place-items-center rounded-full font-heading font-bold', i === 3 ? 'bg-orange text-navy' : 'bg-navy text-white']}>{i + 1}</span>
+            <span><span class="block font-semibold">{t}</span><span class="text-slate">{d}</span></span>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <section id="apply" class="bg-cloud py-16 sm:py-20" aria-labelledby="apply-title">
+    <div class="container-site grid gap-10 lg:grid-cols-[1fr_1.5fr]">
+      <div>
+        <h2 id="apply-title" class="text-2xl sm:text-[2rem]">Apply to drive with us</h2>
+        <p class="mt-4 text-slate">We read every application and reply to suitable applicants. Looking for an employed role instead? See <a href="/careers" class="link">careers</a>.</p>
+      </div>
+      <div class="card">
+        <FormShell form="driver" submitLabel="Send application" successTitle="Thanks, application received." successText="Our team will review it and be in touch if there is a fit.">
+          <div class="grid gap-5">
+            <div class="grid gap-5 sm:grid-cols-2">
+              <Field name="name" label="Full name" required autocomplete="name" />
+              <Field name="phone" label="Phone" type="tel" required autocomplete="tel" />
+            </div>
+            <Field name="email" label="Email" type="email" required autocomplete="email" />
+            <Choices name="driver_type" legend="Are you an independent driver or a fleet operator?" options={DRIVER_TYPES} required columns={1} />
+            <div class="grid gap-5 sm:grid-cols-2">
+              <Field name="company" label="Company name (fleets)" autocomplete="organization" />
+              <Field name="vehicles" label="Number of vehicles" type="number" inputmode="numeric" min={1} />
+            </div>
+            <Choices name="vehicle_type" legend="Vehicle types" options={VEHICLE_TYPES} type="checkbox" columns={2} />
+            <Field name="city" label="Where are you based?" autocomplete="address-level2" />
+            <TextArea name="notes" label="Anything else?" rows={4} hint="Licence class, experience, availability." />
+          </div>
+        </FormShell>
+      </div>
+    </div>
+  </section>
+
+  <section class="container-site py-16 sm:py-20"><FAQ items={faqs} title="Driver partners: common questions" /></section>
+</BaseLayout>

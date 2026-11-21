@@ -1,0 +1,99 @@
+---
+/**
+ * Homepage scroll story.
+ * - All six chapters (heading, copy, links) are server-rendered HTML.
+ * - Each chapter ships a matching static SVG frame (the fallback): it is what
+ *   no-JS visitors, reduced-motion users and low-end devices see.
+ * - <StoryStage client:visible> decides whether to load the 3D scene. When 3D is ready
+ *   it sets data-mode="3d" on #story and the SVG frames fade out (opacity only → no CLS).
+ */
+import Art from '@/components/illustrations/Art.astro';
+import StoryStage from './StoryStage';
+import { CHAPTERS } from '@/data/story';
+---
+<section id="story" class="story relative bg-white" aria-labelledby="story-title" data-no-side-route>
+  <div class="container-site pb-6 pt-20 sm:pt-28">
+    <p class="eyebrow mb-3">From shelf to doorstep</p>
+    <h2 id="story-title" class="max-w-3xl text-3xl sm:text-[2.8rem]">How does an order move through Kinematics?</h2>
+    <p class="lede mt-4 max-w-2xl">Six steps, one team. Scroll to follow a single parcel from our racks to your customer’s door, and back again if it needs to be returned.</p>
+  </div>
+
+  <div class="story-body relative" data-story-body>
+    <div class="story-stage-wrap pointer-events-none absolute inset-0 z-0" aria-hidden="true">
+      <div class="story-stage sticky">
+        <StoryStage client:visible />
+      </div>
+    </div>
+
+    <ol class="container-site relative z-10" aria-label="The six steps">
+      {CHAPTERS.map((c, i) => (
+        <li class="story-chapter" data-chapter={c.id} id={`story-${c.id}`}>
+          <div class="story-visual">
+            <Art scene={c.id} alt={c.alt} class="story-frame" />
+          </div>
+          <div class="story-text">
+            <div class="story-card">
+              <p class="flex items-center gap-3 font-heading text-sm font-semibold uppercase tracking-[0.14em] text-teal-ink">
+                <span class="grid size-8 place-items-center rounded-full bg-navy text-[0.8rem] text-white">{String(i + 1).padStart(2, '0')}</span>
+                {c.step}
+              </p>
+              <h3 class="mt-4 text-2xl sm:text-[2rem]">{c.title}</h3>
+              <p class="mt-4 text-navy/85">{c.text}</p>
+              <ul class="mt-5 grid gap-2">
+                {c.points.map((p) => (
+                  <li class="flex items-start gap-3 text-[0.98rem]">
+                    <span class:list={['mt-2 size-2 shrink-0 rounded-full', i === CHAPTERS.length - 2 ? 'bg-orange' : 'bg-teal']} aria-hidden="true"></span>{p}
+                  </li>
+                ))}
+              </ul>
+              <a href={c.link.href} class="link mt-6 inline-block">{c.link.label}</a>
+            </div>
+          </div>
+        </li>
+      ))}
+    </ol>
+  </div>
+</section>
+
+<style is:global>
+  .story { --stage-h: calc(100svh - var(--header-h)); }
+  .story-stage { top: var(--header-h); height: var(--stage-h); width: 100%; }
+  .story-stage-wrap { opacity: 0; transition: opacity .6s ease; }
+  .story-chapter { display: grid; gap: 1.5rem; padding-block: 2.5rem; }
+  .story-visual { position: relative; }
+  .story-frame { border-radius: 1.75rem; transition: opacity .6s ease; }
+  .story-card { border-radius: 1.25rem; background: #fff; }
+  .story-canvas { background: linear-gradient(180deg, #EEF9F8 0%, #FFFFFF 70%); }
+
+  @media (min-width: 1024px) {
+    .story-chapter { grid-template-columns: 1.15fr 1fr; align-items: center; gap: 4rem; min-height: var(--stage-h); padding-block: 0; }
+    .story-stage { width: calc((min(100%, 76rem) - 4rem) * 0.5); margin-left: max(2rem, calc((100% - 76rem) / 2 + 2rem)); }
+    .story-canvas { border-radius: 1.75rem; }
+  }
+
+  /* 3D mode (set by the island once WebGL is rendering). Opacity-only changes → no layout shift. */
+  .story[data-mode='3d'] .story-stage-wrap { opacity: 1; }
+  .story[data-mode='3d'] .story-frame { opacity: 0; }
+  .story[data-mode='3d'] .story-card { transition: opacity .4s ease, transform .4s ease; opacity: .4; }
+  .story[data-mode='3d'] .story-chapter.is-active .story-card { opacity: 1; }
+  @media (max-width: 1023px) {
+    /* Same box sizes in both modes: the frame slot just turns transparent over the sticky canvas. */
+    .story { --stage-h: 50svh; }
+    .story-visual { min-height: 48svh; display: grid; align-items: center; }
+    .story-card { padding: 1.25rem; border: 1px solid #D9DEE4; }
+    .story[data-mode='3d'] .story-card { box-shadow: 0 10px 30px -14px rgba(14,27,44,.3); }
+  }
+
+  .story-phone {
+    position: absolute; right: 5%; top: 7%; width: 150px; padding: 9px; border-radius: 26px; background: #0E1B2C;
+    box-shadow: 0 18px 40px -16px rgba(14,27,44,.45); transition: none; will-change: opacity, transform;
+  }
+  .story-phone__screen { background: #fff; border-radius: 18px; padding: 14px 10px 12px; min-height: 230px; }
+  .story-phone__from { font: 600 11px/1 Inter, sans-serif; color: #5A6675; text-align: center; margin-bottom: 12px; }
+  .story-phone__bubble { display: block; background: #EEF9F8; border: 1px solid #DDF4F1; border-radius: 14px; padding: 10px; font: 400 11.5px/1.45 Inter, sans-serif; color: #0E1B2C; }
+  .story-phone__bubble strong { color: #12806F; }
+  .story-phone__photo { display: block; margin-top: 8px; height: 70px; border-radius: 8px; background: #F4F6F8; position: relative; }
+  .story-phone__photo span { position: absolute; left: 50%; bottom: 10px; width: 22px; height: 16px; margin-left: -11px; background: #F4F6F8; border: 1px solid #C5CDD6; box-shadow: inset 8px 0 0 -0px #F4F6F8, inset 0 0 0 0 #12B5A6; }
+  .story-phone__photo span::after { content: ''; position: absolute; left: 8px; top: 0; bottom: 0; width: 4px; background: #12B5A6; }
+  @media (max-width: 1023px) { .story-phone { width: 118px; right: 4%; top: 5%; } .story-phone__screen { min-height: 170px; } }
+</style>

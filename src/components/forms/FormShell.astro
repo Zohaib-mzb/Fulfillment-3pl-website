@@ -1,0 +1,56 @@
+---
+/**
+ * Wraps every site form: posts to /api/submit (works without JS), adds the honeypot,
+ * timing field and an aria-live status region. Enhanced by form-enhance.ts.
+ */
+import type { FormId } from '@/lib/forms';
+interface Props { form: FormId; submitLabel: string; steps?: boolean; class?: string; enctype?: 'multipart/form-data' | 'application/x-www-form-urlencoded'; successTitle?: string; successText?: string }
+const { form, submitLabel, steps = false, class: cls = '', enctype = 'multipart/form-data',
+  successTitle = 'Thanks, it’s in.', successText = 'A real person on our team will reply within one business day.' } = Astro.props;
+---
+<form
+  method="post"
+  action="/api/submit"
+  enctype={enctype}
+  class:list={['kin-form', cls]}
+  data-kin-form={form}
+  data-steps={steps ? '' : undefined}
+  novalidate
+>
+  <input type="hidden" name="form" value={form} />
+  <input type="hidden" name="_t" value="" />
+  <input type="hidden" name="_page" value={Astro.url.pathname} />
+  <!-- Honeypot: humans never see or fill this. -->
+  <div aria-hidden="true" class="absolute -left-[9999px] h-px w-px overflow-hidden">
+    <label>Company website (leave blank)<input type="text" name="company_website" tabindex="-1" autocomplete="off" /></label>
+  </div>
+
+  <slot />
+
+  <p class="field-error mt-4 hidden" data-form-error role="alert"></p>
+  <div class="mt-8 flex flex-wrap items-center gap-3" data-form-actions>
+    {steps && <button type="button" class="btn btn-secondary hidden" data-step-back>Back</button>}
+    {steps && <button type="button" class="btn btn-primary hidden" data-step-next>Next</button>}
+    <button type="submit" class="btn btn-primary" data-submit>{submitLabel}</button>
+    <span class="sr-only" aria-live="polite" data-form-status></span>
+  </div>
+
+  <div class="hidden rounded-card border border-teal bg-teal-50 p-6 sm:p-8" data-form-success tabindex="-1">
+    <svg class="success-scene" viewBox="0 0 180 70" aria-hidden="true">
+      <path d="M8 62h164" stroke="#D9DEE4" stroke-width="2" stroke-linecap="round" />
+      <g class="s-route"><path d="M58 50 C 90 50, 110 50, 146 50" stroke="#12B5A6" stroke-width="4" stroke-linecap="round" stroke-dasharray="0 10" fill="none" /></g>
+      <g class="s-box"><rect x="14" y="30" width="38" height="31" rx="4" fill="#F4F6F8" stroke="#C5CDD6" /><rect x="29" y="30" width="8" height="31" fill="#12B5A6" /></g>
+      <path d="M150 38 l11 -10 l11 10 v23 h-22 z" fill="#fff" stroke="#0E1B2C" stroke-width="2" stroke-linejoin="round" />
+      <circle class="s-dot" cx="161" cy="55" r="5" fill="#FF6A3D" />
+    </svg>
+    <p class="font-heading text-2xl font-bold">{successTitle}</p>
+    <p class="mt-2 text-navy/85">{successText}</p>
+    <p class="mt-4 flex items-center gap-2 text-sm text-slate"><span class="route-line-h inline-block h-3 w-16" aria-hidden="true"></span><span class="size-2.5 rounded-full bg-orange" aria-hidden="true"></span>Delivered to our inbox.</p>
+  </div>
+</form>
+
+<script>
+  import { enhanceForms } from './form-enhance';
+  import { onPage } from '@/scripts/lifecycle';
+  onPage(() => enhanceForms());
+</script>

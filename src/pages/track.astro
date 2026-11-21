@@ -1,0 +1,90 @@
+---
+/**
+ * Track a parcel. The form submits (GET) to PUBLIC_TRACKING_URL with ?tracking=<number>
+ * once a tracking backend exists. Until then it shows a friendly "launching soon" state.
+ */
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Breadcrumbs from '@/components/ui/Breadcrumbs.astro';
+import ComingSoon from '@/components/ui/ComingSoon.astro';
+import { FLAGS, TRACKING_URL, SITE } from '@/config/site';
+import { faqPage } from '@/lib/schema';
+
+const crumbs = [{ name: 'Home', href: '/' }, { name: 'Track a parcel', href: '/track' }];
+const live = FLAGS.trackingLive && TRACKING_URL;
+const faqs = [
+  { q: 'Where do I find my tracking number?', a: 'In the shipping confirmation email or text from the store you ordered from. It is also printed on the parcel label.' },
+  { q: 'My parcel says delivered but I can’t find it.', a: 'Check the delivery photo in your tracking message. It shows where the parcel was left. If you still can’t find it, contact the store you ordered from, or email us with your tracking number.' },
+];
+---
+<BaseLayout
+  title="Track a Parcel | Kinematics"
+  description="Track a Kinematics delivery with your tracking number. Online tracking is launching soon. Contact us with your number and we will check it for you."
+  crumbs={crumbs}
+  schema={[faqPage(faqs, '/track')]}
+>
+  <section class="bg-cloud">
+    <div class="container-site py-10 sm:py-14">
+      <Breadcrumbs crumbs={crumbs} class="mb-8" />
+      <div class="mx-auto max-w-2xl text-center">
+        <p class="eyebrow mb-4">Track a parcel</p>
+        <h1 class="text-[2.4rem] sm:text-5xl">Where is my parcel?</h1>
+        <p class="lede mt-5">Enter the tracking number from your shipping email or text to see where your Kinematics delivery is.</p>
+      </div>
+
+      <form
+        class="mx-auto mt-10 max-w-2xl rounded-card bg-white p-5 shadow-card sm:p-6"
+        action={live ? TRACKING_URL : '/track'}
+        method="get"
+        data-track-form
+        data-live={live ? 'true' : 'false'}
+        role="search"
+        aria-label="Track a parcel"
+      >
+        <label for="tracking" class="field-label">Tracking number</label>
+        <div class="flex flex-col gap-3 sm:flex-row">
+          <input id="tracking" name="tracking" class="field flex-1 font-mono tracking-wider" required autocomplete="off" autocapitalize="characters" spellcheck="false" inputmode="text" maxlength="40" pattern="[A-Za-z0-9\-]{6,40}" aria-describedby="tracking-hint tracking-status" />
+          <button type="submit" class="btn btn-primary">Track</button>
+        </div>
+        <p id="tracking-hint" class="field-hint">Letters and numbers, usually 10 to 20 characters.</p>
+        <div id="tracking-status" aria-live="polite" class="mt-4" data-track-status></div>
+      </form>
+
+      {!live && (
+        <div class="mx-auto mt-6 flex max-w-2xl flex-wrap items-center justify-center gap-3 text-center text-slate">
+          <ComingSoon label="Online tracking launching soon" />
+          <span>Your tracking link by text and email already works.</span>
+        </div>
+      )}
+    </div>
+  </section>
+
+  <section class="container-site grid gap-10 py-16 sm:py-20 md:grid-cols-2">
+    {faqs.map((f) => (
+      <div><h2 class="text-xl">{f.q}</h2><p class="mt-2 text-navy/85">{f.a}</p></div>
+    ))}
+  </section>
+
+  <template id="tracking-soon">
+    <div class="rounded-2xl border border-teal bg-teal-50 p-5 text-left">
+      <p class="font-heading text-lg font-semibold">Tracking is launching soon</p>
+      <p class="mt-1 text-navy/85">We can’t look up numbers on this page yet. Email <a class="link" href={`mailto:${SITE.email}?subject=Tracking%20enquiry`}>{SITE.email}</a> with your tracking number and we will check on it for you, or use the tracking link in your delivery text.</p>
+    </div>
+  </template>
+  <script>
+    import { onPage } from '@/scripts/lifecycle';
+    onPage(() => {
+      const form = document.querySelector<HTMLFormElement>('[data-track-form]');
+      if (!form) return;
+      const status = form.querySelector<HTMLElement>('[data-track-status]')!;
+      const show = () => status.replaceChildren((document.getElementById('tracking-soon') as HTMLTemplateElement).content.cloneNode(true));
+      if (form.dataset.live !== 'true') {
+        form.addEventListener('submit', (e) => {
+          e.preventDefault();
+          if (!form.reportValidity()) return;
+          show();
+        });
+        if (new URLSearchParams(location.search).get('tracking')) show();
+      }
+    });
+  </script>
+</BaseLayout>

@@ -1,0 +1,44 @@
+---
+/**
+ * Subtle parallax decor: floating cartons and pallets at different depths.
+ * Decorative (aria-hidden), behind content, hidden on small screens and in forced-colours mode.
+ * Motion comes from [data-parallax] in src/scripts/motion/scroll.ts (none under reduced motion).
+ */
+interface Item { kind: 'box' | 'pallet' | 'boxes'; top: string; left?: string; right?: string; size: number; speed: number; rotate?: number; opacity?: number }
+interface Props { preset?: 'hero' | 'band' | 'section' | 'dark'; items?: Item[] }
+const PRESETS: Record<string, Item[]> = {
+  hero: [
+    { kind: 'box', top: '14%', right: '3%', size: 54, speed: 0.35, rotate: -8 },
+    { kind: 'pallet', top: '72%', right: '12%', size: 90, speed: 0.15, opacity: 0.4 },
+    { kind: 'box', top: '58%', left: '-1%', size: 36, speed: 0.5, rotate: 10, opacity: 0.35 },
+  ],
+  section: [
+    { kind: 'boxes', top: '10%', right: '2%', size: 70, speed: 0.25 },
+    { kind: 'box', top: '78%', left: '1%', size: 40, speed: 0.45, rotate: 12, opacity: 0.4 },
+  ],
+  band: [
+    { kind: 'box', top: '18%', right: '30%', size: 34, speed: 0.4, rotate: -12, opacity: 0.25 },
+    { kind: 'pallet', top: '70%', left: '6%', size: 80, speed: 0.2, opacity: 0.18 },
+  ],
+  dark: [
+    { kind: 'box', top: '12%', right: '4%', size: 44, speed: 0.35, rotate: 8, opacity: 0.18 },
+    { kind: 'boxes', top: '74%', left: '2%', size: 64, speed: 0.2, opacity: 0.14 },
+  ],
+};
+const { preset = 'section', items } = Astro.props;
+const list = items ?? PRESETS[preset];
+const box = `<svg viewBox="0 0 40 38"><polygon points="4,10 12,4 38,4 30,10" fill="#fff" stroke="#C5CDD6"/><polygon points="30,10 38,4 38,30 30,36" fill="#D9DEE4" stroke="#C5CDD6"/><rect x="4" y="10" width="26" height="26" fill="#F4F6F8" stroke="#C5CDD6"/><rect x="14" y="10" width="6" height="26" fill="#12B5A6"/><polygon points="14,10 22,4 28,4 20,10" fill="#12B5A6"/></svg>`;
+const pallet = `<svg viewBox="0 0 90 26"><polygon points="2,10 14,2 88,2 76,10" fill="#33465F"/><rect x="2" y="10" width="74" height="5" fill="#22344C"/><rect x="2" y="15" width="8" height="9" fill="#22344C"/><rect x="35" y="15" width="8" height="9" fill="#22344C"/><rect x="68" y="15" width="8" height="9" fill="#22344C"/></svg>`;
+const boxes = `<svg viewBox="0 0 80 60">${[[2,24],[34,24],[18,0]].map(([x,y]) => `<g transform="translate(${x} ${y})"><polygon points="2,9 10,3 36,3 28,9" fill="#fff" stroke="#C5CDD6"/><polygon points="28,9 36,3 36,28 28,34" fill="#D9DEE4" stroke="#C5CDD6"/><rect x="2" y="9" width="26" height="25" fill="#F4F6F8" stroke="#C5CDD6"/><rect x="12" y="9" width="6" height="25" fill="#12B5A6"/></g>`).join('')}</svg>`;
+const art = { box, pallet, boxes };
+---
+<div class="pointer-events-none absolute inset-0 hidden overflow-hidden md:block" aria-hidden="true">
+  {list.map((it) => (
+    <div
+      class="decor"
+      data-parallax={it.speed}
+      style={`top:${it.top};${it.left ? `left:${it.left};` : ''}${it.right ? `right:${it.right};` : ''}width:${it.size}px;opacity:${it.opacity ?? 0.55};rotate:${it.rotate ?? 0}deg`}
+      set:html={art[it.kind]}
+    />
+  ))}
+</div>

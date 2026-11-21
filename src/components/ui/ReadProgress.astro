@@ -1,0 +1,11 @@
+---
+/** Reading progress: a tiny van drives across the top as you read (decorative). */
+interface Props { target?: string }
+const { target = 'article' } = Astro.props;
+---
+<div class="read-progress" data-read-progress={target} aria-hidden="true">
+  <span class="read-progress__track"></span>
+  <span class="read-progress__fill"></span>
+  <span class="read-progress__dot"></span>
+  <svg class="read-progress__van" viewBox="0 0 30 18"><path d="M1 4.5Q1 2 3.5 2H17q1.2 0 1.8 1l3.4 4.3q.6.6 1.6.8 2.2.4 2.2 2.4v3q0 1.5-1.5 1.5H2.5Q1 15 1 13.5z" fill="#0E1B2C"/><rect x="1" y="10" width="25" height="1.6" fill="#12B5A6"/><path d="M17.6 4h1l2.7 3.6h-3.7z" fill="#BFE8E3"/><circle cx="7" cy="15" r="2.4" fill="#0E1B2C" stroke="#fff" stroke-width="1"/><circle cx="20.5" cy="15" r="2.4" fill="#0E1B2C" stroke="#fff" stroke-width="1"/></svg>
+</div>

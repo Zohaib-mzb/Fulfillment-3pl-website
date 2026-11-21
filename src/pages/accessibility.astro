@@ -1,0 +1,45 @@
+---
+import LegalLayout from '@/layouts/LegalLayout.astro';
+import { SITE, hasPhone } from '@/config/site';
+---
+<LegalLayout
+  title="Accessibility Statement | Kinematics"
+  h1="Accessibility"
+  description="Our AODA and WCAG 2.1 AA commitment, and how to give feedback or ask for an accessible format. Kinematics responds within 5 business days."
+  path="/accessibility"
+  intro={`${SITE.legalName} is committed to providing our services and information in a way that respects the dignity and independence of people with disabilities, in line with the Accessibility for Ontarians with Disabilities Act (AODA).`}
+>
+  <h2>Our commitment</h2>
+  <p>We are committed to meeting the needs of people with disabilities in a timely way, and to identifying, removing and preventing barriers to accessibility, as the AODA requires. This applies to our website, our communications, our hiring and the way we serve customers and recipients.</p>
+
+  <h2>What standard does our website follow?</h2>
+  <p>We build and test this website to meet the Web Content Accessibility Guidelines (WCAG) 2.1, Level AA, the standard set out in the AODA Integrated Accessibility Standards.</p>
+  <ul>
+    <li>Semantic HTML, with one main heading per page, a logical heading order and landmarks.</li>
+    <li>A “skip to main content” link and full keyboard navigation, with clearly visible focus outlines.</li>
+    <li>Colour contrast that meets Level AA for text and controls.</li>
+    <li>Text alternatives for meaningful images and illustrations.</li>
+    <li>Forms with visible labels, clear error messages and no time limits.</li>
+    <li>Respect for your device’s “reduce motion” setting: animation is replaced with still images and smooth scrolling is turned off.</li>
+    <li>All content in the animated homepage story is also available as text, so it can be read without WebGL or JavaScript.</li>
+  </ul>
+  <p>We check pages with automated tools and by hand, including keyboard only use.</p>
+
+  <h2>Known limitations</h2>
+  <p>The 3D scroll story and video on the homepage are decorative. Every chapter has the same information as text. If you find any part of the site difficult to use, please tell us and we will help.</p>
+
+  <h2>How can I give feedback or ask for an accessible format?</h2>
+  <p>We welcome feedback on the accessibility of our website and services. You can also ask for any information on this site, or any document we provide, in an accessible format or with communication supports, at no extra cost.</p>
+  <ul>
+    <li>Email: <a href={`mailto:${SITE.email}?subject=Accessibility%20feedback`}>{SITE.email}</a> (subject: “Accessibility feedback”)</li>
+    {hasPhone() && <li>Phone: {SITE.phone}</li>}
+    <li>Contact form: <a href="/contact">kinematicstech.ca/contact</a></li>
+  </ul>
+  <p>Tell us what you need and how you would like us to reply. <strong>We will respond within 5 business days</strong>, explaining what we will do. If we need more time to provide a format, we will tell you when to expect it.</p>
+
+  <h2>Accessibility in hiring</h2>
+  <p>We provide accommodations for applicants with disabilities throughout the recruitment process, on request. Let us know what you need when you apply, and we will work with you to meet it.</p>
+
+  <h2>Changes to this statement</h2>
+  <p>We review this statement as our website and services change. The effective date at the top shows when it last changed.</p>
+</LegalLayout>

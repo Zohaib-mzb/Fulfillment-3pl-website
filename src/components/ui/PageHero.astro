@@ -1,0 +1,40 @@
+---
+import Breadcrumbs from './Breadcrumbs.astro';
+import Decor from './Decor.astro';
+import type { Crumb } from '@/lib/schema';
+interface Props {
+  eyebrow?: string;
+  title: string;
+  /** 40–60 word plain answer (AEO). Rendered as the first paragraph under the H1. */
+  answer?: string;
+  lede?: string;
+  crumbs?: Crumb[];
+  primaryCta?: { label: string; href: string } | false;
+  secondaryCta?: { label: string; href: string };
+  tone?: 'light' | 'cloud';
+}
+const { eyebrow, title, answer, lede, crumbs, primaryCta = { label: 'Get a custom quote', href: '/get-a-quote' }, secondaryCta, tone = 'cloud' } = Astro.props;
+const hasArt = Astro.slots.has('art');
+---
+<section class:list={['relative overflow-hidden', tone === 'cloud' ? 'bg-cloud' : 'bg-white']}>
+  <Decor preset="hero" />
+  <div class="container-site relative z-10 pb-14 pt-8 sm:pb-20 sm:pt-10">
+    {crumbs && crumbs.length > 1 && <Breadcrumbs crumbs={crumbs} class="mb-8" />}
+    <div class:list={['grid items-center gap-10', hasArt && 'lg:grid-cols-[1.15fr_1fr]']}>
+      <div>
+        {eyebrow && <p class="eyebrow mb-4">{eyebrow}</p>}
+        <h1 class="text-[2.4rem] sm:text-5xl lg:text-[3.6rem]">{title}</h1>
+        {answer && <p class="lede mt-6 max-w-2xl text-navy/85" data-answer>{answer}</p>}
+        {lede && <p class="lede mt-4 max-w-2xl">{lede}</p>}
+        <slot />
+        {(primaryCta || secondaryCta) && (
+          <div class="mt-8 flex flex-wrap gap-3">
+            {primaryCta && <a href={primaryCta.href} class="btn btn-primary">{primaryCta.label}</a>}
+            {secondaryCta && <a href={secondaryCta.href} class="btn btn-secondary">{secondaryCta.label}</a>}
+          </div>
+        )}
+      </div>
+      {hasArt && <div class="relative"><slot name="art" /></div>}
+    </div>
+  </div>
+</section>

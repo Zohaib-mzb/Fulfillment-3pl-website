@@ -1,0 +1,91 @@
+---
+import { getCollection, render, type CollectionEntry } from 'astro:content';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import ReadProgress from '@/components/ui/ReadProgress.astro';
+import Breadcrumbs from '@/components/ui/Breadcrumbs.astro';
+import FormShell from '@/components/forms/FormShell.astro';
+import Field from '@/components/forms/Field.astro';
+import TextArea from '@/components/forms/TextArea.astro';
+import { SITE } from '@/config/site';
+import { jobPosting } from '@/lib/schema';
+import { fmtDate } from '@/lib/blog';
+
+export async function getStaticPaths() {
+  const roles = await getCollection('careers', (r) => r.data.open);
+  return roles.map((role) => ({ params: { slug: role.id }, props: { role, others: roles.filter((r) => r.id !== role.id).map((r) => ({ id: r.id, title: r.data.title })) } }));
+}
+const { role, others } = Astro.props as { role: CollectionEntry<'careers'>; others: { id: string; title: string }[] };
+const { Content } = await render(role);
+const d = role.data;
+const url = `/careers/${role.id}`;
+const crumbs = [{ name: 'Home', href: '/' }, { name: 'Careers', href: '/careers' }, { name: d.title, href: url }];
+const types: Record<string, string> = { FULL_TIME: 'Full time', PART_TIME: 'Part time', CONTRACTOR: 'Contract', TEMPORARY: 'Temporary' };
+const isDriver = d.department === 'Delivery';
+const plainBody = (role.body ?? '')
+  .replace(/^import .*$/gm, '')
+  .replace(/<a [^>]*>\{SITE\.email\}<\/a>/g, SITE.email)
+  .replace(/<[^>]+>/g, '')
+  .replace(/[#*_`>]/g, ' ')
+  .replace(/^\s*-\s+/gm, '')
+  .replace(/\s+/g, ' ')
+  .trim();
+const description = `${d.summary} ${plainBody}`;
+---
+<BaseLayout
+  title={`${d.title} | Careers | Kinematics`.slice(0, 60)}
+  description={`${d.summary}`.slice(0, 155)}
+  crumbs={crumbs}
+  schema={[jobPosting({ title: d.title, description, url, datePosted: d.published, validThrough: d.validThrough, employmentType: d.employmentType, city: d.city })]}
+>
+  <ReadProgress target=".prose-kin" />
+  <section class="bg-cloud">
+    <div class="container-site pb-12 pt-8 sm:pt-10">
+      <Breadcrumbs crumbs={crumbs} class="mb-8" />
+      <p class="eyebrow mb-4">Careers · {d.department}</p>
+      <h1 class="text-[2.4rem] sm:text-5xl">{d.title}</h1>
+      <p class="lede mt-5 max-w-2xl">{d.summary}</p>
+      <dl class="mt-8 grid max-w-3xl gap-4 sm:grid-cols-3">
+        <div><dt class="text-sm text-slate">Location</dt><dd class="font-semibold">{d.location}</dd></div>
+        <div><dt class="text-sm text-slate">Type</dt><dd class="font-semibold">{d.employmentType.map((t) => types[t]).join(' / ')}</dd></div>
+        <div><dt class="text-sm text-slate">Posted</dt><dd class="font-semibold"><time datetime={d.published.toISOString().slice(0, 10)}>{fmtDate(d.published)}</time></dd></div>
+      </dl>
+      <p class="mt-4 text-sm text-slate">{d.existingVacancy ? 'This posting is for an existing vacancy.' : 'This posting is to build a pool of candidates for future vacancies.'}</p>
+      <a href="#apply" class="btn btn-primary mt-8">Apply for this role</a>
+    </div>
+  </section>
+
+  <div class="container-site grid gap-14 py-16 lg:grid-cols-[1.3fr_1fr]">
+    <div>
+      <div class="prose-kin"><Content /></div>
+      {others.length > 0 && (
+        <nav aria-labelledby="other-roles" class="mt-12 border-t border-slate-line pt-8">
+          <h2 id="other-roles" class="text-xl">Other open roles</h2>
+          <ul class="mt-3 grid gap-2">
+            {others.map((o) => <li><a href={`/careers/${o.id}`} class="link">{o.title}</a></li>)}
+            <li><a href="/drive-with-us" class="link">Drive with us as an independent partner</a></li>
+          </ul>
+        </nav>
+      )}
+    </div>
+
+    <section id="apply" class="lg:sticky lg:top-24 lg:self-start" aria-labelledby="apply-title">
+      <div class="card">
+        <h2 id="apply-title" class="text-2xl">Apply</h2>
+        <p class="mt-2 text-slate">Or email your CV to <a href={`mailto:${SITE.email}?subject=${encodeURIComponent(`Application: ${d.title}`)}`} class="link">{SITE.email}</a>.</p>
+        <FormShell form="careers" submitLabel="Send application" class="mt-6" successTitle="Thanks, application received." successText="We read every application and will contact you if your experience is a fit.">
+          <input type="hidden" name="role" value={d.title} />
+          <div class="grid gap-5">
+            <Field name="name" label="Full name" required autocomplete="name" />
+            <Field name="email" label="Email" type="email" required autocomplete="email" />
+            <Field name="phone" label="Phone" type="tel" required autocomplete="tel" />
+            {isDriver && <Field name="licence" label="Ontario licence class" placeholder="e.g. G or DZ" />}
+            <Field name="location" label="Where do you live?" hint="Neighbourhood or city is enough." autocomplete="address-level2" />
+            <Field name="resume" label="CV / resumé" type="file" accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document" hint="PDF or Word, up to 4 MB." />
+            <TextArea name="message" label="Tell us a little about yourself" rows={4} />
+            <p class="text-sm text-slate">We use your details only to assess your application. See our <a href="/privacy" class="link">privacy policy</a>. Accommodations are available on request throughout the hiring process.</p>
+          </div>
+        </FormShell>
+      </div>
+    </section>
+  </div>
+</BaseLayout>

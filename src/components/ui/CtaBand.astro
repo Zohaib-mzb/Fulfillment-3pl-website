@@ -1,0 +1,28 @@
+---
+import Decor from './Decor.astro';
+interface Props { title?: string; text?: string; primary?: { label: string; href: string }; secondary?: { label: string; href: string } }
+const {
+  title = 'Ready to put your orders in motion?',
+  text = 'Tell us about your products and order volume. We will come back with a plan and a custom quote, usually within one business day.',
+  primary = { label: 'Get a custom quote', href: '/get-a-quote' },
+  secondary = { label: 'Talk to a person', href: '/contact' },
+} = Astro.props;
+---
+<section class="on-dark relative overflow-hidden bg-navy text-white" aria-labelledby="cta-band-title">
+  <Decor preset="dark" />
+  <div class="container-site relative z-10 grid items-center gap-10 py-16 sm:py-20 lg:grid-cols-[1.4fr_1fr]">
+    <div>
+      <h2 id="cta-band-title" class="text-3xl text-white sm:text-[2.6rem]">{title}</h2>
+      <p class="lede mt-4 max-w-xl">{text}</p>
+      <div class="mt-8 flex flex-wrap gap-3">
+        <a href={primary.href} class="btn btn-primary">{primary.label}</a>
+        <a href={secondary.href} class="btn btn-secondary">{secondary.label}</a>
+      </div>
+    </div>
+    <svg viewBox="0 0 360 160" class="hidden w-full max-w-md justify-self-end lg:block" aria-hidden="true">
+      <path d="M20 120 C 90 120, 110 40, 180 50 S 280 120, 330 60" fill="none" stroke="#12B5A6" stroke-width="5" stroke-linecap="round" stroke-dasharray="0 14" />
+      <rect x="4" y="100" width="34" height="30" rx="5" fill="#F4F6F8" /><rect x="18" y="100" width="6" height="30" fill="#12B5A6" />
+      <path d="M312 46 l22 -20 l22 20 v30 h-44 z" fill="#FFFFFF" /><circle cx="330" cy="92" r="9" fill="#FF6A3D" />
+    </svg>
+  </div>
+</section>

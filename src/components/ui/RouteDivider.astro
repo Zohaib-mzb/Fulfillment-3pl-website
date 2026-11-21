@@ -1,0 +1,13 @@
+---
+/** Signature motif: a dotted teal route from a parcel to a house, ending in an orange "delivered" dot. */
+interface Props { class?: string; compact?: boolean }
+const { class: cls = '', compact = false } = Astro.props;
+---
+<div class:list={['container-site', cls]} aria-hidden="true">
+  <div class:list={['flex items-center gap-3', compact ? 'py-4' : 'py-8']}>
+    <svg width="22" height="20" viewBox="0 0 22 20"><rect x="1" y="3" width="20" height="16" rx="3" fill="#F4F6F8" stroke="#D9DEE4" /><rect x="9" y="3" width="4" height="16" fill="#12B5A6" /></svg>
+    <span class="route-line-h h-3 flex-1"></span>
+    <svg width="22" height="22" viewBox="0 0 22 22"><path d="M3 10 11 3l8 7v9H3z" fill="#fff" stroke="#0E1B2C" stroke-width="1.6" stroke-linejoin="round" /></svg>
+    <span class="size-3 rounded-full bg-orange"></span>
+  </div>
+</div>

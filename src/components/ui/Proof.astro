@@ -1,0 +1,39 @@
+---
+/**
+ * Social-proof slot (testimonials, client logos, stats). Built now, hidden until
+ * FLAGS in src/config/site.ts are switched on with real, verifiable content.
+ * Never populate with invented quotes, logos or numbers.
+ */
+import { FLAGS } from '@/config/site';
+interface Props {
+  testimonials?: { quote: string; name: string; role: string; company: string }[];
+  logos?: { name: string; src: string }[];
+  stats?: { value: string; label: string; source?: string }[];
+}
+const { testimonials = [], logos = [], stats = [] } = Astro.props;
+const show = (FLAGS.showTestimonials && testimonials.length) || (FLAGS.showClientLogos && logos.length) || (FLAGS.showStats && stats.length);
+---
+{show ? (
+  <section class="bg-white py-20" aria-labelledby="proof-title">
+    <div class="container-site">
+      <h2 id="proof-title" class="text-3xl sm:text-4xl">What brands say about working with us</h2>
+      {FLAGS.showStats && stats.length > 0 && (
+        <dl class="mt-10 grid gap-6 sm:grid-cols-3">
+          {stats.map((s) => <div class="card"><dt class="text-slate">{s.label}</dt><dd class="mt-2 font-heading text-4xl font-bold">{s.value}</dd>{s.source && <dd class="mt-2 text-sm"><a class="link" href={s.source}>Source</a></dd>}</div>)}
+        </dl>
+      )}
+      {FLAGS.showTestimonials && testimonials.length > 0 && (
+        <div class="mt-10 grid gap-6 md:grid-cols-2">
+          {testimonials.map((t) => (
+            <figure class="card"><blockquote class="text-lg">“{t.quote}”</blockquote><figcaption class="mt-4 text-sm text-slate"><span class="font-semibold text-navy">{t.name}</span>, {t.role}, {t.company}</figcaption></figure>
+          ))}
+        </div>
+      )}
+      {FLAGS.showClientLogos && logos.length > 0 && (
+        <ul class="mt-10 flex flex-wrap items-center gap-10">{logos.map((l) => <li><img src={l.src} alt={l.name} height="32" loading="lazy" /></li>)}</ul>
+      )}
+    </div>
+  </section>
+) : (
+  <Fragment set:html="<!-- Proof section hidden: enable FLAGS.showTestimonials / showClientLogos / showStats with real content. -->" />
+)}

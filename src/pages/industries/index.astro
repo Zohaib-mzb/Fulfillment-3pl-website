@@ -1,0 +1,36 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import PageHero from '@/components/ui/PageHero.astro';
+import Art from '@/components/illustrations/Art.astro';
+import CtaBand from '@/components/ui/CtaBand.astro';
+import { INDUSTRIES } from '@/data/industries';
+
+const crumbs = [{ name: 'Home', href: '/' }, { name: 'Industries', href: '/industries' }];
+---
+<BaseLayout
+  title="Industries We Serve | Kinematics 3PL & GTA Delivery"
+  description="Fulfillment and next day GTA delivery for apparel and footwear, beauty and wellness, home goods and subscription box brands. See how Kinematics fits."
+  crumbs={crumbs}
+>
+  <PageHero
+    eyebrow="Industries"
+    title="Who does Kinematics work with?"
+    answer="Kinematics works with direct to consumer and wholesale brands that sell physical products to customers in the Greater Toronto Area, especially apparel and footwear, beauty and wellness, home goods and subscription boxes, where accuracy, careful packing and fast delivery shape how customers see the brand."
+    crumbs={crumbs}
+  />
+  <section class="container-site py-16 sm:py-20" aria-label="Industries">
+    <ul class="grid gap-6 md:grid-cols-2">
+      {INDUSTRIES.map((i) => (
+        <li class="group relative overflow-hidden rounded-card border border-slate-line transition-colors hover:border-teal card-motion">
+          <Art scene={i.art} decorative class="rounded-none" />
+          <div class="p-6 sm:p-8">
+            <h2 class="text-2xl"><a href={`/industries/${i.slug}`} class="no-underline after:absolute after:inset-0">{i.name}</a></h2>
+            <p class="mt-2 text-slate">{i.short}</p>
+          </div>
+        </li>
+      ))}
+    </ul>
+    <p class="mt-10 max-w-2xl text-slate">Don’t see your category? Most brands that ship parcels to GTA customers are a good fit. <a href="/contact" class="link">Tell us what you sell</a>.</p>
+  </section>
+  <CtaBand />
+</BaseLayout>

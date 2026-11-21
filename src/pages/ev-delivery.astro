@@ -1,0 +1,94 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import PageHero from '@/components/ui/PageHero.astro';
+import Art from '@/components/illustrations/Art.astro';
+import FAQ from '@/components/ui/FAQ.astro';
+import CtaBand from '@/components/ui/CtaBand.astro';
+import Related from '@/components/ui/Related.astro';
+import ComingSoon from '@/components/ui/ComingSoon.astro';
+import Icon from '@/components/ui/Icon.astro';
+import { FLAGS } from '@/config/site';
+import { faqPage, service } from '@/lib/schema';
+import { VIEWBOX, van, route, stop, C } from '@/components/illustrations/art';
+
+const crumbs = [{ name: 'Home', href: '/' }, { name: 'EV delivery', href: '/ev-delivery' }];
+const answer =
+  'Kinematics EV delivery means our final mile routes across Toronto, Mississauga, Brampton, Vaughan and Markham go to electric vans first. Each route is planned around the van’s range and charging, so online brands can offer next day and same day delivery in the GTA with no tailpipe emissions on those routes.';
+
+const faqs = [
+  { q: 'Is every Kinematics delivery made by an electric vehicle?', a: 'EV first means electric vans are assigned routes first. When volume or range calls for it, some routes may run on other vehicles. Ask us how your deliveries are made and we will tell you straight.' },
+  { q: 'Does EV delivery cost more?', a: 'We quote every account individually and EV first is simply how we run our fleet. [Get a custom quote](/get-a-quote) to see what it looks like for you.' },
+  { q: 'Can I see the emissions impact of my deliveries?', a: 'Emissions reporting is coming soon. When it launches, it will be documented with its method so you can rely on the numbers.' },
+];
+
+const vanArt = [
+  `<rect width="480" height="360" rx="28" fill="${C.teal50}"/>`,
+  `<circle cx="240" cy="170" r="140" fill="${C.white}" opacity=".8"/>`,
+  route('M30 300 C 150 300, 170 260, 260 268 S 400 300, 450 280', { width: 5, gap: 13 }),
+  stop(450, 280, true),
+  van(120, 150, 1.45),
+].join('');
+---
+<BaseLayout
+  title="EV Delivery in Toronto: Electric Delivery Vans | Kinematics"
+  description="EV first final mile delivery across the GTA: how Kinematics plans electric van routes, why EVs suit city delivery and what is next for emissions reporting."
+  crumbs={crumbs}
+  schema={[service({ name: 'EV first final mile delivery', description: answer, url: '/ev-delivery', serviceType: 'Electric vehicle parcel delivery' }), faqPage(faqs, '/ev-delivery')]}
+>
+  <PageHero eyebrow="EV delivery and sustainability" title="EV first delivery across Toronto and the GTA" answer={answer} crumbs={crumbs}>
+    <svg slot="art" viewBox={VIEWBOX} class="h-auto w-full" role="img" aria-label="Illustration of a navy electric delivery van with a teal stripe and a charging plug icon on a dotted route." set:html={vanArt} />
+  </PageHero>
+
+  <div class="container-site grid gap-16 py-16 sm:py-20">
+    <section class="grid gap-10 lg:grid-cols-2">
+      <div>
+        <h2 class="text-2xl sm:text-[2rem]">Why does Kinematics put electric vans first?</h2>
+        <p class="mt-4 text-lg text-navy/85">Final mile delivery in a city is short hops, frequent stops and a lot of stop and go traffic. That is the driving pattern where electric drivetrains make the most sense: no engine idling at each stop, regenerative braking in traffic, and quiet running on residential streets early in the morning or late in the day.</p>
+        <p class="mt-4 text-lg text-navy/85">It is also simply a better neighbour. Our vans spend their days on the same streets your customers live on.</p>
+      </div>
+      <ul class="grid gap-4 self-center">
+        {[
+          { icon: 'route', t: 'Dense routes', d: 'Many stops in a small area: exactly where EVs are strongest.' },
+          { icon: 'plug', t: 'Planned charging', d: 'Charging is scheduled around route waves, not squeezed in.' },
+          { icon: 'leaf', t: 'No tailpipe emissions', d: 'On every route an electric van runs.' },
+        ].map((x) => (
+          <li class="flex gap-4 rounded-2xl border border-slate-line bg-white p-5 card-motion">
+            <span class="grid size-11 shrink-0 place-items-center rounded-xl bg-teal-50 text-teal-ink"><Icon name={x.icon as any} /></span>
+            <span><span class="block font-heading text-lg font-semibold">{x.t}</span><span class="text-slate">{x.d}</span></span>
+          </li>
+        ))}
+      </ul>
+    </section>
+
+    <section class="grid gap-10 lg:grid-cols-[1fr_1fr]">
+      <Art scene="drive" alt="Illustration of a van following a dotted route with stop markers across a stylized GTA map." class="order-last lg:order-first" />
+      <div>
+        <h2 class="text-2xl sm:text-[2rem]">How are EV routes planned?</h2>
+        <p class="mt-4 text-lg text-navy/85">Every evening, the next day’s parcels are grouped into routes by area. Each route is checked against the range of the van that will drive it, with a safety margin for weather and traffic. Routes that would stretch a van too far are split or reassigned before anyone leaves the yard, the delivery promise to your customer stays the same.</p>
+        <ul class="mt-5 grid gap-2.5">
+          {['Stops grouped by neighbourhood to cut distance', 'Range checked per route, with a margin for winter', 'Charging timed between route waves'].map((b) => (
+            <li class="flex items-start gap-3"><span class="mt-2.5 size-2 shrink-0 rounded-full bg-teal" aria-hidden="true"></span>{b}</li>
+          ))}
+        </ul>
+      </div>
+    </section>
+
+    <section class="rounded-card bg-navy p-8 text-white on-dark sm:p-12">
+      <div class="flex flex-wrap items-center gap-3">
+        <h2 class="text-2xl text-white sm:text-[2rem]">Will I get emissions reporting?</h2>
+        {!FLAGS.emissionsReportingLive && <ComingSoon />}
+      </div>
+      <p class="mt-4 max-w-2xl text-[#C9D2DC]">We are building delivery emissions reporting for brands that want to show their customers (and their own reporting) what their deliveries add up to. It will come with a published method, so the numbers can be checked rather than taken on faith. Until then, we don’t publish emissions figures.</p>
+      <a href="/contact" class="btn btn-secondary mt-6">Ask to be notified</a>
+    </section>
+
+    <section>
+      <h2 class="text-2xl sm:text-[2rem]">What does EV delivery mean for my brand?</h2>
+      <p class="mt-4 max-w-prose text-lg text-navy/85">It gives you an honest, specific delivery story: your local orders travel in electric vans wherever the route allows. For a deeper look at range, cost and how to talk about EV delivery with customers, read <a href="/blog/ev-delivery-fleets-explained" class="link">EV delivery fleets explained</a>.</p>
+    </section>
+  </div>
+
+  <section class="bg-cloud py-16 sm:py-20"><div class="container-site"><FAQ items={faqs} title="EV delivery: common questions" /></div></section>
+  <Related title="Related" services={['final-mile-delivery', 'same-day-delivery']} cities="all" posts={['ev-delivery-fleets-explained', 'next-day-delivery-in-the-gta']} />
+  <CtaBand />
+</BaseLayout>

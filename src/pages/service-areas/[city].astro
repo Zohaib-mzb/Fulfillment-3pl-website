@@ -1,0 +1,79 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import PageHero from '@/components/ui/PageHero.astro';
+import Art from '@/components/illustrations/Art.astro';
+import FAQ from '@/components/ui/FAQ.astro';
+import CtaBand from '@/components/ui/CtaBand.astro';
+import Related from '@/components/ui/Related.astro';
+import Icon from '@/components/ui/Icon.astro';
+import { CITIES, type City } from '@/data/cities';
+import { SITE, hasPhone } from '@/config/site';
+import { marked } from '@/lib/inline-md';
+import { faqPage, localBusiness, service } from '@/lib/schema';
+
+export function getStaticPaths() {
+  return CITIES.map((c) => ({ params: { city: c.slug }, props: { c } }));
+}
+const { c } = Astro.props as { c: City };
+const url = `/service-areas/${c.slug}`;
+const crumbs = [
+  { name: 'Home', href: '/' },
+  { name: 'Service areas', href: '/service-areas' },
+  { name: c.name, href: url },
+];
+const nearby = CITIES.filter((x) => c.nearby.includes(x.slug));
+---
+<BaseLayout
+  title={c.metaTitle}
+  description={c.metaDescription}
+  crumbs={crumbs}
+  schema={[
+    localBusiness({ city: c.name, url, description: c.answer }),
+    service({ name: `Parcel delivery in ${c.name}`, description: c.answer, url, serviceType: 'Last mile parcel delivery', cities: [c.name] }),
+    faqPage(c.faqs, url),
+  ]}
+>
+  <PageHero eyebrow={`Service areas · ${c.region}`} title={c.h1} answer={c.answer} crumbs={crumbs} secondaryCta={{ label: 'Talk to a person', href: '/contact' }}>
+    <figure slot="art">
+      <Art scene="map" highlight={c.slug} route unmask={false} alt={`Stylized map of the GTA with ${c.name} highlighted and an illustrative delivery route drawn across it.`} />
+      <figcaption class="mt-3 text-sm text-slate">{c.name} within the Kinematics GTA service area. Map is illustrative, not to scale.</figcaption>
+    </figure>
+  </PageHero>
+
+  <section class="container-site grid gap-12 py-16 sm:py-20 lg:grid-cols-[1.4fr_1fr]">
+    <div>
+      <h2 class="text-2xl sm:text-[2rem]">What is it like delivering in {c.name}?</h2>
+      {c.intro.map((p) => <p class="mt-4 max-w-prose text-lg text-navy/85">{p}</p>)}
+    </div>
+    <aside class="rounded-card bg-cloud p-6 sm:p-8" aria-labelledby="hoods-title">
+      <h2 id="hoods-title" class="text-xl">Which {c.name} neighbourhoods do you deliver to?</h2>
+      <ul class="mt-4 grid grid-cols-2 gap-x-4 gap-y-2">
+        {c.neighbourhoods.map((n) => <li class="flex items-start gap-2 text-[0.97rem]"><Icon name="pin" size={16} class="mt-1 shrink-0 text-teal-ink" />{n}</li>)}
+      </ul>
+      <p class="mt-5 text-sm text-slate">Examples, not a complete list. Coverage is confirmed by postal code when you <a href="/get-a-quote" class="link">get a quote</a>.</p>
+    </aside>
+  </section>
+
+  <section class="bg-cloud py-16 sm:py-20">
+    <div class="container-site grid gap-12 md:grid-cols-3">
+      {c.sections.map((s) => (
+        <div>
+          <h2 class="text-xl sm:text-2xl">{s.h2}</h2>
+          <div class="mt-3 text-navy/85" set:html={marked(s.body)} />
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <section class="container-site py-16 sm:py-20">
+    <FAQ items={c.faqs} title={`What do brands ask about delivery in ${c.name}?`} />
+    <div class="mt-12 rounded-card border border-slate-line p-6 sm:p-8">
+      <h2 class="text-xl">How do I contact Kinematics about {c.name} deliveries?</h2>
+      <p class="mt-2 text-slate">{SITE.legalName} · {SITE.address.locality}, {SITE.address.regionName} · <a href={`mailto:${SITE.email}`} class="link">{SITE.email}</a>{hasPhone() && <> · {SITE.phone}</>}</p>
+      <p class="mt-1 text-slate">Also delivering in {nearby.map((n, i) => <>{i > 0 && ', '}<a href={`/service-areas/${n.slug}`} class="link">{n.name}</a></>)}.</p>
+    </div>
+  </section>
+
+  <Related title={`Services in ${c.name}`} services={['final-mile-delivery', 'same-day-delivery', 'fulfillment', 'returns']} industries={['apparel-footwear', 'beauty-wellness', 'home-goods', 'subscription-boxes']} posts={['next-day-delivery-in-the-gta']} />
+  <CtaBand title={`Delivering to customers in ${c.name}?`} />
+</BaseLayout>

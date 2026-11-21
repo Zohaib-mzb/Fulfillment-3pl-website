@@ -1,0 +1,51 @@
+---
+import LegalLayout from '@/layouts/LegalLayout.astro';
+import { ANALYTICS, SITE } from '@/config/site';
+const analyticsName = ANALYTICS.provider === 'ga4' ? 'Google Analytics 4' : ANALYTICS.provider === 'plausible' ? 'Plausible Analytics' : 'our analytics service';
+---
+<LegalLayout
+  title="Cookie Notice | Kinematics"
+  h1="Cookie notice"
+  description="How the Kinematics website uses cookies: necessary storage that is always on, analytics that run only with your consent, and how to change your choice."
+  path="/cookies"
+  intro="We keep cookies to a minimum. Necessary storage makes the site work. Analytics run only if you accept them, and you can change your choice at any time."
+>
+  <h2>What are cookies?</h2>
+  <p>Cookies and similar technologies, such as your browser’s local storage, are small pieces of information that a website saves on your device. They can remember your choices or help a website understand how it is used.</p>
+
+  <h2>What categories do we use?</h2>
+
+  <h3>Necessary</h3>
+  <p>These are needed for the site to work and to remember your privacy choice. They are always on, and they are not used to track you.</p>
+  <table>
+    <thead><tr><th scope="col">Name</th><th scope="col">Type</th><th scope="col">Purpose</th><th scope="col">Duration</th></tr></thead>
+    <tbody>
+      <tr><td><code>kin-consent</code></td><td>Local storage</td><td>Remembers whether you accepted or declined analytics.</td><td>Until you clear it or change your choice</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Analytics (only with your consent)</h3>
+  <p>If you choose “Accept analytics”, we load {analyticsName} to understand which pages are useful and to count form submissions, so we can improve the site. <strong>Nothing loads until you accept.</strong> If you choose “Essential only”, no analytics run.</p>
+  {ANALYTICS.provider === 'ga4' && (
+    <table>
+      <thead><tr><th scope="col">Name</th><th scope="col">Provider</th><th scope="col">Purpose</th><th scope="col">Duration</th></tr></thead>
+      <tbody>
+        <tr><td><code>_ga</code></td><td>Google Analytics</td><td>Distinguishes visitors so visits can be counted.</td><td>Up to 2 years</td></tr>
+        <tr><td><code>_ga_*</code></td><td>Google Analytics</td><td>Keeps track of the current visit.</td><td>Up to 2 years</td></tr>
+      </tbody>
+    </table>
+  )}
+  {ANALYTICS.provider === 'plausible' && <p>Plausible Analytics does not use cookies and does not store personal information on your device.</p>}
+  <p>Analytics information is used in aggregate. We do not use it to identify you, and we do not use advertising or social media tracking cookies.</p>
+
+  <h2>How do I change my consent?</h2>
+  <p>You can change your choice at any time with the button below. If you withdraw consent, analytics stop loading on your next page view.</p>
+  <p><button type="button" class="btn btn-secondary not-prose" data-cookie-settings>Cookie settings</button></p>
+  <p>You can also clear cookies and site data, or block them, in your browser settings. Blocking necessary storage means the site cannot remember your choice, so the cookie banner may appear again.</p>
+
+  <h2>Changes to this notice</h2>
+  <p>If we change the cookies or tools we use, we will update this notice and its effective date, and ask for your consent again where needed.</p>
+
+  <h2>Questions</h2>
+  <p>Contact the Privacy Officer, {SITE.legalName}, at <a href={`mailto:${SITE.email}?subject=Privacy%20request`}>{SITE.email}</a>, or use our <a href="/contact">contact page</a>. For more about how we handle personal information, read our <a href="/privacy">privacy policy</a>.</p>
+</LegalLayout>

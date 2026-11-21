@@ -1,0 +1,146 @@
+---
+import LegalLayout from '@/layouts/LegalLayout.astro';
+import { SITE, hasPhone } from '@/config/site';
+const officer = `Privacy Officer, ${SITE.legalName}`;
+---
+<LegalLayout
+  title="Privacy Policy | Kinematics"
+  h1="Privacy policy"
+  description="How Kinematics Technologies Inc. collects, uses, shares, stores and protects personal information under PIPEDA, and how to contact our Privacy Officer."
+  path="/privacy"
+  intro={`This policy explains what personal information ${SITE.legalName} collects, why we collect it, who we share it with, how long we keep it and the choices you have. It follows the Personal Information Protection and Electronic Documents Act (PIPEDA) and applies to our operations in Ontario.`}
+>
+  <h2>Who we are and what this policy covers</h2>
+  <p>{SITE.legalName} (“{SITE.brand}”, “we”, “us”, “our”) is based in {SITE.address.locality}, {SITE.address.regionName}. We provide fulfillment (storage, pick and pack) and final mile delivery services across the Greater Toronto Area. This policy applies to personal information we handle through our website ({SITE.domain}), our forms, our warehouse and delivery operations, and our communications.</p>
+  <p>This policy covers four groups of people:</p>
+  <ul>
+    <li><strong>Website visitors</strong>, including anyone who sends a form or tracks a parcel.</li>
+    <li><strong>Merchants</strong>: the businesses that use our services, and the people who work for them.</li>
+    <li><strong>Recipients</strong>: people who receive, or send back, a parcel we handle for a merchant.</li>
+    <li><strong>Applicants and drivers</strong>: people who apply for a job or to drive with us, and drivers while they are on a route.</li>
+  </ul>
+  <p>We are accountable for personal information under our control. Our <strong>{officer}</strong> oversees our compliance with this policy.</p>
+
+  <h2>What personal information do we collect?</h2>
+
+  <h3>Website visitors</h3>
+  <ul>
+    <li><strong>Forms:</strong> when you request a quote or contact us, your name, work email, company, website and anything you choose to tell us about your business or question, such as order volumes, the services you need and how you ship today.</li>
+    <li><strong>Parcel tracking:</strong> the tracking number you enter, which we use only to show the status of that parcel.</li>
+    <li><strong>Technical information:</strong> our hosting provider automatically processes information such as your IP address, browser type and the pages requested, so the site can be delivered and protected from abuse.</li>
+    <li><strong>Cookies and analytics:</strong> we store your cookie choice in your browser. Analytics run only if you accept them. See <a href="#cookies">cookies and analytics</a> below.</li>
+  </ul>
+
+  <h3>Merchants</h3>
+  <ul>
+    <li><strong>Business contacts:</strong> names, job titles, work email addresses and phone numbers of the people we deal with.</li>
+    <li><strong>Account data:</strong> company details, billing contacts, service settings, user logins for any tools we provide, and records of our communications with you.</li>
+    <li><strong>Order and inventory data</strong> received from your store or systems, which may include your customers’ personal information (see recipients below).</li>
+  </ul>
+
+  <h3>Recipients</h3>
+  <p>When a merchant asks us to fulfill or deliver an order, the merchant gives us the information we need to do it. We may also create records while we handle the parcel. This can include:</p>
+  <ul>
+    <li>your name, delivery address, phone number and email address;</li>
+    <li>delivery notes, such as a buzzer code, a safe place to leave the parcel or access instructions;</li>
+    <li>the contents of the order, as far as needed to pick, pack and handle it;</li>
+    <li>scan events, delivery attempts, and the time and place of delivery;</li>
+    <li><strong>delivery photos</strong> taken as proof of delivery, which show the parcel and where it was left. Drivers are instructed to photograph the parcel and its location, not people;</li>
+    <li><strong>signatures</strong>, when the merchant requires a signature on delivery;</li>
+    <li>for returns, the items returned, their condition and the reason given.</li>
+  </ul>
+
+  <h3>Job applicants</h3>
+  <p>When you apply for a job, or apply to drive with us, we collect your name, contact details, the role you are applying for, your CV or resumé and anything else you include. For driving roles, this may also include your licence class, the area you live in, your availability and, for independent drivers, vehicle information. If we move forward with your application, we may collect references and, with your consent, the results of checks required for the role, such as a driver’s abstract.</p>
+
+  <h3>Drivers on a route</h3>
+  <p>While a driver is working a delivery route, the routing and delivery apps we use collect the driver’s <strong>location</strong> from their device, along with scan events, delivery photos and delivery times. We collect location only during working routes, not outside them.</p>
+
+  <h2>Why do we collect it?</h2>
+  <ul>
+    <li><strong>To answer you and prepare quotes:</strong> to reply to enquiries, understand your needs and send a custom quote.</li>
+    <li><strong>To provide our services:</strong> to receive, store, pick, pack, deliver and return orders, and to manage merchant accounts and billing.</li>
+    <li><strong>To deliver parcels:</strong> to plan routes, find the right address, follow delivery notes, send delivery notifications, provide tracking and proof of delivery, handle failed deliveries and process returns.</li>
+    <li><strong>To run our routes safely:</strong> driver location is used to plan and adjust routes, give recipients an accurate arrival window, confirm where and when parcels were delivered, resolve delivery questions and support driver safety.</li>
+    <li><strong>To hire:</strong> to assess applications, contact applicants and meet the requirements of the role.</li>
+    <li><strong>To protect and improve our website:</strong> to keep it secure and working and, only with your consent, to understand how it is used.</li>
+    <li><strong>To send marketing email</strong>, only if you have given express consent (see <a href="#casl">marketing email</a> below).</li>
+    <li><strong>To meet legal obligations</strong>, such as tax, accounting, insurance and claims, and responding to lawful requests.</li>
+  </ul>
+  <p>We collect only what we need for these purposes, and we do not use personal information for a new purpose without your consent unless the law allows it.</p>
+
+  <h2>How do we handle recipient information for merchants?</h2>
+  <p>When we fulfill or deliver an order, we handle the recipient’s information <strong>on behalf of the merchant who shipped the parcel</strong>. The merchant decides what information to give us and remains responsible for it, including telling their customers that their details will be shared with a delivery provider. We use recipient information only to fulfill, deliver, track and return that merchant’s orders, to meet our legal obligations and to protect our rights in a dispute about a delivery. We do not use it to market our own services to recipients.</p>
+  <p>If you are a recipient and have a question about your order, the merchant you bought from is usually the best place to start. You can also contact us directly, and we will help or work with the merchant to respond.</p>
+
+  <h2>How do delivery notifications work?</h2>
+  <p>To deliver a parcel, we may send the recipient text messages (SMS) or emails about it: for example, that it is on its way, an estimated arrival window, a tracking link, a delivery photo or a missed delivery notice. These messages are about the delivery you are expecting, are sent on behalf of the merchant and do not contain marketing. Standard message and data rates from your mobile carrier may apply. To stop text notifications, reply STOP to the message where that option is offered, or contact us; you may then receive fewer updates about your delivery.</p>
+
+  <h2 id="cookies">Cookies and analytics</h2>
+  <p>Our website uses only the storage it needs to work, such as remembering your cookie choice. Analytics tools load <strong>only after you accept them</strong> in our cookie banner, and you can change your choice at any time. Analytics information is used in aggregate to understand which pages are useful; we do not use it to identify you. Our <a href="/cookies">cookie notice</a> lists what we use and how to change your consent.</p>
+
+  <h2>Who do we share it with?</h2>
+  <p><strong>We never sell personal information.</strong> We share it only as needed for the purposes in this policy, with:</p>
+  <ul>
+    <li><strong>Merchants:</strong> the merchant whose order we are handling receives information about that order, such as delivery status, delivery photos, signatures and returns.</li>
+    <li><strong>Service providers</strong> that help us operate, such as website hosting, email delivery, form processing, routing and delivery software, SMS notification tools, cloud storage and, with your consent, analytics. They may use the information only to provide their services to us, and must protect it.</li>
+    <li><strong>Other carriers</strong>, when a parcel needs to travel outside our delivery area.</li>
+    <li><strong>Professional advisers</strong> such as accountants, lawyers and insurers, where needed.</li>
+    <li><strong>Authorities or others</strong>, where the law requires or permits it, for example to respond to a valid legal request or to prevent fraud.</li>
+    <li><strong>A buyer or successor</strong>, if all or part of our business is sold or reorganized, under an agreement to protect the information.</li>
+  </ul>
+
+  <h2>Is information stored outside Canada?</h2>
+  <p>Yes, it can be. Some of our service providers store or process information outside Canada, including in the United States. While it is there, it is subject to the laws of that country and may be accessed by its courts, law enforcement and national security authorities. We choose providers carefully and require them, by contract, to protect the information to a standard comparable to this policy.</p>
+
+  <h2>How do we protect it?</h2>
+  <p>We use physical, organizational and technical safeguards suited to the sensitivity of the information, including:</p>
+  <ul>
+    <li>access limited to the people and providers who need it for their work;</li>
+    <li>encryption in transit (HTTPS) for our website and forms;</li>
+    <li>unique accounts and strong authentication for our systems;</li>
+    <li>physical security measures at our premises;</li>
+    <li>confidentiality obligations for our team and our service providers;</li>
+    <li>secure deletion when information is no longer needed.</li>
+  </ul>
+  <p>No method of transmission or storage is completely secure. If a breach of security safeguards creates a real risk of significant harm, we will notify affected people and the Office of the Privacy Commissioner of Canada as PIPEDA requires, and keep a record of it.</p>
+
+  <h2>How long do we keep it?</h2>
+  <p>We keep personal information only as long as needed for the purposes above, unless a longer period is required by law, needed to resolve a dispute or agreed in writing with a merchant.</p>
+  <table>
+    <thead><tr><th scope="col">Information</th><th scope="col">How long we keep it</th></tr></thead>
+    <tbody>
+      <tr><td>Quote and contact form submissions</td><td>24 months from the last contact</td></tr>
+      <tr><td>Job and driver applications</td><td>12 months from the application date (if you are hired, your application becomes part of your employment or contractor file)</td></tr>
+      <tr><td>Delivery photos</td><td>90 days from delivery</td></tr>
+      <tr><td>Tracking and delivery records, including signatures and scan events</td><td>24 months from delivery</td></tr>
+    </tbody>
+  </table>
+  <p>Financial and tax records about merchant accounts are kept as long as tax and accounting laws require. When information is no longer needed, we securely delete or anonymize it.</p>
+
+  <h2>What are your rights?</h2>
+  <ul>
+    <li><strong>Access:</strong> you can ask what personal information we hold about you, how it has been used and who it has been shared with.</li>
+    <li><strong>Correction:</strong> you can ask us to correct information that is inaccurate or incomplete.</li>
+    <li><strong>Withdrawing consent:</strong> you can withdraw your consent at any time, subject to legal or contractual limits. We will explain what that means, for example that we may not be able to complete a delivery or consider an application.</li>
+    <li><strong>Questions and complaints:</strong> you can ask about our practices or make a complaint to our {officer}.</li>
+  </ul>
+  <p>To make a request, contact us as shown below. We may need to confirm your identity first. We will respond within 30 days, or tell you if we need more time as the law allows. There is no charge for a request. If a request concerns a merchant’s order, we may work with that merchant to respond.</p>
+  <p>If you are not satisfied with our response, you can complain to the <a href="https://www.priv.gc.ca/" rel="noopener">Office of the Privacy Commissioner of Canada</a>.</p>
+
+  <h2 id="casl">Marketing email (CASL)</h2>
+  <p>We send marketing email only to people who have given us consent, as Canada’s Anti-Spam Legislation (CASL) requires. On our forms, the marketing checkbox is optional and unticked, and you can request a quote or contact us without it. Every marketing email identifies {SITE.legalName}, includes our contact details and contains an <strong>unsubscribe link</strong>. We act on unsubscribe requests promptly, and within 10 business days at most. Messages about a quote you asked for, your account or a delivery are not marketing and may still be sent.</p>
+
+  <h2>Children</h2>
+  <p>Our website and services are for businesses and adults. They are not directed at children, and we do not knowingly collect personal information from children through our website. If you believe a child has sent us information, contact us and we will delete it.</p>
+
+  <h2>Links to other websites</h2>
+  <p>Our website may link to websites and tools run by others, such as online store platforms. Their own privacy policies apply to them.</p>
+
+  <h2>Changes to this policy</h2>
+  <p>We may update this policy as our services, providers or legal requirements change. The effective date at the top shows when it last changed. If we make a significant change, we will post a notice on our website and, where appropriate, tell merchants directly.</p>
+
+  <h2>How do I contact the Privacy Officer?</h2>
+  <p>Send privacy questions, access or correction requests and complaints to:</p>
+  <p>{officer}<br />{SITE.address.locality}, {SITE.address.regionName}, Canada<br />Email: <a href={`mailto:${SITE.email}?subject=Privacy%20request`}>{SITE.email}</a> (subject: “Privacy request”){hasPhone() && <><br />Phone: {SITE.phone}</>}<br />Or use our <a href="/contact">contact page</a>.</p>
+</LegalLayout>

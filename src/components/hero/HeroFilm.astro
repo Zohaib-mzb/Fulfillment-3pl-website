@@ -1,0 +1,275 @@
+---
+/**
+ * Homepage hero: a 36 s looping "warehouse film".
+ *  - LCP-safe: the poster frame (AVIF/WebP, preloaded) and the H1 paint first; nothing else blocks.
+ *  - After load + idle, the controller picks a mode:
+ *      3d     capable desktop  → real-time R3F scene (HeroScene.tsx, lazy chunk)
+ *      video  mobile / low-end / no WebGL / slow → H.264 / AV1 loop of the same scene
+ *      poster prefers-reduced-motion or Save-Data → poster + static 8-step strip, no autoplay
+ *  - Pause/play button (WCAG 2.2.2), captions synced to the shots, SSR text for crawlers.
+ *  - Debug: ?hero=3d|video|poster forces a mode; ?capture=1 is used by scripts/capture-hero.mjs.
+ */
+import { SITE } from '@/config/site';
+import { HERO_SHOTS, HERO_POSTER_T, shotAt } from '@/data/hero';
+import { heroPoster } from '@/lib/hero-poster';
+import Icon from '@/components/ui/Icon.astro';
+
+const poster = await heroPoster();
+const VIDEO_VERSION = 'v2';
+const first = shotAt(HERO_POSTER_T);
+---
+<section class="hero" data-hero aria-labelledby="hero-title">
+  <div class="hero-media">
+    <picture>
+      <source type="image/avif" srcset={poster.avifSet} sizes={poster.sizes} />
+      <source type="image/webp" srcset={poster.webpSet} sizes={poster.sizes} />
+      <img
+        class="hero-poster"
+        src={poster.fallback}
+        width={poster.width}
+        height={poster.height}
+        alt="The Kinematics 3PL warehouse in the GTA: a trailer at the dock door, tall racks stocked with parcels and a packing line."
+        fetchpriority="high"
+        loading="eager"
+        decoding="async"
+      />
+    </picture>
+    <video class="hero-video" data-hero-video muted loop playsinline preload="none" disablepictureinpicture aria-hidden="true" tabindex="-1">
+      <source data-src={`/media/hero-loop-${VIDEO_VERSION}.webm`} type='video/webm; codecs="av01.0.05M.08"' />
+      <source data-src={`/media/hero-loop-${VIDEO_VERSION}.mp4`} type="video/mp4" />
+    </video>
+    <div class="hero-canvas" data-hero-canvas aria-hidden="true"></div>
+    <div class="hero-fade" data-hero-fade aria-hidden="true"></div>
+
+    <div class="hero-caption" aria-hidden="true">
+      <span class="hero-caption__num" data-cap-num>{String(first + 1).padStart(2, '0')}</span>
+      <span class="hero-caption__label" data-cap-label>{HERO_SHOTS[first].label}</span>
+      <span class="hero-caption__dots">{HERO_SHOTS.map((_, i) => <i data-cap-dot={i} class:list={[i === first && 'on']}></i>)}</span>
+    </div>
+    <button type="button" class="hero-toggle" data-hero-toggle aria-pressed="false" hidden>
+      <span class="hero-toggle__pause" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 14 14"><rect x="2" y="1.5" width="3.4" height="11" rx="1" fill="currentColor" /><rect x="8.6" y="1.5" width="3.4" height="11" rx="1" fill="currentColor" /></svg></span>
+      <span class="hero-toggle__play" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 14 14"><path d="M3 1.8v10.4a.6.6 0 0 0 .9.5l8.4-5.2a.6.6 0 0 0 0-1L3.9 1.3a.6.6 0 0 0-.9.5z" fill="currentColor" /></svg></span>
+      <span data-toggle-label>Pause film</span>
+    </button>
+  </div>
+
+  <div class="hero-scrim" aria-hidden="true"></div>
+
+  <div class="container-site hero-copy">
+    <p class="eyebrow mb-5">Toronto 3PL + final mile delivery</p>
+    <h1 id="hero-title" class="text-[2.9rem] leading-[1.02] sm:text-[4rem] lg:text-[4.8rem]">{SITE.tagline}</h1>
+    <p class="lede mt-5 max-w-xl text-navy/85">
+      We store your inventory, pack every order and deliver it next day across the GTA in an EV first fleet, one Toronto team from shelf to doorstep.
+    </p>
+    <div class="mt-8 flex flex-wrap gap-3">
+      <a href="/get-a-quote" class="btn btn-primary">Get a custom quote</a>
+      <a href="#story" class="btn btn-secondary">See how it works</a>
+    </div>
+    <ul class="mt-8 flex flex-wrap gap-x-6 gap-y-2 text-[0.95rem] text-navy/80" aria-label="Highlights">
+      <li class="flex items-center gap-2"><Icon name="check" size={18} class="text-teal-ink" />Next day across the GTA</li>
+      <li class="flex items-center gap-2"><Icon name="check" size={18} class="text-teal-ink" />Same day by late morning</li>
+      <li class="flex items-center gap-2"><Icon name="check" size={18} class="text-teal-ink" />Photo proof of delivery</li>
+    </ul>
+  </div>
+
+  <!-- What the film shows. Visible as a static strip under reduced motion / no JS / Save-Data; read by screen readers and crawlers always. -->
+  <ol class="hero-strip container-site" aria-label="What the hero film shows">
+    {HERO_SHOTS.map((s, i) => (
+      <li>
+        <span class="hero-strip__num" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+        <span class="hero-strip__label">{s.label}</span>
+        <span class="hero-strip__text">{s.text}</span>
+      </li>
+    ))}
+  </ol>
+</section>
+
+<style is:global>
+  .hero { position: relative; isolation: isolate; overflow: hidden; background: var(--color-cloud, #F4F6F8); }
+  .hero-media { position: relative; aspect-ratio: 16 / 10; overflow: hidden; background: #EEF3F6; }
+  .hero-media > picture, .hero-poster, .hero-video, .hero-canvas, .hero-fade { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .hero-poster, .hero-video { object-fit: cover; object-position: 50% 50%; }
+  .hero-video, .hero-canvas { opacity: 0; transition: opacity .8s var(--ease-brand); }
+  .hero-fade { background: #F4F6F8; opacity: 0; pointer-events: none; }
+  .hero[data-mode='video'] .hero-video, .hero[data-mode='3d'] .hero-canvas { opacity: 1; }
+  .hero-canvas canvas { display: block; }
+  .hero-copy { position: relative; z-index: 2; padding-block: 2rem 2.5rem; }
+  .hero-scrim { display: none; }
+
+  .hero-caption {
+    position: absolute; z-index: 3; left: 1rem; bottom: 1rem; display: flex; align-items: center; gap: .6rem;
+    padding: .45rem .8rem .45rem .5rem; border-radius: 999px; background: rgba(255,255,255,.94); box-shadow: 0 6px 20px -10px rgba(14,27,44,.4);
+    font: 600 .82rem/1 'Space Grotesk', 'Space Grotesk Fallback', sans-serif; color: #0E1B2C; opacity: 0; transform: translateY(6px);
+    transition: opacity var(--dur-base) var(--ease-brand), transform var(--dur-base) var(--ease-brand);
+  }
+  .hero[data-mode='3d'] .hero-caption, .hero[data-mode='video'] .hero-caption { opacity: 1; transform: none; }
+  .hero-caption__num { display: grid; place-items: center; width: 1.7rem; height: 1.7rem; border-radius: 999px; background: #0E1B2C; color: #fff; font-size: .72rem; }
+  .hero-caption__label { min-width: 4.6rem; letter-spacing: .02em; }
+  .hero-caption__label.swap { animation: cap-swap var(--dur-reveal) var(--ease-brand); }
+  .hero-caption__dots { display: flex; gap: 3px; }
+  .hero-caption__dots i { width: 6px; height: 6px; border-radius: 99px; background: #D9DEE4; transition: background-color var(--dur-base), transform var(--dur-base) var(--ease-brand); }
+  .hero-caption__dots i.on { background: #12B5A6; transform: scale(1.35); }
+  .hero-caption__dots i:last-child.on { background: #FF6A3D; }
+  @keyframes cap-swap { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+
+  .hero-toggle {
+    position: absolute; z-index: 3; right: 1rem; bottom: 1rem; display: inline-flex; align-items: center; gap: .45rem; min-height: 2.75rem;
+    padding: .5rem .9rem; border-radius: 999px; background: rgba(14,27,44,.86); color: #fff; font: 600 .85rem/1 Inter, 'Inter Fallback', sans-serif;
+    transition: background-color var(--dur-base), transform var(--dur-fast) var(--ease-brand);
+  }
+  .hero-toggle:hover { background: #0E1B2C; }
+  .hero-toggle:active { transform: scale(.97); }
+  .hero-toggle .hero-toggle__play { display: none; }
+  .hero-toggle[aria-pressed='true'] .hero-toggle__play { display: inline; }
+  .hero-toggle[aria-pressed='true'] .hero-toggle__pause { display: none; }
+
+  /* Static strip: SR-only by default, visible when the film is not playing (reduced motion, no JS, Save-Data). */
+  .hero-strip { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  .hero[data-mode='poster'] .hero-strip, html:not(.js) .hero-strip {
+    position: relative; width: auto; height: auto; overflow: visible; clip: auto; white-space: normal; z-index: 2;
+    display: grid; gap: .75rem; grid-template-columns: repeat(2, minmax(0, 1fr)); padding-block: 0 2.5rem;
+  }
+  .hero-strip li { display: grid; grid-template-columns: auto 1fr; gap: .1rem .6rem; align-items: baseline; padding: .8rem .9rem; border-radius: 1rem; background: #fff; border: 1px solid #D9DEE4; }
+  .hero-strip__num { grid-row: span 2; font: 700 .8rem/1 'Space Grotesk', sans-serif; color: #fff; background: #0E1B2C; border-radius: 99px; padding: .35rem .45rem; }
+  .hero-strip li:last-child .hero-strip__num { background: #FF6A3D; color: #0E1B2C; }
+  .hero-strip__label { font: 600 1rem/1.2 'Space Grotesk', 'Space Grotesk Fallback', sans-serif; }
+  .hero-strip__text { font-size: .9rem; color: #5A6675; line-height: 1.45; }
+
+  /* capture mode (scripts/capture-hero.mjs): the film alone, full viewport */
+  .hero--capture { position: fixed; inset: 0; z-index: 9999; }
+  html:has(.hero--capture) :is(body > header, body > footer, #cookie-banner, .nav-progress, .cursor-dot) { display: none !important; }
+  .hero--capture .hero-media { position: fixed; inset: 0; aspect-ratio: auto; }
+  .hero--capture .hero-copy, .hero--capture .hero-scrim, .hero--capture .hero-caption, .hero--capture .hero-strip, .hero--capture .hero-toggle, .hero--capture picture { display: none !important; }
+  .hero--capture .hero-canvas { opacity: 1; transition: none; }
+
+  @media (min-width: 1024px) {
+    .hero { min-height: clamp(560px, calc(100svh - var(--header-h)), 880px); display: flex; flex-direction: column; justify-content: center; }
+    .hero-media { position: absolute; inset: 0; aspect-ratio: auto; z-index: 0; }
+    .hero-scrim {
+      display: block; position: absolute; inset: 0; z-index: 1; pointer-events: none;
+      background: linear-gradient(90deg, rgba(244,246,248,.97) 0%, rgba(244,246,248,.93) 30%, rgba(244,246,248,.55) 46%, rgba(244,246,248,0) 62%);
+    }
+    .hero-copy { padding-block: 4rem; }
+    .hero-copy > * { max-width: 36rem; }
+    .hero-caption { left: auto; right: 1.5rem; bottom: 5rem; }
+    .hero-toggle { right: 1.5rem; bottom: 1.5rem; }
+    .hero[data-mode='poster'] .hero-strip, html:not(.js) .hero-strip { grid-template-columns: repeat(4, minmax(0, 1fr)); margin-top: -1rem; }
+    .hero[data-mode='poster'] .hero-media::after, html:not(.js) .hero-media::after { content: ''; position: absolute; inset: 0; background: rgba(244,246,248,.35); }
+  }
+</style>
+
+<script>
+  import { HERO_SHOTS, HERO_POSTER_T, shotAt } from '@/data/hero';
+  import { onPage, afterLoadIdle } from '@/scripts/lifecycle';
+
+  type Mode = 'poster' | 'video' | '3d';
+  type Api = { play(): void; pause(): void; seek(t: number): void; dispose(): void };
+
+  const hasWebGL = () => { try { const c = document.createElement('canvas'); return !!(c.getContext('webgl2') || c.getContext('webgl')); } catch { return false; } };
+  const fpsProbe = (frames = 30) => new Promise<number>((res) => {
+    let n = 0, start = 0;
+    const tick = (t: number) => { if (!start) start = t; if (++n >= frames) return res((n - 1) / ((t - start) / 1000)); requestAnimationFrame(tick); };
+    requestAnimationFrame(tick);
+  });
+
+  function decide(): Mode {
+    const q = new URLSearchParams(location.search);
+    if (q.has('capture')) return '3d';
+    const forced = q.get('hero');
+    if (forced === '3d' || forced === 'video' || forced === 'poster') return forced;
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches) return 'poster';
+    const nav = navigator as Navigator & { deviceMemory?: number; connection?: { saveData?: boolean } };
+    if (nav.connection?.saveData) return 'poster';
+    const small = matchMedia('(pointer: coarse)').matches || innerWidth < 1024;
+    if (small || (nav.hardwareConcurrency ?? 8) <= 4 || (nav.deviceMemory ?? 8) <= 4 || !hasWebGL()) return 'video';
+    return '3d';
+  }
+
+  onPage(() => {
+    const root = document.querySelector<HTMLElement>('[data-hero]');
+    if (!root) return;
+    const capture = new URLSearchParams(location.search).has('capture');
+    const video = root.querySelector<HTMLVideoElement>('[data-hero-video]')!;
+    const canvasHost = root.querySelector<HTMLElement>('[data-hero-canvas]')!;
+    const fade = root.querySelector<HTMLElement>('[data-hero-fade]')!;
+    const toggle = root.querySelector<HTMLButtonElement>('[data-hero-toggle]')!;
+    const toggleLabel = toggle.querySelector<HTMLElement>('[data-toggle-label]')!;
+    const capNum = root.querySelector<HTMLElement>('[data-cap-num]')!;
+    const capLabel = root.querySelector<HTMLElement>('[data-cap-label]')!;
+    const dots = Array.from(root.querySelectorAll<HTMLElement>('[data-cap-dot]'));
+    let api: Api | null = null;
+    let mode: Mode = decide();
+    let current = shotAt(HERO_POSTER_T);
+    let disposed = false;
+    let playing = true;
+
+    const setShot = (i: number) => {
+      if (i === current) return;
+      current = i;
+      capNum.textContent = String(i + 1).padStart(2, '0');
+      capLabel.textContent = HERO_SHOTS[i].label;
+      capLabel.classList.remove('swap'); void capLabel.offsetWidth; capLabel.classList.add('swap');
+      dots.forEach((d, k) => d.classList.toggle('on', k === i));
+    };
+    const setPlaying = (p: boolean) => {
+      playing = p;
+      toggle.setAttribute('aria-pressed', String(!p));
+      toggleLabel.textContent = p ? 'Pause film' : 'Play film';
+    };
+    toggle.addEventListener('click', () => {
+      if (playing) { api?.pause(); if (mode === 'video') video.pause(); setPlaying(false); }
+      else { api?.play(); if (mode === 'video') video.play().catch(() => {}); setPlaying(true); }
+    });
+
+    const onTime = () => setShot(shotAt(video.currentTime));
+    const startVideo = () => {
+      if (disposed) return;
+      mode = 'video';
+      video.querySelectorAll<HTMLSourceElement>('source[data-src]').forEach((s) => { s.src = s.dataset.src!; });
+      video.load();
+      video.addEventListener('loadedmetadata', () => { try { video.currentTime = HERO_POSTER_T; } catch {} }, { once: true });
+      video.addEventListener('timeupdate', onTime);
+      video.addEventListener('playing', () => { root.dataset.mode = 'video'; toggle.hidden = false; }, { once: true });
+      video.play().catch(() => { toggle.hidden = false; setPlaying(false); });
+    };
+    const start3d = async () => {
+      if (!capture) {
+        const fps = await fpsProbe();
+        if (fps < 45) return startVideo();
+      }
+      try {
+        const { default: mountHero } = await import('@/components/hero/HeroScene');
+        if (disposed) return;
+        api = mountHero({
+          container: canvasHost,
+          overlay: fade,
+          capture,
+          startAt: capture ? 0 : HERO_POSTER_T,
+          onShot: setShot,
+          onReady: () => { root.dataset.mode = '3d'; toggle.hidden = capture; },
+          onFail: () => { api?.dispose(); api = null; delete root.dataset.mode; startVideo(); },
+        });
+        if (capture) (window as unknown as { __hero: Api }).__hero = api;
+      } catch {
+        startVideo();
+      }
+    };
+
+    root.dataset.requested = mode;
+    if (mode === 'poster') {
+      root.dataset.mode = 'poster';
+    } else if (capture) {
+      root.classList.add('hero--capture');
+      start3d();
+    } else {
+      afterLoadIdle(() => (mode === '3d' ? start3d() : startVideo()));
+    }
+
+    return () => {
+      disposed = true;
+      api?.dispose();
+      video.pause();
+      video.removeEventListener('timeupdate', onTime);
+    };
+  });
+</script>

@@ -1,0 +1,35 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import PageHero from '@/components/ui/PageHero.astro';
+import FAQ from '@/components/ui/FAQ.astro';
+import CtaBand from '@/components/ui/CtaBand.astro';
+import { FAQ_GROUPS, ALL_FAQS } from '@/data/faqs';
+import { faqPage } from '@/lib/schema';
+
+const crumbs = [{ name: 'Home', href: '/' }, { name: 'FAQ', href: '/faq' }];
+---
+<BaseLayout
+  title="FAQ: 3PL Fulfillment & GTA Delivery | Kinematics"
+  description="Answers about Kinematics fulfillment, next day and same day GTA delivery, returns, Shopify integration and working with us as a driver or employee."
+  crumbs={crumbs}
+  schema={[faqPage(ALL_FAQS, '/faq')]}
+>
+  <PageHero
+    eyebrow="FAQ"
+    title="Frequently asked questions"
+    answer="Kinematics is a Toronto 3PL and final mile delivery company. We store inventory, pick and pack orders, deliver next day or same day across Toronto, Mississauga, Brampton, Vaughan and Markham with an EV first fleet, and handle returns. Below are straight answers to the questions brands, customers and drivers ask most."
+    crumbs={crumbs}
+    secondaryCta={{ label: 'Ask a person', href: '/contact' }}
+  />
+  <div class="container-site grid gap-12 py-16 lg:grid-cols-[14rem_1fr]">
+    <nav aria-label="FAQ topics" class="lg:sticky lg:top-24 lg:self-start">
+      <ul class="flex flex-wrap gap-2 lg:grid lg:gap-1">
+        {FAQ_GROUPS.map((g) => <li><a href={`#${g.id}`} class="inline-block rounded-full border border-slate-line px-4 py-2 text-sm font-semibold text-navy no-underline hover:border-teal lg:rounded-lg lg:border-0 lg:px-3">{g.title}</a></li>)}
+      </ul>
+    </nav>
+    <div class="grid gap-16">
+      {FAQ_GROUPS.map((g) => <div id={g.id} class="scroll-mt-28"><FAQ items={g.items} title={g.title} id={`faq-${g.id}`} /></div>)}
+    </div>
+  </div>
+  <CtaBand />
+</BaseLayout>

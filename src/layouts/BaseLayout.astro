@@ -1,0 +1,65 @@
+---
+import '@/styles/fonts.css';
+import '@/styles/global.css';
+import headingFont from '@/assets/fonts/space-grotesk-latin-700-normal-core.woff2?url';
+import bodyFont from '@/assets/fonts/inter-latin-400-normal-core.woff2?url';
+
+import SEO, { type SeoProps } from '@/components/seo/SEO.astro';
+import Header from '@/components/layout/Header.astro';
+import Footer from '@/components/layout/Footer.astro';
+import CookieBanner from '@/components/layout/CookieBanner.astro';
+import Analytics from '@/components/layout/Analytics.astro';
+import { ClientRouter } from 'astro:transitions';
+
+/** Content slides + fades between pages; the header (named, animate none) stays put. */
+const ease = 'cubic-bezier(0.22, 1, 0.36, 1)';
+const pageAnim = {
+  forwards: {
+    old: { name: 'kin-page-out', duration: '0.22s', easing: 'ease-in', fillMode: 'both' },
+    new: { name: 'kin-page-in', duration: '0.45s', easing: ease, fillMode: 'both' },
+  },
+  backwards: {
+    old: { name: 'kin-page-out-back', duration: '0.22s', easing: 'ease-in', fillMode: 'both' },
+    new: { name: 'kin-page-in-back', duration: '0.45s', easing: ease, fillMode: 'both' },
+  },
+};
+
+type Props = SeoProps & { bodyClass?: string; preloadImage?: string };
+const { bodyClass = '', preloadImage, ...seo } = Astro.props;
+---
+<!doctype html>
+<html lang="en-CA" dir="ltr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script is:inline>document.documentElement.classList.add('js')</script>
+    <ClientRouter fallback="animate" />
+    <link rel="preload" href={headingFont} as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href={bodyFont} as="font" type="font/woff2" crossorigin />
+    {preloadImage && <link rel="preload" as="image" href={preloadImage} fetchpriority="high" />}
+    <SEO {...seo} />
+    <meta name="theme-color" content="#0E1B2C" />
+    <meta name="format-detection" content="telephone=no" />
+    <link rel="icon" href="/favicon.ico" sizes="32x32" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <link rel="alternate" type="application/rss+xml" title="Kinematics blog" href="/rss.xml" />
+    <link rel="author" href="/llms.txt" type="text/plain" />
+    <slot name="head" />
+  </head>
+  <body class={bodyClass}>
+    <a href="#main" class="sr-only-focusable fixed left-4 top-3 z-[100] rounded-full bg-orange px-5 py-3 font-semibold text-navy">Skip to main content</a>
+    <div class="nav-progress" aria-hidden="true" transition:persist="nav-progress"></div>
+    <Header />
+    <main id="main" tabindex="-1" class="outline-none" transition:name="page" transition:animate={pageAnim}>
+      <slot />
+    </main>
+    <Footer />
+    <CookieBanner />
+    <Analytics />
+    <script>
+      import '@/scripts/motion';
+    </script>
+  </body>
+</html>

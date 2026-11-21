@@ -1,0 +1,124 @@
+/*
+ * Motion layer — hovers, focus states, reveal states, transitions.
+ * Tokens: --dur-fast / --dur-base / --dur-reveal / --ease-brand (src/lib/motion.ts).
+ * Rules: animate transform / opacity / clip-path. Every hover state is mirrored on
+ * :focus-visible / :focus-within. prefers-reduced-motion collapses all of it (global.css).
+ */
+@layer components {
+  /* ── Cards: lift, glow ring, 3D tilt (JS sets --rx/--ry on fine pointers), selected flash ── */
+  .card-motion {
+    position: relative;
+    transform: perspective(900px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)) translate3d(0, var(--lift, 0px), 0);
+    transition: transform var(--dur-base) var(--ease-brand), box-shadow var(--dur-base) var(--ease-brand), border-color var(--dur-base) var(--ease-brand);
+  }
+  .card-motion::before {
+    content: ''; position: absolute; inset: 0; border-radius: inherit; pointer-events: none; z-index: 1;
+    box-shadow: inset 0 0 0 2px #12b5a6, 0 0 0 4px rgba(18, 181, 166, 0.14);
+    opacity: 0; transition: opacity var(--dur-base) var(--ease-brand);
+  }
+  .card-motion:hover, .card-motion:focus-within { --lift: -5px; box-shadow: 0 2px 4px rgba(14, 27, 44, 0.05), 0 22px 40px -20px rgba(14, 27, 44, 0.32); }
+  .card-motion:hover::before, .card-motion:focus-within::before { opacity: 1; }
+  .card-motion.is-tilting { transition-duration: var(--dur-fast), var(--dur-base), var(--dur-base); }
+  .card-motion.is-selected { --lift: -2px; }
+  .card-motion.is-selected::before { opacity: 1; box-shadow: inset 0 0 0 2px #12806f, inset 0 0 0 999px rgba(18, 181, 166, 0.08); }
+
+  /* ── Icons: small idle loops while their card/button is hovered or focused ── */
+  [data-icon] * { transform-box: fill-box; transform-origin: center; }
+  :is(.card-motion, a, button, .icon-hover):is(:hover, :focus-visible, :focus-within) [data-icon='van'] { animation: ico-drive 0.9s var(--ease-brand) infinite alternate; }
+  :is(.card-motion, a, button, .icon-hover):is(:hover, :focus-visible, :focus-within) [data-icon='clock'] .i-hand { animation: ico-tick 2.4s steps(12) infinite; transform-origin: 0% 100%; }
+  :is(.card-motion, a, button, .icon-hover):is(:hover, :focus-visible, :focus-within) [data-icon='box'] .i-lid { animation: ico-lid 1.2s var(--ease-brand) infinite alternate; transform-origin: 50% 100%; }
+  :is(.card-motion, a, button, .icon-hover):is(:hover, :focus-visible, :focus-within) [data-icon='rack'] .i-blink { animation: ico-blink 0.9s steps(2) infinite; }
+  :is(.card-motion, a, button, .icon-hover):is(:hover, :focus-visible, :focus-within) [data-icon='return'] .i-arrow { animation: ico-nudge-l 0.8s var(--ease-brand) infinite alternate; }
+  :is(.card-motion, a, button, .icon-hover):is(:hover, :focus-visible, :focus-within) [data-icon='camera'] .i-lens { animation: ico-flash 1.1s var(--ease-brand) infinite; }
+  :is(.card-motion, a, button, .icon-hover):is(:hover, :focus-visible, :focus-within) [data-icon='plug'] { animation: ico-bob 0.9s var(--ease-brand) infinite alternate; }
+  :is(.card-motion, a, button, .icon-hover):is(:hover, :focus-visible, :focus-within) [data-icon='layers'] .i-top { animation: ico-lift 0.9s var(--ease-brand) infinite alternate; }
+  :is(.card-motion, a, button, .icon-hover):is(:hover, :focus-visible, :focus-within) [data-icon='route'] .i-dots { animation: ico-nudge-r 0.9s var(--ease-brand) infinite alternate; }
+  :is(.card-motion, a, button, .icon-hover):is(:hover, :focus-visible, :focus-within) [data-icon='chart'] .i-bar { animation: ico-grow 0.9s var(--ease-brand) infinite alternate; transform-origin: 50% 100%; }
+  :is(.card-motion, a, button, .icon-hover):is(:hover, :focus-visible, :focus-within) :is([data-icon='pin'], [data-icon='person'], [data-icon='leaf'], [data-icon='store'], [data-icon='file'], [data-icon='code'], [data-icon='link'], [data-icon='mail'], [data-icon='phone'], [data-icon='scan'], [data-icon='check']) { animation: ico-bob 0.9s var(--ease-brand) infinite alternate; }
+  :is(.card-motion, a, button):is(:hover, :focus-visible, :focus-within) [data-icon='arrow'] { animation: ico-nudge-r 0.7s var(--ease-brand) infinite alternate; }
+  @keyframes ico-drive { from { transform: translateX(-1px); } to { transform: translateX(3px); } }
+  @keyframes ico-tick { to { transform: rotate(360deg); } }
+  @keyframes ico-lid { to { transform: translateY(-2px) rotate(-10deg); } }
+  @keyframes ico-blink { 50% { opacity: 0.15; } }
+  @keyframes ico-nudge-l { to { transform: translateX(-2.5px); } }
+  @keyframes ico-nudge-r { to { transform: translateX(2.5px); } }
+  @keyframes ico-flash { 0%, 60%, 100% { transform: scale(1); opacity: 1; } 30% { transform: scale(1.25); opacity: 0.6; } }
+  @keyframes ico-bob { to { transform: translateY(-2px); } }
+  @keyframes ico-lift { to { transform: translateY(-2.5px); } }
+  @keyframes ico-grow { to { transform: scaleY(1.25); } }
+
+  /* ── Header dropdowns: scale + fade, items stagger in ── */
+  .nav-panel > ul { transform-origin: 12% 0; transform: scale(0.96) translateY(-4px); transition: transform var(--dur-base) var(--ease-brand); }
+  .nav-group[data-open] .nav-panel > ul { transform: none; }
+  /* transitions (not keyframes): Chrome can leave keyframe-animated items unpainted inside a just-unhidden panel */
+  .nav-panel li { opacity: 0; transform: translateY(-6px); transition: opacity var(--dur-base) var(--ease-brand), transform var(--dur-base) var(--ease-brand); }
+  .nav-group[data-open] .nav-panel li { opacity: 1; transform: none; transition-delay: calc(var(--i, 0) * 40ms + 30ms); }
+  html:not(.js) .nav-panel li { opacity: 1; transform: none; }
+  .nav-caret { transition: transform var(--dur-base) var(--ease-brand); }
+
+  /* ── Scroll reveals: JS adds .motion-on to <html> and sets start states inline ── */
+  .word-mask { display: inline-block; overflow: hidden; vertical-align: top; padding-bottom: 0.08em; margin-bottom: -0.08em; }
+
+  /* ── Page transition: thin teal progress line ── */
+  .nav-progress {
+    position: fixed; z-index: 70; top: 0; left: 0; right: 0; height: 3px; pointer-events: none;
+    background: #12b5a6; transform: scaleX(0); transform-origin: left; opacity: 0;
+  }
+  .nav-progress.is-loading { opacity: 1; animation: nav-load 2.4s cubic-bezier(0.1, 0.7, 0.2, 1) forwards; }
+  .nav-progress.is-done { opacity: 0; transform: scaleX(1); transition: transform 0.2s var(--ease-brand), opacity 0.35s 0.15s; }
+  @keyframes nav-load { from { transform: scaleX(0.05); } to { transform: scaleX(0.85); } }
+
+  /* ── Reading progress: a tiny van drives across the top ── */
+  .read-progress { position: fixed; z-index: 45; top: var(--header-h); left: 0; right: 0; height: 18px; pointer-events: none; }
+  .read-progress__track { position: absolute; left: 0; right: 0; top: 8px; height: 2px; background: radial-gradient(circle, #c5cdd6 1px, transparent 1.4px) left center / 8px 2px repeat-x; }
+  .read-progress__fill { position: absolute; left: 0; right: 0; top: 8px; height: 2px; background: #12b5a6; transform: scaleX(var(--p, 0)); transform-origin: left; }
+  .read-progress__van { position: absolute; top: 0; left: 0; width: 30px; height: 18px; transform: translateX(calc(var(--p, 0) * (100vw - 34px))); }
+  .read-progress__dot { position: absolute; right: 2px; top: 5px; width: 8px; height: 8px; border-radius: 99px; background: #d9dee4; transition: background-color var(--dur-base); }
+  .read-progress[data-done] .read-progress__dot { background: #ff6a3d; }
+
+  /* ── Route-line motif down the side of long pages (drawn with clip-path by JS) ── */
+  .side-route { position: absolute; top: 0; left: 0; width: 44px; pointer-events: none; z-index: 1; }
+  .side-route > svg:first-child { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+  .side-route__parcel { position: absolute; top: 0; left: 0; width: 22px; height: 20px; margin: -10px 0 0 -11px; will-change: transform; }
+
+  /* ── Parallax decor (floating cartons / pallets) ── */
+  .decor { position: absolute; pointer-events: none; z-index: 0; opacity: 0.55; }
+  .decor svg { width: 100%; height: auto; display: block; }
+
+  /* ── Forms: step slides, success parcel ── */
+  [data-step] { will-change: auto; }
+  .success-scene { display: block; width: 180px; height: 70px; margin-bottom: 0.75rem; }
+  .success-scene .s-box { animation: s-drop 0.7s var(--ease-brand) 0.1s both; transform-box: fill-box; transform-origin: 50% 100%; }
+  .success-scene .s-route { clip-path: inset(0 100% 0 0); animation: s-draw 0.8s var(--ease-brand) 0.5s forwards; }
+  .success-scene .s-dot { transform-box: fill-box; transform-origin: center; animation: s-pop 0.4s var(--ease-brand) 1.2s both, s-pulse 1.6s ease-out 1.6s infinite; }
+  @keyframes s-drop { from { transform: translateY(-46px) rotate(-8deg); opacity: 0; } 60% { transform: translateY(3px) rotate(2deg); opacity: 1; } to { transform: none; } }
+  @keyframes s-draw { to { clip-path: inset(0 0 0 0); } }
+  @keyframes s-pop { from { transform: scale(0); } to { transform: scale(1); } }
+  @keyframes s-pulse { 0% { transform: scale(1); opacity: 1; } 70% { transform: scale(1.6); opacity: 0.35; } 100% { transform: scale(1); opacity: 1; } }
+
+  /* ── Optional desktop cursor dot (never replaces the native cursor) ── */
+  .cursor-dot {
+    position: fixed; z-index: 80; top: 0; left: 0; width: 10px; height: 10px; margin: -5px 0 0 -5px; border-radius: 99px; pointer-events: none;
+    background: rgba(18, 181, 166, 0.55); transform: translate3d(var(--cx, -40px), var(--cy, -40px), 0) scale(var(--cs, 1));
+    transition: transform 0.12s linear, opacity var(--dur-base); opacity: 0;
+  }
+  .cursor-dot.on { opacity: 1; }
+  .cursor-dot.is-hot { --cs: 3.2; background: rgba(18, 181, 166, 0.18); }
+}
+
+/* View-transition keyframes (Astro <ClientRouter />): content slides + fades, header stays put. */
+@keyframes kin-page-out { to { opacity: 0; transform: translate3d(0, -14px, 0); } }
+@keyframes kin-page-in { from { opacity: 0; transform: translate3d(0, 18px, 0); } }
+@keyframes kin-page-out-back { to { opacity: 0; transform: translate3d(0, 14px, 0); } }
+@keyframes kin-page-in-back { from { opacity: 0; transform: translate3d(0, -18px, 0); } }
+
+@media (prefers-reduced-motion: reduce) {
+  .card-motion { transform: none !important; }
+  .cursor-dot, .side-route__parcel { display: none; }
+  .btn { transform: none !important; }
+  .success-scene .s-route { clip-path: none; }
+}
+@media (forced-colors: active) {
+  .cursor-dot, .decor { display: none; }
+  .btn-primary::before { display: none; }
+}

@@ -1,0 +1,65 @@
+---
+import { SITE } from '@/config/site';
+import { organization, website, breadcrumbs as crumbsLd, webPage, abs, type JsonLd, type Crumb } from '@/lib/schema';
+
+export interface SeoProps {
+  /** Full <title>, ≤ 60 characters. */
+  title: string;
+  /** Meta description, ≤ 155 characters. */
+  description: string;
+  /** Path for the canonical URL. Defaults to the current path. */
+  path?: string;
+  image?: string;
+  imageAlt?: string;
+  type?: 'website' | 'article';
+  noindex?: boolean;
+  /** Extra JSON-LD nodes (Service, FAQPage, LocalBusiness …). */
+  schema?: JsonLd[];
+  /** Inner pages pass breadcrumbs; BreadcrumbList is emitted automatically. */
+  crumbs?: Crumb[];
+  publishedTime?: Date;
+  modifiedTime?: Date;
+}
+
+const p = Astro.props as SeoProps;
+const path = (p.path ?? Astro.url.pathname).replace(/\.html$/, '').replace(/(.)\/$/, '$1');
+const canonical = abs(path);
+const image = abs(p.image ?? SITE.defaultOgImage);
+const imageAlt = p.imageAlt ?? `${SITE.brand}: ${SITE.tagline}`;
+
+if (import.meta.env.DEV || import.meta.env.PROD) {
+  if (p.title.length > 60) console.warn(`[seo] title > 60 chars (${p.title.length}) on ${path}: ${p.title}`);
+  if (p.description.length > 155) console.warn(`[seo] description > 155 chars (${p.description.length}) on ${path}`);
+}
+
+const graph: JsonLd[] = [
+  organization(),
+  website(),
+  webPage({ url: path, title: p.title, description: p.description }),
+  ...(p.crumbs && p.crumbs.length > 1 ? [crumbsLd(p.crumbs)] : []),
+  ...(p.schema ?? []),
+];
+const jsonLd = JSON.stringify({ '@context': 'https://schema.org', '@graph': graph }).replace(/</g, '\\u003c');
+---
+<title>{p.title}</title>
+<meta name="description" content={p.description} />
+<link rel="canonical" href={canonical} />
+<link rel="alternate" hreflang="en-CA" href={canonical} />
+<link rel="alternate" hreflang="x-default" href={canonical} />
+{p.noindex ? <meta name="robots" content="noindex, follow" /> : <meta name="robots" content="index, follow, max-image-preview:large" />}
+
+<meta property="og:site_name" content={SITE.brand} />
+<meta property="og:locale" content="en_CA" />
+<meta property="og:type" content={p.type ?? 'website'} />
+<meta property="og:title" content={p.title} />
+<meta property="og:description" content={p.description} />
+<meta property="og:url" content={canonical} />
+<meta property="og:image" content={image} />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:alt" content={imageAlt} />
+{p.publishedTime && <meta property="article:published_time" content={p.publishedTime.toISOString()} />}
+{p.modifiedTime && <meta property="article:modified_time" content={p.modifiedTime.toISOString()} />}
+
+
+<script type="application/ld+json" set:html={jsonLd} />

@@ -1,0 +1,40 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import PageHero from '@/components/ui/PageHero.astro';
+import Art from '@/components/illustrations/Art.astro';
+import CtaBand from '@/components/ui/CtaBand.astro';
+import Icon from '@/components/ui/Icon.astro';
+import { CITIES } from '@/data/cities';
+import { localBusiness } from '@/lib/schema';
+const crumbs = [{ name: 'Home', href: '/' }, { name: 'Service areas', href: '/service-areas' }];
+---
+<BaseLayout
+  title="GTA Delivery Service Areas | Kinematics"
+  description="Kinematics delivers next day and same day across Toronto, Mississauga, Brampton, Vaughan and Markham. Find your city and see neighbourhoods we cover."
+  crumbs={crumbs}
+  schema={[localBusiness({ url: '/service-areas' })]}
+>
+  <PageHero
+    eyebrow="Service areas"
+    title="Where does Kinematics deliver in the GTA?"
+    answer="Kinematics delivers online orders with its own EV first fleet across five Greater Toronto Area cities: Toronto, Mississauga, Brampton, Vaughan and Markham. Next day delivery is standard throughout, same day is available for eligible postal codes when orders are placed by late morning, and coverage is confirmed by postal code."
+    crumbs={crumbs}
+  >
+    <Art slot="art" scene="map" alt="Stylized map of the GTA showing Brampton, Vaughan, Markham, Mississauga and Toronto along Lake Ontario." />
+  </PageHero>
+  <section class="container-site py-16 sm:py-20" aria-labelledby="cities-title">
+    <h2 id="cities-title" class="text-2xl sm:text-[2rem]">Choose your city</h2>
+    <ul class="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+      {CITIES.map((c) => (
+        <li class="group relative rounded-card border border-slate-line p-6 transition-colors hover:border-teal card-motion">
+          <p class="text-sm font-semibold text-slate">{c.region}</p>
+          <h3 class="mt-1 text-2xl"><a href={`/service-areas/${c.slug}`} class="no-underline after:absolute after:inset-0">Delivery in {c.name}</a></h3>
+          <p class="mt-2 text-slate">{c.neighbourhoods.slice(0, 4).join(', ')} and more.</p>
+          <span class="mt-4 inline-flex items-center gap-1.5 font-semibold" aria-hidden="true">View {c.name} <Icon name="arrow" size={18} /></span>
+        </li>
+      ))}
+    </ul>
+    <p class="mt-10 max-w-2xl text-slate">Shipping to customers outside the GTA? We fulfil those orders too and hand them to national carriers. <a href="/services/fulfillment" class="link">See fulfillment</a>.</p>
+  </section>
+  <CtaBand />
+</BaseLayout>

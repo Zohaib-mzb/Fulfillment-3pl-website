@@ -1,0 +1,22 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import Breadcrumbs from '@/components/ui/Breadcrumbs.astro';
+import { LEGAL_EFFECTIVE_DATE } from '@/config/site';
+interface Props { title: string; h1: string; description: string; path: string; intro?: string }
+const { title, h1, description, path, intro } = Astro.props;
+const crumbs = [{ name: 'Home', href: '/' }, { name: h1, href: path }];
+const effective = new Date(LEGAL_EFFECTIVE_DATE + 'T12:00:00Z').toLocaleDateString('en-CA', { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' });
+---
+<BaseLayout title={title} description={description} crumbs={crumbs}>
+  <section class="bg-cloud">
+    <div class="container-site pb-10 pt-8 sm:pt-10">
+      <Breadcrumbs crumbs={crumbs} class="mb-8" />
+      <h1 class="text-[2.4rem] sm:text-5xl">{h1}</h1>
+      <p class="mt-4 text-slate">Effective date: <time datetime={LEGAL_EFFECTIVE_DATE}>{effective}</time></p>
+      {intro && <p class="lede mt-4 max-w-3xl">{intro}</p>}
+    </div>
+  </section>
+  <div class="container-site py-12 sm:py-16">
+    <div class="prose-kin legal"><slot /></div>
+  </div>
+</BaseLayout>

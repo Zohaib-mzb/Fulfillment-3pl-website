@@ -1,0 +1,23 @@
+---
+/**
+ * Dev-only render target for marketing stills (scripts/render-careers.mjs).
+ * No pages are generated unless KIN_RENDER=1, so this never ships or reaches the sitemap.
+ */
+import '@/styles/fonts.css';
+export function getStaticPaths() {
+  return process.env.KIN_RENDER === '1' ? [{ params: { still: 'careers' } }] : [];
+}
+---
+<!doctype html>
+<html lang="en-CA">
+  <head><meta charset="utf-8" /><meta name="robots" content="noindex" /><title>Render</title>
+    <style>html,body{margin:0;height:100%;overflow:hidden;background:#E3ECF1}#stage{position:fixed;inset:0}</style>
+  </head>
+  <body>
+    <div id="stage"></div>
+    <script>
+      import mount from '@/components/stills/CareersStill';
+      mount(document.getElementById('stage')!).then(() => { (window as any).__stillReady = true; });
+    </script>
+  </body>
+</html>

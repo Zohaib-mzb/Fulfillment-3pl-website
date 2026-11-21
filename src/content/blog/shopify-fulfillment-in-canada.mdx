@@ -1,0 +1,115 @@
+---
+title: "Shopify fulfillment in Canada: setup, inventory sync and avoiding stockouts"
+seoTitle: "Shopify Fulfillment in Canada: Setup Guide | Kinematics"
+description: "How to set up Shopify fulfillment with a Canadian 3PL: clean product data, store connection, locations, shipping zones and avoiding stockouts."
+answer: "Setting up Shopify fulfillment in Canada with a 3PL means connecting your store so orders flow to the warehouse, mapping every SKU so stock levels sync back accurately, and configuring shipping rates and delivery promises by region. Avoiding stockouts then comes down to reorder points, safety stock and watching inbound shipments, not guesswork."
+published: 2026-11-19
+category: shopify
+cover: ./covers/shopify-fulfillment-in-canada.svg
+coverAlt: "Illustration of a packing station where a box is closed beside a printer printing a barcode label."
+relatedServices: ["fulfillment", "same-day-delivery", "final-mile-delivery"]
+faqs:
+  - q: "How does Shopify send orders to a 3PL?"
+    a: "Through an app or integration that connects your store to the warehouse system. New orders are sent automatically, and fulfillment status and tracking numbers are sent back to Shopify."
+  - q: "What is a reorder point?"
+    a: "The stock level at which you should place a new purchase order. A common formula is average daily sales multiplied by supplier lead time in days, plus safety stock."
+  - q: "Does Kinematics have a Shopify app?"
+    a: "A one click Kinematics app in the Shopify App Store is coming soon. Today we connect your store for you during onboarding."
+---
+
+Moving from packing orders yourself to working with a fulfillment partner is one of the biggest operational upgrades a Shopify brand can make. The setup is straightforward when you do it in the right order, and the payoff is a store that always knows what is really on the shelf. This guide walks through the steps for Canadian brands and finishes with practical ways to avoid running out of stock.
+
+## How do Shopify and a 3PL fit together?
+
+The basic loop looks like this:
+
+1. A customer places an order on your Shopify store.
+2. The order is sent to the 3PL automatically.
+3. The warehouse picks, packs and labels it.
+4. The tracking number goes back to Shopify, which marks the order fulfilled and notifies the customer.
+5. Stock levels at the warehouse sync back to Shopify so your storefront stays accurate.
+
+Everything in the setup is about making that loop reliable.
+
+## Step 1: Clean up your product data
+
+Fulfillment runs on data, and small inconsistencies cause big problems later. Before connecting anything:
+
+- **Give every variant a unique SKU.** One SKU per size, colour and style. No duplicates, no blanks.
+- **Add barcodes where you can.** Scannable codes make receiving and picking faster and more accurate.
+- **Record weights and dimensions.** They affect packaging choices and shipping rates.
+- **Decide how bundles work.** Is a bundle its own prebuilt SKU, or assembled from component SKUs at packing time?
+- **Archive old products** you no longer sell, so they don't clutter the sync.
+
+## Step 2: Connect your store
+
+Your 3PL will connect to Shopify through an app or integration. During setup, confirm:
+
+- Which order types are sent (all orders, or only certain sales channels or locations).
+- How edits and cancellations are handled after an order has been sent.
+- What syncs back: fulfillment status, tracking numbers and stock levels.
+
+At Kinematics, Shopify is our primary [integration](/integrations). A one click app is coming soon; for now, we connect your store for you during onboarding.
+
+## Step 3: Set up locations and inventory
+
+Shopify uses **locations** to know where stock is held and which location fulfils which orders. If all your stock moves to the 3PL, that warehouse becomes your fulfilling location. If you keep some stock at a retail shop or your own space, set up each location and decide which one fulfils online orders first.
+
+When your first inbound shipment is received, the warehouse count becomes the source of truth. Compare it with what you expected and resolve differences before you go live.
+
+## Step 4: Configure shipping for Canada
+
+This is where your delivery promise is made, so take care with it:
+
+- **Create shipping zones.** At minimum: your local region, the rest of Canada and any international destinations you serve.
+- **Offer faster options where you can deliver them.** If your 3PL delivers in the GTA, add a "Next day delivery (GTA)" rate limited to those postal codes, and a [same day option](/services/same-day-delivery) where it is available.
+- **Name rates clearly.** Customers should know exactly what each option means.
+- **Show cutoffs.** "Order by late morning for same day" sets clear expectations.
+
+## Step 5: Test before you go live
+
+Place test orders that cover the cases you see in real life:
+
+- A single item order and a multi item order.
+- An order with a bundle or kit.
+- An order to each shipping zone.
+- An order that is edited after it is placed, and one that is cancelled.
+
+Check each one appears at the warehouse correctly and that tracking flows back to Shopify. It is much easier to fix a mapping problem with test orders than with real customers.
+
+## How do I avoid stockouts?
+
+Once fulfillment is running, the most common problem is running out of popular products. A few habits prevent most stockouts.
+
+### Set reorder points
+
+A reorder point tells you when to place a new purchase order. A simple version:
+
+> **Reorder point = average daily sales × supplier lead time (days) + safety stock**
+
+If a product sells about 10 units a day, your supplier takes 20 days to deliver and you want 50 units of safety stock, your reorder point is 10 × 20 + 50 = 250 units. When stock falls to 250, reorder.
+
+### Choose safety stock deliberately
+
+Safety stock protects you against demand spikes and late deliveries. Products with unpredictable sales, long lead times or high importance to your business deserve more of it.
+
+### Watch inbound shipments
+
+Stock that is "on the way" isn't sellable yet. Share expected arrival dates with your 3PL so receiving is ready, and keep an eye on delays.
+
+### Plan around peaks
+
+Sales events, launches and the holiday season change everything. Increase stock and confirm warehouse capacity well before the busy period, not during it.
+
+### Keep bundles honest
+
+If bundles are built from component SKUs, make sure each component's stock level is reflected in the bundle's availability. Otherwise you can sell a bundle you can't actually build.
+
+## Common sync mistakes to avoid
+
+- Duplicate or missing SKUs on variants.
+- Editing inventory manually in Shopify after the 3PL is connected, which overwrites real counts.
+- Forgetting to map new products before launch.
+- Leaving old shipping rates active that promise speeds you no longer offer.
+
+With clean data, a tested connection and clear reorder rules, Shopify fulfillment becomes something you rarely have to think about. Comparing providers? Read [how to choose the best fulfillment company for Shopify in Canada](/blog/best-shopify-fulfillment-company-canada). If you would like a Toronto based team to handle storage, packing and GTA delivery for your Shopify store, [get a custom quote](/get-a-quote) or read more about our [fulfillment services](/services/fulfillment).

@@ -1,0 +1,17 @@
+---
+import { Image } from 'astro:assets';
+import { BLOG_CATEGORIES } from '@/content.config';
+import { fmtDate, minutes, type Post } from '@/lib/blog';
+interface Props { post: Post; headingLevel?: 2 | 3; eager?: boolean }
+const { post, headingLevel = 2, eager = false } = Astro.props;
+const H = `h${headingLevel}` as 'h2' | 'h3';
+---
+<article class="group relative flex flex-col overflow-hidden rounded-card border border-slate-line bg-white transition-colors hover:border-teal card-motion">
+  <Image src={post.data.cover} alt="" width={480} height={360} widths={[360, 480, 720]} sizes="(min-width: 1024px) 380px, (min-width: 640px) 50vw, 100vw" loading={eager ? 'eager' : 'lazy'} class="aspect-[4/3] w-full object-cover" />
+  <div class="flex flex-1 flex-col p-6">
+    <p class="text-sm font-semibold text-teal-ink">{BLOG_CATEGORIES[post.data.category]}</p>
+    <H class="mt-2 text-xl leading-snug"><a href={`/blog/${post.id}`} class="no-underline after:absolute after:inset-0">{post.data.title}</a></H>
+    <p class="mt-2 line-clamp-3 flex-1 text-slate">{post.data.description}</p>
+    <p class="mt-4 text-sm text-slate"><time datetime={post.data.published.toISOString().slice(0, 10)}>{fmtDate(post.data.published)}</time> · {minutes(post)} min read</p>
+  </div>
+</article>
