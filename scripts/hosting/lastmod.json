@@ -1,0 +1,118 @@
+{
+  "src/content/careers/delivery-driver.mdx": {
+    "date": "2026-11-21T02:12:16.000Z",
+    "blob": "ee298b876307a488f73da1c33cd5fc93f790f8a1"
+  },
+  "src/content/careers/dispatcher.mdx": {
+    "date": "2026-11-21T02:12:16.000Z",
+    "blob": "9124a911f6adb682e7ad17bd9de75f8c2b4cd096"
+  },
+  "src/content/careers/final-mile-delivery-drivers.mdx": {
+    "date": "2026-11-21T02:47:06.000Z",
+    "blob": "7fad16bd8127c4c02e585c0dd4e54296b9d6bc03"
+  },
+  "src/content/careers/warehouse-associate.mdx": {
+    "date": "2026-11-21T02:12:16.000Z",
+    "blob": "8bebe90a8ad83924d5d515327443541514ecc9d3"
+  },
+  "src/data/cities.ts": {
+    "date": "2026-11-21T02:47:06.000Z",
+    "blob": "0fd329ede51fe144d8683b1f159c849041d013a2"
+  },
+  "src/data/industries.ts": {
+    "date": "2026-11-21T02:12:16.000Z",
+    "blob": "60f8d982db7c245ccab09b22608d6e018911abd5"
+  },
+  "src/data/services.ts": {
+    "date": "2026-11-21T02:47:06.000Z",
+    "blob": "ed320a37a7c095ee0a6849ec9277524d33d320cb"
+  },
+  "src/pages/about.astro": {
+    "date": "2026-11-21T02:47:06.000Z",
+    "blob": "175d5a76f30cb2c9878eda8d8144048f3b9ff8f1"
+  },
+  "src/pages/accessibility.astro": {
+    "date": "2026-11-21T02:47:06.000Z",
+    "blob": "b42abe27e85e6bad8cb7c6b434e7439578672255"
+  },
+  "src/pages/blog/index.astro": {
+    "date": "2026-11-21T02:12:16.000Z",
+    "blob": "d25472fea626cda1e7fe2c67368fa618e601e449"
+  },
+  "src/pages/careers/[slug].astro": {
+    "date": "2026-11-21T02:47:06.000Z",
+    "blob": "62bcec718cf360638ab0f37714c7bbd54180d111"
+  },
+  "src/pages/careers/index.astro": {
+    "date": "2026-11-21T02:12:16.000Z",
+    "blob": "4a63b79d2e2761fd76c675aea912069fb65409c8"
+  },
+  "src/pages/contact.astro": {
+    "date": "2026-11-21T02:12:16.000Z",
+    "blob": "ae340aac8e0d481a9d5b8763a2deb6c63aa6817d"
+  },
+  "src/pages/cookies.astro": {
+    "date": "2026-11-21T02:12:16.000Z",
+    "blob": "2bb403303117ea714d29877b17ff501b5b528ce5"
+  },
+  "src/pages/drive-with-us.astro": {
+    "date": "2026-11-21T02:12:16.000Z",
+    "blob": "c1d4b7fcabf2e603b00465eb1a8bf0f4a9826a42"
+  },
+  "src/pages/ev-delivery.astro": {
+    "date": "2026-11-21T02:47:06.000Z",
+    "blob": "b801afa0fabf013cb2c6e7360f0914791b70b1d4"
+  },
+  "src/pages/faq.astro": {
+    "date": "2026-11-21T02:47:06.000Z",
+    "blob": "e64dafdd4f76494f0d852abfaf0e9fb7e7e97210"
+  },
+  "src/pages/get-a-quote.astro": {
+    "date": "2026-11-23T02:03:38.000Z",
+    "blob": "0a805284131afc54aa7e2b5f605748c21989ce1e"
+  },
+  "src/pages/how-it-works.astro": {
+    "date": "2026-11-21T02:47:06.000Z",
+    "blob": "b4e99dbdaca98b0187e0a549ed76baae2c733f96"
+  },
+  "src/pages/index.astro": {
+    "date": "2026-11-21T02:47:06.000Z",
+    "blob": "60c6c4c755aca4c1311f1cb19a83be8ad293c345"
+  },
+  "src/pages/industries/[slug].astro": {
+    "date": "2026-11-21T02:12:16.000Z",
+    "blob": "bb82f068d7d70ec5850f1c37b7d7fe207eff8bbd"
+  },
+  "src/pages/industries/index.astro": {
+    "date": "2026-11-21T02:12:16.000Z",
+    "blob": "36b726d47337a5ac5e20772e5ed34515e5cc8f22"
+  },
+  "src/pages/integrations.astro": {
+    "date": "2026-11-21T02:47:06.000Z",
+    "blob": "2536c6883063ba23ee2ca3a1656e05f580e2ba2c"
+  },
+  "src/pages/privacy.astro": {
+    "date": "2026-11-21T02:47:06.000Z",
+    "blob": "0c297a47d94aa54e0642be95cc63f781fd616563"
+  },
+  "src/pages/service-areas/[city].astro": {
+    "date": "2026-11-21T02:47:06.000Z",
+    "blob": "82dde9e64d45aa5046abd30c32caa7d68685f643"
+  },
+  "src/pages/service-areas/index.astro": {
+    "date": "2026-11-21T02:12:16.000Z",
+    "blob": "9e64aff74bfb553e214d70581d2587a2a9aca01c"
+  },
+  "src/pages/services/[slug].astro": {
+    "date": "2026-11-21T02:12:16.000Z",
+    "blob": "d1dea7ec8ec3dc64de5de26a01ad0a829382427f"
+  },
+  "src/pages/terms.astro": {
+    "date": "2026-11-21T02:47:06.000Z",
+    "blob": "d712d17c3fc5df725da212e4ad5ab01784f3ede7"
+  },
+  "src/pages/track.astro": {
+    "date": "2026-11-23T02:03:38.000Z",
+    "blob": "8ad1f8c296d9dacd2910c7e7a9e8d4ba47cc3c17"
+  }
+}
