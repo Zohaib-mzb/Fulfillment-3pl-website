@@ -1,10 +1,12 @@
 ---
 /** CASL: express consent for marketing email. Unchecked by default; never required. */
 import { SITE } from '@/config/site';
+interface Props { /** WebMCP toolparamdescription */ toolparam?: string }
+const { toolparam } = Astro.props;
 ---
 <div class="rounded-xl bg-cloud p-4">
   <label class="flex cursor-pointer items-start gap-3">
-    <input type="checkbox" name="casl_consent" value="yes" class="mt-1 size-5 shrink-0 accent-[#12806F]" />
+    <input type="checkbox" name="casl_consent" value="yes" toolparamdescription={toolparam} class="mt-1 size-5 shrink-0 accent-[#12806F]" />
     <span class="text-[0.95rem]">Yes, {SITE.legalName} may email me occasional news, guides and offers. I can unsubscribe at any time.</span>
   </label>
   <p class="mt-2 pl-8 text-sm text-slate">Optional. We will reply to your enquiry either way. See our <a href="/privacy" class="link">privacy policy</a>. {SITE.legalName}, {SITE.address.locality}, {SITE.address.regionName} · {SITE.email}</p>

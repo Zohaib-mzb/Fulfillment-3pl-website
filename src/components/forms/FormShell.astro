@@ -4,9 +4,11 @@
  * timing field and an aria-live status region. Enhanced by form-enhance.ts.
  */
 import type { FormId } from '@/lib/forms';
-interface Props { form: FormId; submitLabel: string; steps?: boolean; class?: string; enctype?: 'multipart/form-data' | 'application/x-www-form-urlencoded'; successTitle?: string; successText?: string }
+interface Props { form: FormId; submitLabel: string; steps?: boolean; class?: string; enctype?: 'multipart/form-data' | 'application/x-www-form-urlencoded'; successTitle?: string; successText?: string;
+  /** WebMCP declarative API: registers the form as a tool for in-browser agents. Both must be set. */
+  toolname?: string; tooldescription?: string }
 const { form, submitLabel, steps = false, class: cls = '', enctype = 'multipart/form-data',
-  successTitle = 'Thanks, it’s in.', successText = 'A real person on our team will reply within one business day.' } = Astro.props;
+  successTitle = 'Thanks, it’s in.', successText = 'A real person on our team will reply within one business day.', toolname, tooldescription } = Astro.props;
 ---
 <form
   method="post"
@@ -15,6 +17,8 @@ const { form, submitLabel, steps = false, class: cls = '', enctype = 'multipart/
   class:list={['kin-form', cls]}
   data-kin-form={form}
   data-steps={steps ? '' : undefined}
+  toolname={toolname && tooldescription ? toolname : undefined}
+  tooldescription={toolname && tooldescription ? tooldescription : undefined}
   novalidate
 >
   <input type="hidden" name="form" value={form} />
@@ -22,7 +26,7 @@ const { form, submitLabel, steps = false, class: cls = '', enctype = 'multipart/
   <input type="hidden" name="_page" value={Astro.url.pathname} />
   <!-- Honeypot: humans never see or fill this. -->
   <div aria-hidden="true" class="absolute -left-[9999px] h-px w-px overflow-hidden">
-    <label>Company website (leave blank)<input type="text" name="company_website" tabindex="-1" autocomplete="off" /></label>
+    <label>Company website (leave blank)<input type="text" name="company_website" tabindex="-1" autocomplete="off" toolparamdescription={toolname ? 'Spam trap. Always leave this empty.' : undefined} /></label>
   </div>
 
   <slot />

@@ -80,6 +80,7 @@ for (const f of files) {
   for (const m of html.matchAll(/href="(\/[^"#?]*)/g)) {
     const href = m[1].replace(/\/$/, '') || '/';
     if (href.startsWith('/_astro') || href.startsWith('/og/') || staticFiles.has(href) || /\.(png|svg|ico|xml|txt|webmanifest|woff2?)$/.test(href)) continue;
+    if (href.endsWith(".md")) { if (!existsSync(path.join(root, href.slice(1)))) err(`missing markdown twin → ${href}`); continue; }
     if (!pages.has(href)) err(`broken internal link → ${href}`);
   }
 

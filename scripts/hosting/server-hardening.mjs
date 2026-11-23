@@ -6,6 +6,9 @@
  *  - cache rules per path
  *  - a 301 from www.kinematicstech.ca to the apex
  *  - precompressed Brotli or gzip variants (*.br / *.gz written at build time) for static text files
+ *  - Markdown for agents: /page.md, or the page URL itself when Accept prefers text/markdown over
+ *    text/html (browsers always get HTML). Both representations send Vary: Accept.
+ *  - Link header on every page: llms.txt (describedby) and the page's .md twin (alternate)
  * Anything it does not handle falls through to Astro unchanged (pages, /api/submit, 404, redirects, ranges).
  */
 import http from 'node:http';
@@ -25,6 +28,7 @@ const SECURITY = {
 
 const TYPES = {
   '.html': 'text/html; charset=utf-8',
+  '.md': 'text/markdown; charset=utf-8',
   '.js': 'text/javascript; charset=utf-8',
   '.mjs': 'text/javascript; charset=utf-8',
   '.css': 'text/css; charset=utf-8',
@@ -55,23 +59,51 @@ function fileFor(urlPath) {
   return abs;
 }
 
-function servePrecompressed(req, res) {
-  if (req.method !== 'GET' && req.method !== 'HEAD') return false;
+/** Quality the Accept header gives a media type (most specific match wins; absent means 1 for any). */
+function quality(accept, type) {
+  if (!accept) return type === 'text/html' ? 1 : 0;
+  const [major] = type.split('/');
+  let best = -1, q = 0;
+  for (const part of accept.split(',')) {
+    const [range, ...params] = part.trim().toLowerCase().split(';').map((x) => x.trim());
+    const spec = range === type ? 3 : range === `${major}/*` ? 2 : range === '*/*' ? 1 : 0;
+    if (!spec || spec < best) continue;
+    const qp = params.find((x) => x.startsWith('q='));
+    const v = qp ? Number(qp.slice(2)) : 1;
+    if (spec > best || v > q) { best = spec; q = Number.isFinite(v) ? v : 0; }
+  }
+  return q;
+}
+/** True only when the client explicitly ranks Markdown above HTML. Ties go to HTML. */
+export const prefersMarkdown = (accept) => quality(String(accept || ''), 'text/markdown') > quality(String(accept || ''), 'text/html');
+
+const exists = (f) => { try { return fs.statSync(f).isFile(); } catch { return false; } };
+
+/** Page URL (no extension) → its built .md twin, or null. */
+function markdownFor(urlPath) {
+  if (path.extname(urlPath)) return null;
+  const html = fileFor(urlPath);
+  if (!html) return null;
+  const md = html.replace(/\.html$/, '.md');
+  return exists(md) ? md : null;
+}
+const mdUrl = (urlPath) => (urlPath === '/' ? '/index.md' : `${urlPath}.md`);
+
+/** Serve a built file: Brotli or gzip variant when accepted, else (for .md only) the file itself. */
+function serveFile(req, res, file, { identity = false } = {}) {
   const accept = String(req.headers['accept-encoding'] || '');
-  const urlPath = (req.url || '/').split('?')[0].split('#')[0];
-  const file = fileFor(urlPath);
-  if (!file) return false;
   const type = TYPES[path.extname(file)];
   if (!type) return false;
-  for (const [enc, ext] of [['br', '.br'], ['gzip', '.gz']]) {
-    if (!new RegExp(`\\b${enc}\\b`).test(accept)) continue;
+  const tag = path.extname(file).slice(1);
+  const variants = [['br', '.br'], ['gzip', '.gz']].filter(([enc]) => new RegExp(`\\b${enc}\\b`).test(accept));
+  if (identity) variants.push([null, '']);
+  for (const [enc, ext] of variants) {
     let st;
     try { st = fs.statSync(file + ext); } catch { continue; }
     if (!st.isFile()) continue;
-    const etag = `W/"${st.size.toString(16)}-${st.mtimeMs.toString(16)}-${enc}"`;
+    const etag = `W/"${st.size.toString(16)}-${st.mtimeMs.toString(16)}-${enc || 'id'}-${tag}"`;
     res.setHeader('Content-Type', type);
-    res.setHeader('Content-Encoding', enc);
-    res.setHeader('Vary', 'Accept-Encoding');
+    if (enc) res.setHeader('Content-Encoding', enc);
     res.setHeader('ETag', etag);
     res.setHeader('Last-Modified', st.mtime.toUTCString());
     if (req.headers['if-none-match'] === etag) { res.statusCode = 304; res.end(); return true; }
@@ -82,6 +114,33 @@ function servePrecompressed(req, res) {
     return true;
   }
   return false;
+}
+
+function servePrecompressed(req, res) {
+  if (req.method !== 'GET' && req.method !== 'HEAD') return false;
+  const urlPath = (req.url || '/').split('?')[0].split('#')[0];
+  const file = fileFor(urlPath);
+  if (!file) return false;
+  const ext = path.extname(file);
+
+  if (ext === '.md') {
+    res.setHeader('Vary', 'Accept, Accept-Encoding');
+    return serveFile(req, res, file, { identity: true });
+  }
+  if (ext === '.html' && !path.extname(urlPath)) {
+    // A page: both representations vary on Accept; the HTML one links to the Markdown twin.
+    const md = markdownFor(urlPath);
+    res.setHeader('Vary', 'Accept, Accept-Encoding');
+    res.setHeader('Link', [`</llms.txt>; rel="describedby"; type="text/plain"`, ...(md ? [`<${mdUrl(urlPath)}>; rel="alternate"; type="text/markdown"`] : [])].join(', '));
+    if (md && prefersMarkdown(req.headers.accept)) {
+      res.removeHeader('Link');
+      res.setHeader('Content-Location', mdUrl(urlPath));
+      return serveFile(req, res, md, { identity: true });
+    }
+  } else {
+    res.setHeader('Vary', 'Accept-Encoding');
+  }
+  return serveFile(req, res, file);
 }
 
 const CANONICAL_HOST = 'kinematicstech.ca';

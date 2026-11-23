@@ -39,7 +39,7 @@ const steps = ['Your company', 'Volume and services', 'Current setup'];
       </div>
 
       <div class="card">
-        <FormShell form="quote" submitLabel="Get my custom quote" steps successTitle="Thanks, your quote request is in." successText="We will review your details and reply with a plan and custom quote, usually within one business day.">
+        <FormShell form="quote" submitLabel="Get my custom quote" steps toolname="request_quote" tooldescription="Request a custom quote from Kinematics for 3PL warehousing, fulfillment and same day or next day delivery in the Greater Toronto Area. The team replies by email, usually within one business day." successTitle="Thanks, your quote request is in." successText="We will review your details and reply with a plan and custom quote, usually within one business day.">
           <div class="mb-6" aria-hidden="true">
             <div class="flex items-center gap-2">
               {steps.map((_, i) => <span data-step-dot class="h-1.5 flex-1 rounded-full bg-slate-line data-[active]:bg-teal" data-active={i === 0 ? '' : undefined}></span>)}
@@ -49,26 +49,26 @@ const steps = ['Your company', 'Volume and services', 'Current setup'];
 
           <fieldset data-step class="grid gap-5">
             <legend class="contents"><span data-step-title tabindex="-1" class="mb-1 block font-heading text-2xl font-semibold outline-none">1. {steps[0]}</span></legend>
-            <Field name="company" label="Company name" required autocomplete="organization" />
-            <Field name="website" label="Website" type="url" autocomplete="url" placeholder="https://" inputmode="url" />
+            <Field name="company" label="Company name" required autocomplete="organization" toolparam="Legal or trading name of the business asking for the quote." />
+            <Field name="website" label="Website" type="url" autocomplete="url" placeholder="https://" inputmode="url" toolparam="Optional. The business website or online store URL, starting with https://." />
             <div class="grid gap-5 sm:grid-cols-2">
-              <Field name="name" label="Your name" required autocomplete="name" />
-              <Field name="email" label="Work email" type="email" required autocomplete="email" />
+              <Field name="name" label="Your name" required autocomplete="name" toolparam="Full name of the person Kinematics should reply to." />
+              <Field name="email" label="Work email" type="email" required autocomplete="email" toolparam="Email address where the quote should be sent." />
             </div>
-            <Field name="phone" label="Phone" type="tel" autocomplete="tel" />
+            <Field name="phone" label="Phone" type="tel" autocomplete="tel" toolparam="Optional. Phone number for follow up questions." />
           </fieldset>
 
           <fieldset data-step class="mt-10 grid gap-6">
             <legend class="contents"><span data-step-title tabindex="-1" class="mb-1 block font-heading text-2xl font-semibold outline-none">2. {steps[1]}</span></legend>
-            <Choices name="monthly_orders" legend="Roughly how many orders do you ship a month?" options={MONTHLY_ORDERS} required columns={3} />
-            <Choices name="services" legend="Which services do you need?" options={SERVICES_NEEDED} type="checkbox" hint="Choose all that apply." />
+            <Choices name="monthly_orders" legend="Roughly how many orders do you ship a month?" options={MONTHLY_ORDERS} required columns={3} toolparam="Approximate number of orders the business ships per month. Pick the closest range." />
+            <Choices name="services" legend="Which services do you need?" options={SERVICES_NEEDED} type="checkbox" hint="Choose all that apply." toolparam="Optional. Every Kinematics service the business needs; more than one can be chosen." />
           </fieldset>
 
           <fieldset data-step class="mt-10 grid gap-6">
             <legend class="contents"><span data-step-title tabindex="-1" class="mb-1 block font-heading text-2xl font-semibold outline-none">3. {steps[2]}</span></legend>
-            <Select name="current_carrier" label="How do you ship today?" options={CURRENT_CARRIERS} />
-            <TextArea name="notes" label="Anything else we should know?" hint="Products, packaging, peak seasons, delivery areas, timelines." rows={5} />
-            <Consent />
+            <Select name="current_carrier" label="How do you ship today?" options={CURRENT_CARRIERS} toolparam="Optional. How the business ships orders today." />
+            <TextArea name="notes" label="Anything else we should know?" hint="Products, packaging, peak seasons, delivery areas, timelines." rows={5} toolparam="Optional. Details that help the quote: products, packaging, peak seasons, delivery areas and timelines." />
+            <Consent toolparam="Marketing email consent. Leave unchecked unless the person has explicitly said yes to receiving news and offers." />
             <p class="text-sm text-slate">By submitting, you agree that we may use these details to reply to your request, as described in our <a href="/privacy" class="link">privacy policy</a>.</p>
           </fieldset>
         </FormShell>

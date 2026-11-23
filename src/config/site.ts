@@ -41,8 +41,14 @@ export const SITE = {
     regionName: 'Ontario',
     country: 'CA',
   },
-  /** Social profiles. Only LinkedIn; it stays hidden until `href` is filled in. */
-  social: [{ label: 'LinkedIn', href: '' }],
+  /**
+   * Public profiles. Leave a value empty until the real URL exists: empty or [placeholder]
+   * values are never output. Filled values appear in schema `sameAs` (Organization and
+   * LocalBusiness); LinkedIn also shows in the footer.
+   */
+  socials: { linkedin: '' as string },
+  /** Google Business Profile URL (for example the maps.app.goo.gl share link). */
+  googleBusinessProfile: '' as string,
   locale: 'en-CA',
   defaultOgImage: '/og/default.png',
 } as const;
@@ -51,6 +57,10 @@ export const SITE = {
 export const isPlaceholder = (v: string | null | undefined) => !v || /^\[.*\]$/.test(v.trim());
 
 export const hasPhone = () => !isPlaceholder(SITE.phone);
+/** Profile URLs for schema `sameAs`: only real https URLs that are set. */
+export const sameAsUrls = (): string[] =>
+  [SITE.socials.linkedin, SITE.googleBusinessProfile].filter((u) => !isPlaceholder(u) && /^https:\/\/[^\s]+$/.test(u.trim())).map((u) => u.trim());
+
 export const phoneHref = () => (hasPhone() ? `tel:${SITE.phoneE164}` : null);
 
 /**

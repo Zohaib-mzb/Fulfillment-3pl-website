@@ -3,7 +3,7 @@
  * into one @graph. Values come only from src/config/site.ts — placeholders
  * (e.g. the phone number) are omitted rather than published.
  */
-import { SITE, FLAGS, isPlaceholder } from '@/config/site';
+import { SITE, FLAGS, isPlaceholder, sameAsUrls } from '@/config/site';
 
 export type JsonLd = Record<string, unknown>;
 
@@ -13,7 +13,7 @@ const ORG_ID = `${SITE.url}/#organization`;
 const SITE_ID = `${SITE.url}/#website`;
 const LB_ID = `${SITE.url}/#localbusiness`;
 
-const sameAs = () => SITE.social.map((s) => s.href).filter(Boolean);
+const sameAs = sameAsUrls;
 
 const telephone = () => (isPlaceholder(SITE.phone) ? undefined : SITE.phoneE164);
 
@@ -100,6 +100,7 @@ export function localBusiness(opts: { city?: string; url?: string; description?:
     address: postalAddress(),
     openingHoursSpecification: openingHours(),
     areaServed: opts.city ? areaServed([opts.city]) : areaServed(),
+    ...(sameAs().length ? { sameAs: sameAs() } : {}),
     parentOrganization: { '@id': ORG_ID },
   };
 }

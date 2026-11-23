@@ -5,6 +5,7 @@ import mdx from '@astrojs/mdx';
 import sitemap from '@astrojs/sitemap';
 import node from '@astrojs/node';
 import hosting from './scripts/hosting/integration.mjs';
+import { lastmodFor, writeManifest } from './scripts/hosting/lastmod.mjs';
 import tailwindcss from '@tailwindcss/vite';
 import { fileURLToPath } from 'node:url';
 
@@ -54,7 +55,11 @@ export default defineConfig({
       filter: (page) => !/\/(404|thanks|api)(\/|$)/.test(page),
       changefreq: 'weekly',
       i18n: { defaultLocale: 'en', locales: { en: 'en-CA' } },
+      // Real last changed date per page (frontmatter for posts, git for everything else).
+      serialize: (item) => ({ ...item, lastmod: lastmodFor(new URL(item.url).pathname) }),
     }),
+    // Runs after the sitemap: records committed dates for builds without git history (see lastmod.mjs).
+    { name: 'kin:lastmod-manifest', hooks: { 'astro:build:done': ({ logger }) => { if (writeManifest()) logger.info('lastmod.json updated from git'); } } },
   ],
   vite: {
     plugins: [slimThreeForFiber(), tailwindcss()],

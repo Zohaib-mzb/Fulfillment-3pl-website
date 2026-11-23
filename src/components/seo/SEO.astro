@@ -22,8 +22,10 @@ export interface SeoProps {
 }
 
 const p = Astro.props as SeoProps;
-const path = (p.path ?? Astro.url.pathname).replace(/\.html$/, '').replace(/(.)\/$/, '$1');
+const path = (p.path ?? Astro.url.pathname).replace(/\.html$/, '').replace(/(.)\/$/, '$1').replace(/^\/index$/, '/');
 const canonical = abs(path);
+/** Markdown twin written at build time for every indexable page (scripts/hosting/markdown.mjs). */
+const markdownHref = path === '/' ? '/index.md' : `${path}.md`;
 const image = abs(p.image ?? SITE.defaultOgImage);
 const imageAlt = p.imageAlt ?? `${SITE.brand}: ${SITE.tagline}`;
 
@@ -46,6 +48,7 @@ const jsonLd = JSON.stringify({ '@context': 'https://schema.org', '@graph': grap
 <link rel="canonical" href={canonical} />
 <link rel="alternate" hreflang="en-CA" href={canonical} />
 <link rel="alternate" hreflang="x-default" href={canonical} />
+{!p.noindex && <link rel="alternate" type="text/markdown" href={markdownHref} />}
 {p.noindex ? <meta name="robots" content="noindex, follow" /> : <meta name="robots" content="index, follow, max-image-preview:large" />}
 
 <meta property="og:site_name" content={SITE.brand} />

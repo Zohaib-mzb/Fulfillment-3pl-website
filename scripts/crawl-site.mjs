@@ -91,6 +91,10 @@ const inSitemap = new Set();
 for (const f of smFiles) {
   const xml = await (await fetch(BASE + f)).text();
   for (const m of xml.matchAll(/<loc>([^<]+)<\/loc>/g)) inSitemap.add(m[1].replace(SITE, '').replace(/(.)\/$/, '$1') || '/');
+  for (const m of xml.matchAll(/<url>([\s\S]*?)<\/url>/g)) {
+    const lm = m[1].match(/<lastmod>([^<]+)<\/lastmod>/)?.[1];
+    if (!lm || Number.isNaN(Date.parse(lm)) || !/^\d{4}-\d{2}-\d{2}/.test(lm)) errors.push(`sitemap URL without ISO 8601 lastmod: ${m[1].match(/<loc>([^<]+)/)?.[1]}`);
+  }
 }
 for (const r of built) {
   if (noindex.has(r) && inSitemap.has(r)) errors.push(`noindex page in sitemap: ${r}`);
@@ -102,6 +106,7 @@ for (const u of inSitemap) if (!built.includes(u)) errors.push(`sitemap URL has 
 const robots = await (await fetch(`${BASE}/robots.txt`)).text();
 if (!/User-agent: \*\nAllow: \//.test(robots)) errors.push('robots.txt does not allow all crawlers');
 if (!robots.includes(`Sitemap: ${SITE}/sitemap-index.xml`)) errors.push('robots.txt missing sitemap');
+if (!/User-agent: \*\n(?:(?:Allow|Disallow): [^\n]*\n)*Content-Signal: search=yes, ai-input=yes, ai-train=yes\n/.test(robots)) errors.push('robots.txt: Content-Signal missing from the User-agent: * group');
 for (const bot of ['GPTBot', 'ClaudeBot', 'PerplexityBot', 'Google-Extended']) if (!new RegExp(`User-agent: ${bot}\\nAllow: /`).test(robots)) errors.push(`robots.txt does not allow ${bot}`);
 
 // ── 404 ──
@@ -118,6 +123,25 @@ if (!nfHtml.includes('missed the door')) errors.push('404 response is not the br
   const home = await fetch(`${BASE}/`, { headers: { 'Accept-Encoding': 'br, gzip' } });
   if (!/br|gzip/.test(home.headers.get('content-encoding') || '')) notes.push('home page is not compressed (expected with npm start; the plain preview server only gzips)');
   for (const h of ['strict-transport-security', 'x-content-type-options', 'referrer-policy', 'x-frame-options', 'permissions-policy']) if (!home.headers.get(h)) notes.push(`missing ${h} header (set by npm start, not by npm run preview)`);
+  // Markdown for agents: every sitemap page has a .md twin; Accept negotiation; Vary and Link headers.
+  const BROWSER = 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8';
+  const llms = await (await fetch(`${BASE}/llms.txt`)).text();
+  for (const u of inSitemap) {
+    const md = u === '/' ? '/index.md' : `${u}.md`;
+    const r = await fetch(BASE + md);
+    const body = await r.text();
+    if (r.status !== 200 || !/text\/markdown/.test(r.headers.get('content-type') || '') || /<script|<svg|<nav/i.test(body)) errors.push(`markdown: ${md} → ${r.status} ${r.headers.get('content-type')}`);
+    if (!llms.includes(`${SITE}${md})`)) errors.push(`llms.txt does not list ${md}`);
+    const html = await fetch(BASE + u, { headers: { Accept: BROWSER } });
+    const page = await html.text();
+    if (!/text\/html/.test(html.headers.get('content-type') || '')) errors.push(`browser Accept on ${u} did not get HTML`);
+    if (!/\bAccept\b/.test(html.headers.get('vary') || '')) errors.push(`${u}: HTML response missing Vary: Accept`);
+    if (html.headers.get('link') !== `</llms.txt>; rel="describedby"; type="text/plain", <${md}>; rel="alternate"; type="text/markdown"`) errors.push(`${u}: Link header is ${html.headers.get('link')}`);
+    if (!page.includes(`<link rel="alternate" type="text/markdown" href="${md}">`)) errors.push(`${u}: head is missing the text/markdown alternate link`);
+    const neg = await fetch(BASE + u, { headers: { Accept: 'text/markdown' } });
+    if (!/text\/markdown/.test(neg.headers.get('content-type') || '') || !/\bAccept\b/.test(neg.headers.get('vary') || '')) errors.push(`${u}: Accept: text/markdown → ${neg.headers.get('content-type')}, Vary ${neg.headers.get('vary')}`);
+    await neg.arrayBuffer();
+  }
   const js = [...assets].find((a) => a.startsWith('/_astro/') && a.endsWith('.js'));
   if (js) { const r = await fetch(BASE + js); if (!/immutable/.test(r.headers.get('cache-control') || '')) errors.push('/_astro assets not immutable'); }
 }

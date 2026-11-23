@@ -39,10 +39,12 @@ const faqs = [
         data-live={live ? 'true' : 'false'}
         role="search"
         aria-label="Track a parcel"
+        toolname="track_parcel"
+        tooldescription="Look up the delivery status of a Kinematics parcel in the Greater Toronto Area using its tracking number."
       >
         <label for="tracking" class="field-label">Tracking number</label>
         <div class="flex flex-col gap-3 sm:flex-row">
-          <input id="tracking" name="tracking" class="field flex-1 font-mono tracking-wider" required autocomplete="off" autocapitalize="characters" spellcheck="false" inputmode="text" maxlength="40" pattern="[A-Za-z0-9\-]{6,40}" aria-describedby="tracking-hint tracking-status" />
+          <input id="tracking" name="tracking" class="field flex-1 font-mono tracking-wider" required autocomplete="off" autocapitalize="characters" spellcheck="false" inputmode="text" maxlength="40" pattern="[A-Za-z0-9\-]{6,40}" toolparamdescription="The parcel tracking number from the delivery text or email: 6 to 40 letters, numbers or dashes." aria-describedby="tracking-hint tracking-status" />
           <button type="submit" class="btn btn-primary">Track</button>
         </div>
         <p id="tracking-hint" class="field-hint">Letters and numbers, usually 10 to 20 characters.</p>

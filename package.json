@@ -31,6 +31,7 @@
     "@astrojs/sitemap": "^3.7.6",
     "@fontsource/inter": "^5.3.0",
     "@fontsource/space-grotesk": "^5.3.0",
+    "@mixmark-io/domino": "^2.2.0",
     "@react-three/drei": "^10.7.9",
     "@react-three/fiber": "^9.8.2",
     "@resvg/resvg-js": "^2.6.2",
@@ -45,7 +46,9 @@
     "satori": "^0.63.2",
     "sharp": "^0.35.5",
     "tailwindcss": "^4.3.5",
-    "three": "^0.187.0"
+    "three": "^0.187.0",
+    "turndown": "^7.2.5",
+    "turndown-plugin-gfm": "^1.0.2"
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.12",

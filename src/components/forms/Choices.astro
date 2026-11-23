@@ -1,7 +1,7 @@
 ---
 /** Radio or checkbox group inside a fieldset with a proper legend. */
-interface Props { name: string; legend: string; options: readonly string[]; type?: 'radio' | 'checkbox'; required?: boolean; hint?: string; columns?: 1 | 2 | 3 }
-const { name, legend, options, type = 'radio', required = false, hint, columns = 2 } = Astro.props;
+interface Props { name: string; legend: string; options: readonly string[]; type?: 'radio' | 'checkbox'; required?: boolean; hint?: string; columns?: 1 | 2 | 3; /** WebMCP toolparamdescription, set on each option input */ toolparam?: string }
+const { name, legend, options, type = 'radio', required = false, hint, columns = 2, toolparam } = Astro.props;
 const id = `f-${name}`;
 ---
 <fieldset aria-describedby={[hint && `${id}-hint`, `${id}-error`].filter(Boolean).join(' ')} data-group={name} data-required={required ? '' : undefined}>
@@ -10,7 +10,7 @@ const id = `f-${name}`;
   <div class:list={['grid gap-2.5', columns === 2 && 'sm:grid-cols-2', columns === 3 && 'sm:grid-cols-3']}>
     {options.map((o, i) => (
       <label class="flex min-h-12 cursor-pointer items-center gap-3 rounded-xl border border-slate-line bg-white px-4 py-2.5 has-[:checked]:border-teal has-[:checked]:bg-teal-50">
-        <input type={type} name={name} value={o} required={type === 'radio' && required && i === 0} class="size-5 shrink-0 accent-[#12806F]" />
+        <input type={type} name={name} value={o} required={type === 'radio' && required && i === 0} toolparamdescription={toolparam} class="size-5 shrink-0 accent-[#12806F]" />
         <span>{o}</span>
       </label>
     ))}

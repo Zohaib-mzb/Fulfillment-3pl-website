@@ -14,6 +14,8 @@ export const GET: APIRoute = () => {
     'Allow: /',
     'Disallow: /api/',
     'Disallow: /thanks',
+    // Content Signals (contentsignals.org): search indexing, AI answers and AI training are all allowed.
+    'Content-Signal: search=yes, ai-input=yes, ai-train=yes',
     '',
     '# AI and answer engine crawlers: allowed',
     ...AI_BOTS.flatMap((b) => [`User-agent: ${b}`, 'Allow: /', 'Disallow: /api/', '']),
