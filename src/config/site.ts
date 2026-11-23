@@ -46,7 +46,7 @@ export const SITE = {
    * values are never output. Filled values appear in schema `sameAs` (Organization and
    * LocalBusiness); LinkedIn also shows in the footer.
    */
-  socials: { linkedin: '' as string },
+  socials: { linkedin: 'https://www.linkedin.com/company/kinematics-tech/' as string },
   /** Google Business Profile URL (for example the maps.app.goo.gl share link). */
   googleBusinessProfile: '' as string,
   locale: 'en-CA',
