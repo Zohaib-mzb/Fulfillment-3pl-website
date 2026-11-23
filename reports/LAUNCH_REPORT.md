@@ -6,6 +6,11 @@ Every measurement in this report comes from the **production server itself** (`n
 
 ---
 
+**2026-11-23, agent readiness (Hostinger check items 1 to 6; item 7, the MCP Server Card, skipped on purpose):** robots.txt now has `Content-Signal: search=yes, ai-input=yes, ai-train=yes` in the `User-agent: *` group. All 50 sitemap URLs carry an ISO 8601 `<lastmod>`: blog posts use their frontmatter dates, other pages the git date of their source. `sameAs` is wired to `SITE.socials.linkedin` and `SITE.googleBusinessProfile`; both are empty, so it is not output yet. Every indexable page has a Markdown twin at `/page.md`, which is listed in llms.txt and also served from the page URL when `Accept` prefers `text/markdown`. Both versions send `Vary: Accept`. Every HTML page sends a `Link` header (llms.txt and its .md), and the head has a matching `<link rel="alternate" type="text/markdown">`. The quote and tracking forms carry WebMCP attributes, with no script and no autosubmit. The home canonical also had a bug, pointing at `/index`; it now points at `/`.
+- **Live check through Hostinger's CDN:** curl with `Accept: text/markdown` gets Markdown on `/`, `/services/fulfillment` and `/about`. Normal browser Accept headers, no Accept header and real Chrome loads all get HTML, including straight after a Markdown request to the same URL. Pages come back as `DYNAMIC`, meaning the CDN does not cache them, so there is no cache mixing and content negotiation stays.
+- **Local checks:** build, audit, crawl (with new checks for these features), schema validation, axe (0 violations in 104 loads) and astro check all pass. Home scores 100 in all four Lighthouse categories on both mobile and desktop.
+- **Commits:** `93c2e67`, `9333fea`. See DECISIONS.md, "Agent readiness round".
+
 **2026-11-23, hero video on phones:** phones now get a 480p H.264 loop (1.35 MB instead of 2.5 MB AV1) that starts right after the poster paints. That cut time to first frame from 2.3–2.5 s to about 1.7 s on emulated slow 4G (locally), and it is verified live on kinematicstech.ca: 854×480 served from the CDN and playing (commit `5334ed0`).
 
 ## 0. Update: positioning, services and phone (2026-11-21)
