@@ -6,6 +6,8 @@ Every measurement in this report comes from the **production server itself** (`n
 
 ---
 
+**2026-11-23, hero video on phones:** phones now get a 480p H.264 loop (1.35 MB instead of 2.5 MB AV1) that starts right after the poster paints. That cut time to first frame from 2.3–2.5 s to about 1.7 s on emulated slow 4G (locally), and it is verified live on kinematicstech.ca: 854×480 served from the CDN and playing (commit `5334ed0`).
+
 ## 0. Update: positioning, services and phone (2026-11-21)
 
 A copy and content update. Design, animations and page structure are unchanged, apart from the two grid tweaks and one bug fix noted below.
