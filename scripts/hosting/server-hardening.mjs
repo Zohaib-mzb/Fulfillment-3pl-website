@@ -44,7 +44,8 @@ export function cacheControl(p) {
   if (p.startsWith('/og/')) return 'public, max-age=86400, stale-while-revalidate=604800';
   if (/^\/(favicon\.ico|favicon\.svg|favicon-32\.png|apple-touch-icon\.png|icon-192\.png|icon-512\.png|icon-maskable-512\.png)$/.test(p)) return 'public, max-age=604800, stale-while-revalidate=86400';
   if (/^\/(llms\.txt|robots\.txt|rss\.xml|sitemap-index\.xml|sitemap-\d+\.xml)$/.test(p)) return 'public, max-age=3600, stale-while-revalidate=86400';
-  if (p.startsWith('/api/')) return 'no-store';
+  if (p.startsWith('/api/') || p === '/mcp') return 'no-store';
+  if (p.startsWith('/.well-known/')) return 'public, max-age=3600, stale-while-revalidate=86400';
   return 'public, max-age=0, must-revalidate';
 }
 
@@ -123,6 +124,7 @@ function servePrecompressed(req, res) {
   if (!file) return false;
   const ext = path.extname(file);
 
+  if (urlPath.startsWith('/.well-known/') && ext === '.json') return serveFile(req, res, file, { identity: true });
   if (ext === '.md') {
     res.setHeader('Vary', 'Accept, Accept-Encoding');
     return serveFile(req, res, file, { identity: true });
@@ -131,7 +133,7 @@ function servePrecompressed(req, res) {
     // A page: both representations vary on Accept; the HTML one links to the Markdown twin.
     const md = markdownFor(urlPath);
     res.setHeader('Vary', 'Accept, Accept-Encoding');
-    res.setHeader('Link', [`</llms.txt>; rel="describedby"; type="text/plain"`, ...(md ? [`<${mdUrl(urlPath)}>; rel="alternate"; type="text/markdown"`] : [])].join(', '));
+    res.setHeader('Link', [`</llms.txt>; rel="describedby"; type="text/plain"`, ...(md ? [`<${mdUrl(urlPath)}>; rel="alternate"; type="text/markdown"`] : []), `</.well-known/mcp/server-card.json>; rel="service-desc"; type="application/json"`, `</mcp>; rel="service"; title="MCP server"`].join(', '));
     if (md && prefersMarkdown(req.headers.accept)) {
       res.removeHeader('Link');
       res.setHeader('Content-Location', mdUrl(urlPath));

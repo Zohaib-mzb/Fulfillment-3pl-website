@@ -89,12 +89,95 @@ function setupSteps(form: HTMLFormElement) {
   };
 }
 
+/** Visible label text for a field (or its group legend), without the required / optional markers. */
+function fieldLabel(form: HTMLFormElement, el: Element & { name: string; id: string }) {
+  const lab = (el.id && form.querySelector(`label[for="${el.id}"]`)) || form.querySelector(`[data-group="${el.name}"] legend`);
+  const t = (lab?.textContent || el.name.replace(/_/g, ' ')).replace(/\s*\*\s*$/, '').replace(/\s*\(optional\)\s*$/, '').trim();
+  return t.charAt(0).toUpperCase() + t.slice(1);
+}
+
+/** "Field: value" lines for every filled field, skipping hidden, honeypot and file inputs. */
+function emailLines(form: HTMLFormElement) {
+  const rows: [string, string][] = [];
+  const seen = new Set<string>();
+  form.querySelectorAll<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>('input[name], select[name], textarea[name]').forEach((el) => {
+    if (el.type === 'hidden' || el.type === 'file' || el.name === 'company_website' || seen.has(el.name)) return;
+    seen.add(el.name);
+    if (el.name === 'casl_consent') { rows.push(['Marketing email consent', (el as HTMLInputElement).checked ? 'Yes' : 'No']); return; }
+    const vals = el instanceof HTMLInputElement && (el.type === 'radio' || el.type === 'checkbox')
+      ? Array.from(form.querySelectorAll<HTMLInputElement>(`[name="${el.name}"]:checked`)).map((i) => i.value)
+      : [el.value.trim()];
+    const v = vals.filter(Boolean).join(', ');
+    if (v) rows.push([fieldLabel(form, el), v]);
+  });
+  return rows;
+}
+
+const SUBJECTS: Record<string, (v: (k: string) => string) => string> = {
+  quote: (v) => `Quote request: ${v('company') || v('name')}`,
+  contact: (v) => `Contact: ${v('name')}`,
+  careers: (v) => `Job application: ${v('name')}`,
+  driver: (v) => `Driver application: ${v('name')}`,
+};
+
+/** Form could not be sent by the server: hand the person a ready email instead of an error. */
+function showFallback(form: HTMLFormElement) {
+  const to = form.dataset.mailTo || 'info@kinematicstech.ca';
+  const fd = new FormData(form);
+  const v = (k: string) => String(fd.get(k) || '').trim();
+  const subject = (SUBJECTS[form.dataset.kinForm!] ?? (() => 'Website enquiry'))(v);
+  const date = new Date().toLocaleString('en-CA', { timeZone: 'America/Toronto', dateStyle: 'long', timeStyle: 'short' });
+  const body = [...emailLines(form).map(([k, val]) => `${k}: ${val}`), '', `Page: ${location.href.split('#')[0]}`, `Date: ${date} (Toronto time)`].join('\n');
+  const enc = encodeURIComponent;
+  // Keep the mailto link under about 1,800 characters (some mail apps cut longer links).
+  let short = body;
+  const mailto = () => `mailto:${to}?subject=${enc(subject)}&body=${enc(short)}`;
+  while (mailto().length > 1800 && short.length > 200) short = short.slice(0, Math.floor(short.length * 0.9));
+  if (short !== body) short += '\n[Shortened. Use Copy details on the website for the full text.]';
+  while (mailto().length > 1800) short = short.slice(0, -50);
+  const panel = form.querySelector<HTMLElement>('[data-form-fallback]')!;
+  const gmail = panel.querySelector<HTMLAnchorElement>('[data-fallback-gmail]')!;
+  const app = panel.querySelector<HTMLAnchorElement>('[data-fallback-mailto]')!;
+  gmail.href = `https://mail.google.com/mail/?view=cm&fs=1&to=${enc(to)}&su=${enc(subject)}&body=${enc(body.slice(0, 6000))}`;
+  app.href = mailto();
+  if (matchMedia('(pointer: coarse)').matches) app.parentElement!.prepend(app);
+  if (form.querySelector('input[type="file"]')) panel.querySelector<HTMLElement>('[data-fallback-resume]')!.hidden = false;
+  const copy = panel.querySelector<HTMLButtonElement>('[data-fallback-copy]')!;
+  const st = panel.querySelector<HTMLElement>('[data-fallback-status]')!;
+  copy.onclick = async () => {
+    const text = `To: ${to}\nSubject: ${subject}\n\n${body}`;
+    try { await navigator.clipboard.writeText(text); } catch {
+      const ta = Object.assign(document.createElement('textarea'), { value: text });
+      panel.append(ta); ta.select(); document.execCommand('copy'); ta.remove();
+    }
+    st.textContent = `Copied. Paste it into an email to ${to}.`;
+  };
+  Array.from(form.children).forEach((c) => { if (c !== panel) (c as HTMLElement).hidden = true; });
+  panel.classList.remove('hidden');
+  panel.focus();
+  window.kinTrack?.('form_fallback', { form: form.dataset.kinForm });
+}
+
+/** Prefill from the URL (start_quote links): text fields, selects and choices by name. Never consent. */
+function prefill(form: HTMLFormElement) {
+  const q = new URLSearchParams(location.search);
+  q.forEach((val, key) => {
+    if (key.startsWith('_') || key === 'form' || key === 'company_website' || key === 'casl_consent') return;
+    form.querySelectorAll<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>(`[name="${CSS.escape(key)}"]`).forEach((el) => {
+      if (el.type === 'hidden' || el.type === 'file') return;
+      if (el instanceof HTMLInputElement && (el.type === 'radio' || el.type === 'checkbox')) { if (el.value === val) el.checked = true; }
+      else el.value = val.slice(0, 500);
+    });
+  });
+}
+
 export function enhanceForms() {
   document.querySelectorAll<HTMLFormElement>('form[data-kin-form]').forEach((form) => {
     if (form.dataset.enhanced) return;
     form.dataset.enhanced = 'true';
     const t = form.querySelector<HTMLInputElement>('input[name="_t"]');
     if (t) t.value = String(Date.now());
+    prefill(form);
     const steps = form.hasAttribute('data-steps') ? setupSteps(form) : null;
     const status = form.querySelector<HTMLElement>('[data-form-status]')!;
     const formError = form.querySelector<HTMLElement>('[data-form-error]')!;
@@ -130,17 +213,19 @@ export function enhanceForms() {
           status.textContent = 'Sent. Thank you.';
           return;
         }
-        if (json.errors) {
+        if (res.status === 422 && json.errors) {
           Object.entries(json.errors).forEach(([k, v]) => setError(form, k, v));
           const first = form.querySelector<HTMLElement>('[aria-invalid="true"]');
           if (steps && first) steps.show(Math.max(0, steps.stepOf(first)));
           first?.focus();
+          formError.textContent = json.message || 'Please check the highlighted fields and try again.';
+          formError.classList.remove('hidden');
+          return;
         }
-        formError.textContent = json.message || 'Please check the highlighted fields and try again.';
-        formError.classList.remove('hidden');
+        // Sending failed (email not configured, server error, rate limit): offer the email fallback.
+        showFallback(form);
       } catch {
-        formError.textContent = 'Something went wrong sending your form. Please try again, or email info@kinematicstech.ca.';
-        formError.classList.remove('hidden');
+        showFallback(form);
       } finally {
         submit.disabled = false;
         submit.textContent = original;

@@ -104,7 +104,7 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
   try {
     await sendMail(
       {
-        to: env.EMAIL_TO || 'info@kinematicstech.ca',
+        to: env.FORM_TO_EMAIL || env.EMAIL_TO || 'info@kinematicstech.ca',
         from: env.EMAIL_FROM || 'Kinematics Website <forms@kinematicstech.ca>',
         replyTo: String(clean.email || ''),
         subject: subjectBits[form],

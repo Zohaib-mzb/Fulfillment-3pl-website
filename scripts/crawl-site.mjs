@@ -136,7 +136,7 @@ if (!nfHtml.includes('missed the door')) errors.push('404 response is not the br
     const page = await html.text();
     if (!/text\/html/.test(html.headers.get('content-type') || '')) errors.push(`browser Accept on ${u} did not get HTML`);
     if (!/\bAccept\b/.test(html.headers.get('vary') || '')) errors.push(`${u}: HTML response missing Vary: Accept`);
-    if (html.headers.get('link') !== `</llms.txt>; rel="describedby"; type="text/plain", <${md}>; rel="alternate"; type="text/markdown"`) errors.push(`${u}: Link header is ${html.headers.get('link')}`);
+    if (html.headers.get('link') !== `</llms.txt>; rel="describedby"; type="text/plain", <${md}>; rel="alternate"; type="text/markdown", </.well-known/mcp/server-card.json>; rel="service-desc"; type="application/json", </mcp>; rel="service"; title="MCP server"`) errors.push(`${u}: Link header is ${html.headers.get('link')}`);
     if (!page.includes(`<link rel="alternate" type="text/markdown" href="${md}">`)) errors.push(`${u}: head is missing the text/markdown alternate link`);
     const neg = await fetch(BASE + u, { headers: { Accept: 'text/markdown' } });
     if (!/text\/markdown/.test(neg.headers.get('content-type') || '') || !/\bAccept\b/.test(neg.headers.get('vary') || '')) errors.push(`${u}: Accept: text/markdown → ${neg.headers.get('content-type')}, Vary ${neg.headers.get('vary')}`);

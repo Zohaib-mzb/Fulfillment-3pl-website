@@ -10,6 +10,17 @@ import Footer from '@/components/layout/Footer.astro';
 import CookieBanner from '@/components/layout/CookieBanner.astro';
 import Analytics from '@/components/layout/Analytics.astro';
 import { ClientRouter } from 'astro:transitions';
+import { TOOL_INFO, QUOTE_FIELDS, services, serviceAreas, contact } from '@/lib/agent-tools';
+
+/** WebMCP tools registered in the page (only where navigator.modelContext exists). Kept under 2 KB. */
+const webmcp = JSON.stringify({
+  d: TOOL_INFO.map((t) => t.description),
+  s: services().map(({ name, url }) => [name, new URL(url).pathname]),
+  a: serviceAreas().map(({ name }) => name),
+  c: (({ email, phone, hours }) => ({ email, phone, hours: hours.join('; ') + ' (Toronto time)', page: '/contact' }))(contact()),
+  q: QUOTE_FIELDS,
+}).replace(/</g, '\\u003c');
+const webmcpJs = `addEventListener('load',()=>{if(!('modelContext' in navigator))return;try{const D=${webmcp},O=location.origin,T=(v)=>({content:[{type:'text',text:JSON.stringify(v)}]}),S=(p)=>({type:'object',properties:p}),str={type:'string'},m=navigator.modelContext;let n=0;const r=(name,f,inputSchema=S({}))=>{try{m.registerTool({name,description:D.d[n++],inputSchema,execute:async(i)=>T(f(i||{}))})}catch(e){}};const L2=(x)=>x.map(([name,p])=>({name,url:O+p}));r('get_services',()=>L2(D.s));r('get_service_areas',()=>D.a.map((name)=>({name,url:O+'/service-areas/'+name.toLowerCase()})));r('get_contact',()=>({...D.c,page:O+D.c.page}));r('start_quote',(i)=>{const u=new URL('/get-a-quote',O);for(const k of D.q)if(i[k])u.searchParams.set(k,String(i[k]).trim());return{url:u.href}},S(Object.fromEntries(D.q.map((k)=>[k,str]))));r('track_parcel',(i)=>{const t=String(i.tracking_number||'').trim();return/^[A-Za-z0-9-]{6,40}$/.test(t)?{url:O+'/track?tracking='+encodeURIComponent(t)}:{error:'Invalid tracking number'}},{...S({tracking_number:str}),required:['tracking_number']})}catch(e){}})`;
 
 /** Content slides + fades between pages; the header (named, animate none) stays put. */
 const ease = 'cubic-bezier(0.22, 1, 0.36, 1)';
@@ -33,6 +44,7 @@ const { bodyClass = '', preloadImage, ...seo } = Astro.props;
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <script is:inline>document.documentElement.classList.add('js')</script>
+    <script is:inline set:html={webmcpJs} />
     <ClientRouter fallback="animate" />
     <link rel="preload" href={headingFont} as="font" type="font/woff2" crossorigin />
     <link rel="preload" href={bodyFont} as="font" type="font/woff2" crossorigin />

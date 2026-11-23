@@ -4,6 +4,9 @@
  * timing field and an aria-live status region. Enhanced by form-enhance.ts.
  */
 import type { FormId } from '@/lib/forms';
+import { SITE } from '@/config/site';
+/** Fallback recipient (FORM_TO_EMAIL at build time, else the site email). */
+const mailTo = import.meta.env.FORM_TO_EMAIL || process.env.FORM_TO_EMAIL || SITE.email;
 interface Props { form: FormId; submitLabel: string; steps?: boolean; class?: string; enctype?: 'multipart/form-data' | 'application/x-www-form-urlencoded'; successTitle?: string; successText?: string;
   /** WebMCP declarative API: registers the form as a tool for in-browser agents. Both must be set. */
   toolname?: string; tooldescription?: string }
@@ -16,6 +19,7 @@ const { form, submitLabel, steps = false, class: cls = '', enctype = 'multipart/
   enctype={enctype}
   class:list={['kin-form', cls]}
   data-kin-form={form}
+  data-mail-to={mailTo}
   data-steps={steps ? '' : undefined}
   toolname={toolname && tooldescription ? toolname : undefined}
   tooldescription={toolname && tooldescription ? tooldescription : undefined}
@@ -37,6 +41,18 @@ const { form, submitLabel, steps = false, class: cls = '', enctype = 'multipart/
     {steps && <button type="button" class="btn btn-primary hidden" data-step-next>Next</button>}
     <button type="submit" class="btn btn-primary" data-submit>{submitLabel}</button>
     <span class="sr-only" aria-live="polite" data-form-status></span>
+  </div>
+
+  <div class="hidden rounded-card border border-teal bg-teal-50 p-6 sm:p-8" data-form-fallback tabindex="-1">
+    <p class="font-heading text-2xl font-bold">Almost done: send this from your email</p>
+    <p class="mt-2 text-navy/85">Our form could not send this just now. Your details are ready in an email to <strong>{mailTo}</strong>. Open it, check it and press send.</p>
+    <p class="mt-3 font-semibold text-navy" data-fallback-resume hidden>Please attach your resume to the email before sending.</p>
+    <div class="mt-6 flex flex-wrap gap-3" data-fallback-actions>
+      <a class="btn btn-primary" data-fallback-gmail target="_blank" rel="noopener" href="#">Open in Gmail<span class="sr-only"> (opens in a new tab)</span></a>
+      <a class="btn btn-secondary" data-fallback-mailto href="#">Open in my email app</a>
+      <button type="button" class="btn btn-secondary" data-fallback-copy>Copy details</button>
+    </div>
+    <p class="mt-3 text-sm text-slate" aria-live="polite" data-fallback-status></p>
   </div>
 
   <div class="hidden rounded-card border border-teal bg-teal-50 p-6 sm:p-8" data-form-success tabindex="-1">
