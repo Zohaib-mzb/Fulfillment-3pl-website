@@ -47,11 +47,23 @@ function lcpDone(): Promise<void> {
     const cap = setTimeout(done, 3000);
     let obs: PerformanceObserver | undefined;
     try {
-      obs = new PerformanceObserver(() => { clearTimeout(quiet); quiet = setTimeout(() => { clearTimeout(cap); done(); }, 400); });
+      // Quiet = 400 ms since the last LCP candidate painted (not since this observer was created:
+      // on the first page the observer usually starts after load, long after LCP).
+      obs = new PerformanceObserver((list) => {
+        const last = list.getEntries().at(-1);
+        const wait = Math.max(0, 400 - (performance.now() - (last?.startTime ?? performance.now())));
+        clearTimeout(quiet);
+        quiet = setTimeout(() => { clearTimeout(cap); done(); }, wait);
+      });
       obs.observe({ type: 'largest-contentful-paint', buffered: true });
     } catch { clearTimeout(cap); setTimeout(done, 800); }
   });
   return lcpSettled;
+}
+
+/** As soon as LCP has painted and gone quiet, without waiting for `load` or idle (the hero video on phones). */
+export function afterLcp(cb: () => void) {
+  lcpDone().then(cb);
 }
 
 /** After `load`, after LCP has painted, then idle — keeps heavy work off the critical path. */

@@ -3,6 +3,7 @@
  * Renders the hero film (the real R3F scene, deterministic via ?capture=1) to:
  *   public/media/hero-loop-<v>.mp4   H.264, 1280×720, 30 fps, muted, faststart
  *   public/media/hero-loop-<v>.webm  AV1 (SVT-AV1), same frames
+ *   public/media/hero-loop-<v>-mobile.mp4  H.264, 854×480, for phones
  *   src/assets/hero/poster.png       1920×1080 frame at HERO_POSTER_T
  *   reports/media/hero-loop.gif      small preview for the report (optional, --gif)
  * Requires the production preview running:  npm run build && npm run preview
@@ -64,7 +65,10 @@ await browser.close();
 const input = ['-y', '-loglevel', 'error', '-framerate', String(FPS), '-i', path.join(tmp, 'f%04d.png')];
 const mp4 = `public/media/hero-loop-${VERSION}.mp4`;
 const webm = `public/media/hero-loop-${VERSION}.webm`;
+const mobile = `public/media/hero-loop-${VERSION}-mobile.mp4`;
 execFileSync(ffmpeg, [...input, '-c:v', 'libx264', '-preset', 'veryslow', '-tune', 'animation', '-crf', '31', '-pix_fmt', 'yuv420p', '-g', String(FPS * 4), '-movflags', '+faststart', '-an', mp4], { stdio: 'inherit' });
+// phones: 480p H.264 (hardware decoded everywhere), 2 s keyframes so playback can start sooner
+execFileSync(ffmpeg, [...input, '-vf', 'scale=854:480:flags=lanczos', '-c:v', 'libx264', '-preset', 'veryslow', '-tune', 'animation', '-crf', '32', '-pix_fmt', 'yuv420p', '-g', String(FPS * 2), '-movflags', '+faststart', '-an', mobile], { stdio: 'inherit' });
 execFileSync(ffmpeg, [...input, '-c:v', 'libsvtav1', '-preset', '5', '-crf', '46', '-pix_fmt', 'yuv420p', '-g', String(FPS * 4), '-svtav1-params', 'tune=0', '-an', webm], { stdio: 'inherit' });
 if (args.includes('--gif')) {
   await mkdir('reports/media', { recursive: true });
@@ -73,5 +77,5 @@ if (args.includes('--gif')) {
   execFileSync(ffmpeg, ['-y', '-loglevel', 'error', '-ss', '29', '-t', '7', '-i', mp4, '-vf', 'fps=10,scale=480:-1:flags=lanczos,split[a][b];[a]palettegen=max_colors=64[p];[b][p]paletteuse=dither=bayer:bayer_scale=5', 'reports/media/hero-load-and-road.gif'], { stdio: 'inherit' });
   execFileSync(ffmpeg, ['-y', '-loglevel', 'error', '-i', mp4, '-vf', 'scale=640:-2', '-c:v', 'libx264', '-crf', '30', '-preset', 'slow', '-an', '-movflags', '+faststart', 'reports/media/hero-loop-preview.mp4'], { stdio: 'inherit' });
 }
-for (const f of [mp4, webm]) console.log(f, `${((await stat(f)).size / 1024 / 1024).toFixed(2)} MB`);
+for (const f of [mp4, mobile, webm]) console.log(f, `${((await stat(f)).size / 1024 / 1024).toFixed(2)} MB`);
 if (!process.env.FRAMES_DIR) await rm(tmp, { recursive: true, force: true });

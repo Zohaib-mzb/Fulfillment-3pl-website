@@ -4,7 +4,9 @@
  *  - LCP-safe: the poster frame (AVIF/WebP, preloaded) and the H1 paint first; nothing else blocks.
  *  - After load + idle, the controller picks a mode:
  *      3d     capable desktop  → real-time R3F scene (HeroScene.tsx, lazy chunk)
- *      video  mobile / low-end / no WebGL / slow → H.264 / AV1 loop of the same scene
+ *      video  mobile / low-end / no WebGL / slow → H.264 / AV1 loop of the same scene.
+ *             Phones get a 480p H.264 file (hardware decoded everywhere) and start it right after LCP;
+ *             desktops use AV1 only when the browser reports it as power efficient.
  *      poster prefers-reduced-motion or Save-Data → poster + static 8-step strip, no autoplay
  *  - Pause/play button (WCAG 2.2.2), captions synced to the shots, SSR text for crawlers.
  *  - Debug: ?hero=3d|video|poster forces a mode; ?capture=1 is used by scripts/capture-hero.mjs.
@@ -35,7 +37,8 @@ const first = shotAt(HERO_POSTER_T);
       />
     </picture>
     <video class="hero-video" data-hero-video muted loop playsinline preload="none" disablepictureinpicture aria-hidden="true" tabindex="-1">
-      <source data-src={`/media/hero-loop-${VIDEO_VERSION}.webm`} type='video/webm; codecs="av01.0.05M.08"' />
+      <source data-src={`/media/hero-loop-${VIDEO_VERSION}-mobile.mp4`} data-small type="video/mp4" />
+      <source data-src={`/media/hero-loop-${VIDEO_VERSION}.webm`} data-av1 type='video/webm; codecs="av01.0.05M.08"' />
       <source data-src={`/media/hero-loop-${VIDEO_VERSION}.mp4`} type="video/mp4" />
     </video>
     <div class="hero-canvas" data-hero-canvas aria-hidden="true"></div>
@@ -160,7 +163,7 @@ const first = shotAt(HERO_POSTER_T);
 
 <script>
   import { HERO_SHOTS, HERO_POSTER_T, shotAt } from '@/data/hero';
-  import { onPage, afterLoadIdle } from '@/scripts/lifecycle';
+  import { onPage, afterLoadIdle, afterLcp } from '@/scripts/lifecycle';
 
   type Mode = 'poster' | 'video' | '3d';
   type Api = { play(): void; pause(): void; seek(t: number): void; dispose(): void };
@@ -222,10 +225,27 @@ const first = shotAt(HERO_POSTER_T);
     });
 
     const onTime = () => setShot(shotAt(video.currentTime));
-    const startVideo = () => {
+    const isSmall = () => matchMedia('(pointer: coarse)').matches || innerWidth < 1024;
+    /** AV1 only where it is hardware (power efficient) decoded; software AV1 is slow to start on phones and low end laptops. */
+    const av1Efficient = async () => {
+      try {
+        const mc = (navigator as Navigator & { mediaCapabilities?: MediaCapabilities }).mediaCapabilities;
+        if (!mc) return false;
+        const r = await mc.decodingInfo({ type: 'file', video: { contentType: 'video/webm; codecs="av01.0.05M.08"', width: 1280, height: 720, bitrate: 600000, framerate: 24 } });
+        return r.supported && r.powerEfficient;
+      } catch { return false; }
+    };
+    const startVideo = async () => {
       if (disposed) return;
       mode = 'video';
-      video.querySelectorAll<HTMLSourceElement>('source[data-src]').forEach((s) => { s.src = s.dataset.src!; });
+      const small = isSmall();
+      const useAv1 = !small && (await av1Efficient());
+      if (disposed) return;
+      video.querySelectorAll<HTMLSourceElement>('source[data-src]').forEach((s) => {
+        const keep = small ? 'small' in s.dataset : !('small' in s.dataset) && (useAv1 || !('av1' in s.dataset));
+        if (keep) s.src = s.dataset.src!;
+        else s.remove();
+      });
       video.load();
       video.addEventListener('loadedmetadata', () => { try { video.currentTime = HERO_POSTER_T; } catch {} }, { once: true });
       video.addEventListener('timeupdate', onTime);
@@ -262,7 +282,9 @@ const first = shotAt(HERO_POSTER_T);
       root.classList.add('hero--capture');
       start3d();
     } else {
-      afterLoadIdle(() => (mode === '3d' ? start3d() : startVideo()));
+      // Video starts as soon as the poster (LCP) has painted; the 3D scene still waits for load + idle.
+      if (mode === '3d') afterLoadIdle(start3d);
+      else afterLcp(startVideo);
     }
 
     return () => {
