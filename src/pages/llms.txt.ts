@@ -22,7 +22,7 @@ export const GET: APIRoute = async () => {
     '- Delivery speeds: same day across the GTA (order by late morning, delivered the same day; exact cutoffs set per customer); next day as standard; rush on demand pickups and scheduled delivery windows within the GTA',
     '- Minimum volume: none; built for growing brands',
     '- Support: a named account contact and real people, not a ticket queue',
-    '- Fleet: EV first (electric vans are assigned routes first)',
+    '- Fleet: EV first (EVs run most routes and are assigned routes first), backed by cargo vans and box trucks for larger or bulk loads',
     '- Every delivery: live SMS and email tracking for the recipient, photo proof of delivery, signature on request',
     '- Labels and integrations: Kinematics shipping labels and a daily manifest; Shopify (primary; App Store app coming soon), WooCommerce, BigCommerce, CSV upload; API coming soon',
     '- Pricing: custom quotes only; no published rates',

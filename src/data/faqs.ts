@@ -28,6 +28,7 @@ export const FAQ_GROUPS: FaqGroup[] = [
       { q: 'Can I schedule a delivery time window?', a: 'Yes. Choose a delivery day and time window for appointments, business receiving hours or customers who need to be home, and we plan the route around it.' },
       { q: 'How does tracking work?', a: 'Your customer gets live tracking by SMS and email and can follow progress on delivery day. Every delivery is completed with photo proof, and we collect a signature on request.' },
       { q: 'Are your delivery vehicles electric?', a: 'Our fleet is EV first: electric vans are assigned to routes first, and route plans are built around their range. Read about [EV delivery](/ev-delivery).' },
+      { q: 'Is your whole fleet electric?', a: 'We are EV first. Most routes run on EVs, and we use cargo vans and box trucks when a load needs more space.' },
       { q: 'What if my customer is not home?', a: 'Parcels are left safely where possible and photographed. If a parcel can’t be left, the customer is notified and the parcel is held for another attempt or pickup, following rules agreed with you.' },
     ],
   },
