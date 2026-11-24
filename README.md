@@ -18,10 +18,6 @@
 
 </div>
 
-<p align="center">
-  <img src="reports/media/scroll-story.gif" alt="Kinematics homepage 3D scroll story" width="720" />
-</p>
-
 ## Tech stack
 
 | Layer | Technologies |
